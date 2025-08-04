@@ -1,19 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-// OPTIMIZED: Import CSS in proper order for cascading
+// Import modular CSS files
 import './styles/globals.css';
-import './styles/variables.css'; // Base CSS variables
+import './styles/variables.css';
 import './styles/utilities.css';
-
-// OPTIMIZED: Import ALL theme CSS files upfront for instant switching
-// This prevents re-downloading CSS files on theme change
-import './themes/default.css';  // Aurora theme
-import './themes/dark.css';     // Dark theme  
-import './themes/blue.css';     // Ocean theme (our optimized version)
-import './themes/green.css';    // Nature theme
-
-import './App.css'; // App-specific styles last
+import './App.css';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -44,28 +36,10 @@ import CookiePolicy from './pages/CookiePolicy';
 import DMCANotice from './pages/DMCANotice';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import ShippingPolicy from './pages/ShippingPolicy';
-
-// OPTIMIZED: Import contexts in dependency order
 import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext'; // Must be before components that use themes
 import { CartProvider } from './contexts/CartContext';
-
-// OPTIMIZED: Theme initialization helper
-const initializeThemeOnLoad = () => {
-  // Set initial theme attribute to prevent FOUC (Flash of Unstyled Content)
-  const savedTheme = localStorage.getItem('selectedTheme') || 'default';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  
-  // Add performance markers
-  if (window.performance && window.performance.mark) {
-    window.performance.mark('theme-init-start');
-  }
-  
-  console.log('🎨 Initial theme set:', savedTheme);
-};
-
-// Initialize theme immediately when module loads
-initializeThemeOnLoad();
+import { ThemeProvider } from './contexts/ThemeContext';
+import './App.css';
 
 function App() {
   return (
@@ -76,7 +50,7 @@ function App() {
             <ScrollToTop />
             <div className="App fade-in">
               <Header />
-              <main className="main-content">
+              <main>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/products" element={<Products />} />
@@ -108,39 +82,13 @@ function App() {
               </main>
               <Footer />
             </div>
-            
-            {/* OPTIMIZED: Theme-aware toast notifications */}
             <Toaster
               position="top-right"
               toastOptions={{
                 duration: 3000,
                 style: {
-                  background: 'var(--card-bg, #363636)',
-                  color: 'var(--text-primary, #fff)',
-                  border: '1px solid var(--border-color, #555)',
-                  borderRadius: 'var(--border-radius-md, 8px)',
-                  boxShadow: 'var(--shadow-lg, 0 4px 12px rgba(0,0,0,0.15))',
-                },
-                success: {
-                  style: {
-                    background: 'var(--success-bg, #d4edda)',
-                    color: 'var(--success-color, #155724)',
-                    border: '1px solid var(--success-border, #c3e6cb)',
-                  },
-                },
-                error: {
-                  style: {
-                    background: 'var(--danger-bg, #f8d7da)',
-                    color: 'var(--danger-color, #721c24)',
-                    border: '1px solid var(--danger-border, #f5c6cb)',
-                  },
-                },
-                loading: {
-                  style: {
-                    background: 'var(--info-bg, #d1ecf1)',
-                    color: 'var(--info-color, #0c5460)',
-                    border: '1px solid var(--info-border, #bee5eb)',
-                  },
+                  background: '#363636',
+                  color: '#fff',
                 },
               }}
             />
@@ -151,4 +99,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

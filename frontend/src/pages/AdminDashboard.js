@@ -1493,7 +1493,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('dashboard')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'dashboard' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1516,7 +1516,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('products')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'products' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1535,7 +1535,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('orders')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'orders' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1554,7 +1554,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('returns')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'returns' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1573,7 +1573,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('users')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'users' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1596,7 +1596,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('categories')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'categories' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1614,7 +1614,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('advanced-categories')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'advanced-categories' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1632,7 +1632,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('category-analytics')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'category-analytics' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1650,7 +1650,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('variations')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'variations' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1672,7 +1672,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('blog')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'blog' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1690,7 +1690,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('messages')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'messages' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1712,7 +1712,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('site-settings')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'site-settings' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1730,7 +1730,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('theme-testing')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'theme-testing' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1748,7 +1748,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('theme-builder')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'theme-builder' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1766,7 +1766,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('menu-settings')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'menu-settings' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1788,7 +1788,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('general-settings')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'general-settings' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1806,7 +1806,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('information-settings')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'information-settings' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1824,7 +1824,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('invoices')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'invoices' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1842,7 +1842,7 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('email-management')}
               style={{
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: activeTab === 'email-management' ? '#3498db' : 'transparent',
                 color: 'white',
                 border: 'none',
@@ -1861,7 +1861,7 @@ const AdminDashboard = () => {
               style={{
                 display: 'block',
                 width: '100%',
-                padding: '6px 20px',
+                padding: '10px 20px',
                 backgroundColor: '#e74c3c',
                 color: 'white',
                 textDecoration: 'none',

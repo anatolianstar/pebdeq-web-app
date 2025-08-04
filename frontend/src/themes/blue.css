@@ -1,0 +1,465 @@
+/* Blue Theme - Optimized & Clean Version */
+/* Ocean and sky themed, vibrant and harmonic blue tones */
+
+[data-theme="blue"] {
+  /* ========== PRIMARY BLUE COLOR PALETTE ========== */
+  --primary-color: #0ea5e9;           /* Vibrant sky blue */
+  --primary-hover: #0284c7;           /* Hover dark sky blue */
+  --primary-active: #0369a1;          /* Active darkest sky blue */
+  --primary-light: #7dd3fc;           /* Light sky blue */
+  --primary-dark: #0c4a6e;            /* Very dark sky blue */
+  
+  /* ========== SECONDARY BLUE TONES ========== */
+  --secondary-color: #3b82f6;         /* Bright blue */
+  --secondary-hover: #2563eb;         /* Hover blue */
+  --secondary-active: #1d4ed8;        /* Active dark blue */
+  --secondary-light: #93c5fd;         /* Light blue */
+  --secondary-dark: #1e40af;          /* Dark blue */
+  
+  /* ========== ACCENT COLORS ========== */
+  --accent-color: #06b6d4;            /* Cyan accent */
+  --accent-light: #67e8f9;            /* Light cyan */
+  --accent-dark: #0891b2;             /* Dark cyan */
+  
+  /* ========== BACKGROUND COLORS ========== */
+  --bg-primary: #f0f9ff;              /* Very light sky blue-white */
+  --bg-secondary: #e0f2fe;            /* Light sky blue-white */
+  --bg-tertiary: #bae6fd;             /* Medium sky blue */
+  --bg-light: #ffffff;                /* White background */
+  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+  
+  /* ========== HEADER & FOOTER ========== */
+  --header-bg: linear-gradient(135deg, #0284c7 0%, #0ea5e9 30%, #3b82f6 70%, #7dd3fc 100%);
+  --header-text: #ffffff;
+  --header-shadow: 0 4px 20px rgba(14, 165, 233, 0.25);
+  --footer-bg: linear-gradient(135deg, #0c4a6e 0%, #0369a1 30%, #0284c7 70%, #0ea5e9 100%);
+  --footer-text: #ffffff;
+  
+  /* ========== CARD & CONTAINER COLORS ========== */
+  --card-bg: #ffffff;                 /* White card background */
+  --card-border: #93c5fd;             /* Light blue border */
+  --card-shadow: 0 4px 20px rgba(14, 165, 233, 0.12);
+  --card-hover-bg: #f0f9ff;           /* Hover very light sky blue */
+  --card-hover-border: #7dd3fc;       /* Hover bright sky blue border */
+  --card-hover-shadow: 0 12px 32px rgba(14, 165, 233, 0.2);
+  
+  /* ========== TEXT COLORS ========== */
+  --text-primary: #1f2937;            /* Primary text dark gray */
+  --text-secondary: #374151;          /* Secondary text medium gray */
+  --text-muted: #6b7280;              /* Muted text light gray */
+  --text-light: #ffffff;              /* White text */
+  --text-on-primary: #ffffff;         /* White on blue background */
+  --text-success: #0369a1;            /* Success text dark blue */
+  
+  /* ========== LINK COLORS ========== */
+  --link-color: #0ea5e9;
+  --link-hover: #0284c7;
+  --link-active: #0369a1;
+  --link-visited: #06b6d4;
+  
+  /* ========== BUTTON COLORS ========== */
+  --btn-primary-bg: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+  --btn-primary-hover: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+  
+  --btn-secondary-bg: #f0f9ff;
+  --btn-secondary-hover: #e0f2fe;
+  --btn-secondary-text: #0369a1;
+  --btn-secondary-border: #93c5fd;
+  
+  /* ========== FORM ELEMENT COLORS ========== */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #0ea5e9;
+  --input-focus-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  --input-text: #1f2937;
+  --input-placeholder: #9ca3af;
+  
+  /* ========== BORDER COLORS ========== */
+  --border-light: #bae6fd;
+  --border-medium: #93c5fd;
+  --border-dark: #7dd3fc;
+  --border-primary: #0ea5e9;
+  --border-accent: #06b6d4;
+  
+  /* ========== SHADOW EFFECTS ========== */
+  --shadow-sm: 0 2px 8px rgba(14, 165, 233, 0.08);
+  --shadow-md: 0 4px 16px rgba(14, 165, 233, 0.12);
+  --shadow-lg: 0 8px 28px rgba(14, 165, 233, 0.16);
+  --shadow-xl: 0 16px 48px rgba(14, 165, 233, 0.24);
+  --shadow-glow: 0 0 24px rgba(14, 165, 233, 0.4);
+  
+  /* ========== STATUS COLORS ========== */
+  --success-color: #059669;
+  --success-bg: #d1fae5;
+  --success-border: #a7f3d0;
+  --warning-color: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger-color: #ef4444;
+  --danger-bg: #fee2e2;
+  --info-color: #0ea5e9;
+  --info-bg: #e0f2fe;
+  
+  /* ========== STANDARDIZED MEASUREMENTS ========== */
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
+  
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.4s ease;
+}
+
+/* ========== GLOBAL ELEMENTS ========== */
+[data-theme="blue"] * {
+  transition: all var(--transition-normal);
+}
+
+[data-theme="blue"] body {
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ========== CONSOLIDATED CARD COMPONENTS ========== */
+[data-theme="blue"] .card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+[data-theme="blue"] .card:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* ========== CONSOLIDATED BUTTON COMPONENTS ========== */
+[data-theme="blue"] .btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: var(--btn-primary-shadow);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-normal);
+}
+
+[data-theme="blue"] .btn-primary:hover {
+  background: var(--btn-primary-hover);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px) scale(1.02);
+}
+
+[data-theme="blue"] .btn-secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+  border-radius: var(--border-radius-md);
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+[data-theme="blue"] .btn-secondary:hover {
+  background: var(--btn-secondary-hover);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+/* ========== FORM ELEMENTS ========== */
+[data-theme="blue"] input,
+[data-theme="blue"] textarea,
+[data-theme="blue"] select {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-sm);
+  color: var(--input-text);
+  padding: 12px 16px;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+}
+
+[data-theme="blue"] input:focus,
+[data-theme="blue"] textarea:focus,
+[data-theme="blue"] select:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+  outline: none;
+  transform: scale(1.01);
+}
+
+[data-theme="blue"] input::placeholder,
+[data-theme="blue"] textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* ========== LINKS ========== */
+[data-theme="blue"] a {
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+[data-theme="blue"] a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+  text-decoration-color: var(--primary-light);
+  text-decoration-thickness: 2px;
+}
+
+/* ========== CONSOLIDATED FOOTER ========== */
+[data-theme="blue"] .footer {
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  box-shadow: 0 -4px 20px rgba(14, 165, 233, 0.15);
+}
+
+[data-theme="blue"] .footer * {
+  color: var(--footer-text);
+}
+
+/* ========== ADMIN DASHBOARD ========== */
+[data-theme="blue"] .admin-dashboard {
+  background: var(--bg-gradient);
+  min-height: 100vh;
+}
+
+[data-theme="blue"] .admin-main {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* ========== ADMIN SIDEBAR ========== */
+[data-theme="blue"] .admin-sidebar {
+  background: linear-gradient(180deg, #0369a1 0%, #0284c7 25%, #0ea5e9 50%, #3b82f6 75%, #7dd3fc 100%);
+  color: var(--text-light);
+  border-right: 2px solid var(--primary-light);
+  box-shadow: 4px 0 16px rgba(14, 165, 233, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="blue"] .admin-sidebar button {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--border-radius-md);
+  margin: 6px 0;
+  padding: 12px 16px;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  transition: all var(--transition-normal);
+}
+
+[data-theme="blue"] .admin-sidebar button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateX(4px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="blue"] .admin-sidebar button.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
+}
+
+/* ========== ADMIN CONTENT AREAS ========== */
+[data-theme="blue"] .admin-dashboard .dashboard-content,
+[data-theme="blue"] .admin-dashboard .products-content,
+[data-theme="blue"] .admin-dashboard .users-content,
+[data-theme="blue"] .admin-dashboard .orders-content {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* ========== ADMIN CARDS ========== */
+[data-theme="blue"] .admin-dashboard .stat-card,
+[data-theme="blue"] .admin-dashboard .recent-activities {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-normal);
+}
+
+[data-theme="blue"] .admin-dashboard .stat-card:hover,
+[data-theme="blue"] .admin-dashboard .recent-activities:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* ========== TABLES ========== */
+[data-theme="blue"] .admin-dashboard table {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="blue"] .admin-dashboard th {
+  background: linear-gradient(135deg, #bae6fd 0%, #93c5fd 50%, #7dd3fc 100%);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--primary-color);
+  font-weight: 700;
+  padding: 16px;
+}
+
+[data-theme="blue"] .admin-dashboard td {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+  padding: 12px 16px;
+}
+
+[data-theme="blue"] .admin-dashboard tr:hover {
+  background: var(--bg-primary);
+  transform: scale(1.005);
+}
+
+/* ========== FORM ELEMENTS IN ADMIN ========== */
+[data-theme="blue"] .admin-dashboard input,
+[data-theme="blue"] .admin-dashboard textarea,
+[data-theme="blue"] .admin-dashboard select {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  border-radius: var(--border-radius-sm);
+}
+
+[data-theme="blue"] .admin-dashboard input:focus,
+[data-theme="blue"] .admin-dashboard textarea:focus,
+[data-theme="blue"] .admin-dashboard select:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+/* ========== THEME SELECTOR ========== */
+[data-theme="blue"] .admin-sidebar .theme-selector {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="blue"] .admin-sidebar .theme-selector select {
+  background: rgba(3, 105, 161, 0.9);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-sm);
+}
+
+/* ========== SCROLLBAR ========== */
+[data-theme="blue"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  border-radius: 4px;
+  border: 1px solid var(--bg-light);
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+}
+
+/* ========== SUBTLE HOVER EFFECTS ========== */
+[data-theme="blue"] .btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+[data-theme="blue"] .card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* ========== OCEAN THEMED ELEMENTS ========== */
+[data-theme="blue"] .ocean-accent {
+  background: linear-gradient(45deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--border-radius-md);
+}
+
+[data-theme="blue"] .ocean-badge {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: var(--text-light);
+  border-radius: 24px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
+[data-theme="blue"] :focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+[data-theme="blue"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  [data-theme="blue"] .admin-sidebar {
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 50%, #3b82f6 100%);
+  }
+  
+  [data-theme="blue"] .card {
+    margin-bottom: 16px;
+    border-radius: var(--border-radius-md);
+  }
+  
+  [data-theme="blue"] .btn-primary {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  [data-theme="blue"] ::-webkit-scrollbar {
+    width: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  [data-theme="blue"] .card {
+    border-radius: var(--border-radius-sm);
+  }
+  
+  [data-theme="blue"] .btn-primary,
+  [data-theme="blue"] .btn-secondary {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}

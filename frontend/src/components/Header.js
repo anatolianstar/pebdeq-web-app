@@ -257,10 +257,10 @@ const Header = React.memo(() => {
 
   // Use site settings directly (they are now synced with theme)
   const headerStyles = {
-    backgroundColor: `${siteSettings?.header_background_color || '#ffffff'} !important`,
-    color: `${siteSettings?.header_text_color || '#212529'} !important`,
-    borderBottom: siteSettings?.header_border_bottom ? `1px solid ${siteSettings?.header_border_color || '#dee2e6'} !important` : 'none !important',
-    boxShadow: siteSettings?.header_shadow ? '0 2px 4px rgba(0,0,0,0.1) !important' : 'none !important'
+    backgroundColor: siteSettings?.header_background_color || '#ffffff',
+    color: siteSettings?.header_text_color || '#212529',
+    borderBottom: siteSettings?.header_border_bottom ? `1px solid ${siteSettings?.header_border_color || '#dee2e6'}` : 'none',
+    boxShadow: siteSettings?.header_shadow ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
   };
   
   return (
@@ -300,9 +300,7 @@ const Header = React.memo(() => {
             minHeight: `${Math.min((siteSettings?.use_logo ? (siteSettings?.logo_height || 60) : 30) + (siteSettings?.header_padding || 15) * 2, 200)}px`
           }}
         >
-          <Link to="/" className="logo" style={{ 
-            color: `${siteSettings?.header_text_color || 'var(--text-primary)'} !important`
-          }}>
+          <Link to="/" className="logo" style={{ color: siteSettings?.header_text_color || 'var(--text-primary)' }}>
             <div 
               className="logo-container"
               style={{
