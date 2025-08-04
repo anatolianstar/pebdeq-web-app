@@ -1,0 +1,50 @@
+/* Blue Theme */
+[data-theme="blue"] {
+  --primary-color: #0066cc;
+  --primary-hover: #0052a3;
+  --primary-active: #004080;
+  --secondary-color: #4d79a4;
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #e3f2fd;
+  --bg-tertiary: #bbdefb;
+  --card-bg: #ffffff;
+  --card-bg-hover: #e3f2fd;
+  --card-bg-active: #bbdefb;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --text-light: #ffffff;
+  --text-dark: #1a202c;
+  --border-color: #90cdf4;
+  --header-bg: #ffffff;
+  --footer-bg: #1565c0;
+  --input-bg: #ffffff;
+  --input-border: #90cdf4;
+  --input-focus: #0066cc;
+  --button-text: #ffffff;
+  --button-text-secondary: #4a5568;
+  --link-color: #0066cc;
+  --link-hover: #0052a3;
+  --link-active: #004080;
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 102, 204, 0.1);
+  --shadow-md: 0 0.5rem 1rem rgba(0, 102, 204, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(0, 102, 204, 0.2);
+}
+
+[data-theme="blue"] * {
+  transition: var(--theme-transition);
+}
+
+[data-theme="blue"] .hero-modern {
+  background: linear-gradient(135deg, #0066cc 0%, #3182ce 100%);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .product-card-featured,
+[data-theme="blue"] .blog-card {
+  border-left: 4px solid var(--primary-color);
+}
+
+[data-theme="blue"] .btn-primary:hover {
+  box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
+} 

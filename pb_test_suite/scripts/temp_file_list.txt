@@ -1,0 +1,163 @@
+
+[INFO] CREATING PROJECT FILE LIST...
+
+[STATS] PROJECT FILE STATISTICS:
+==================================================
+
+[FILES] PYTHON:
+   File count: 40
+   Total size: 643.2 KB
+   Largest files:
+     - backend\app\routes\site_settings.py (117.6KB)
+     - backend\app\models\models.py (62.7KB)
+     - backend\app\routes\main.py (53.6KB)
+
+[FILES] JAVASCRIPT:
+   File count: 57
+   Total size: 1476.8 KB
+   Largest files:
+     - frontend\src\pages\AdminDashboard.js (186.7KB)
+     - frontend\src\pages\TestDashboard.js (165.7KB)
+     - frontend\src\pages\TestDashboard_clean.js (134.8KB)
+
+[FILES] CSS:
+   File count: 24
+   Total size: 332.4 KB
+   Largest files:
+     - frontend\src\App.css (77.6KB)
+     - frontend\src\pages\TestDashboard.css (64.4KB)
+     - frontend\src\styles\utilities.css (30.8KB)
+
+[SUMMARY] GENERAL SUMMARY:
+   Total files: 121
+   Total size: 2452.5 KB
+   Average size: 20.3 KB
+
+[WEB_LIST] ALL FILES:
+
+[PYTHON]
+   1. backend\backup_current_settings.py (21.0KB)
+   2. backend\check_db.py (0.6KB)
+   3. backend\check_users.py (0.4KB)
+   4. backend\create_backup.py (1.6KB)
+   5. backend\create_test_users.py (2.0KB)
+   6. backend\db_reset.py (0.7KB)
+   7. backend\fix_google_oauth_settings.py (1.9KB)
+   8. backend\reset_db.py (25.6KB)
+   9. backend\restore_database.py (1.3KB)
+  10. backend\run.py (15.3KB)
+  11. backend\app\__init__.py (2.8KB)
+  12. backend\app\migrations\versions\add_custom_themes_table.py (3.3KB)
+  13. backend\app\models\models.py (62.7KB)
+  14. backend\app\routes\admin.py (39.6KB)
+  15. backend\app\routes\auth.py (14.9KB)
+  16. backend\app\routes\cart.py (15.0KB)
+  17. backend\app\routes\categories.py (12.6KB)
+  18. backend\app\routes\invoices.py (25.9KB)
+  19. backend\app\routes\main.py (53.6KB)
+  20. backend\app\routes\messages.py (2.3KB)
+  21. backend\app\routes\orders.py (19.7KB)
+  22. backend\app\routes\products.py (41.5KB)
+  23. backend\app\routes\site_settings.py (117.6KB)
+  24. backend\app\routes\test_runner.py (52.9KB)
+  25. backend\app\routes\themes.py (21.9KB)
+  26. backend\app\routes\uploads.py (9.9KB)
+  27. backend\app\routes\users.py (26.5KB)
+  28. backend\app\routes\variations.py (9.7KB)
+  29. backend\app\utils\decorators.py (1.1KB)
+  30. backend\app\utils\invoice_pdf.py (21.1KB)
+  31. backend\app\utils\__init__.py (0.0KB)
+  32. backend\migrations\env.py (3.4KB)
+  33. backend\migrations\versions\1a0121271809_add_about_page_cms_fields_to_.py (3.7KB)
+  34. backend\migrations\versions\2cb789ad34d9_add_site_url_settings_for_dynamic_.py (1.1KB)
+  35. backend\migrations\versions\44ba9f727e37_add_google_oauth_settings_to_.py (1.5KB)
+  36. backend\migrations\versions\56ab06a42a86_add_logo_shadow_settings.py (3.8KB)
+  37. backend\migrations\versions\75b60e302559_add_google_id_to_user_model.py (1.0KB)
+  38. backend\migrations\versions\9ef6c1f54b25_add_last_login_field_to_user_model.py (0.8KB)
+  39. backend\migrations\versions\af51b733fef2_add_new_fields_to_category_table.py (2.0KB)
+  40. backend\migrations\versions\fc1b8d793938_add_theme_preference_to_user_model.py (0.8KB)
+
+[JAVASCRIPT]
+  41. frontend\src\App.js (4.4KB)
+  42. frontend\src\index.js (0.2KB)
+  43. frontend\src\components\BackgroundRemovalModal.js (12.0KB)
+  44. frontend\src\components\BlogManagement.js (20.8KB)
+  45. frontend\src\components\CategoryAnalytics.js (18.5KB)
+  46. frontend\src\components\CategoryManagement.js (39.4KB)
+  47. frontend\src\components\Footer.js (18.1KB)
+  48. frontend\src\components\GoogleSignIn.js (3.5KB)
+  49. frontend\src\components\Header.js (18.8KB)
+  50. frontend\src\components\ImageCropModal.js (8.2KB)
+  51. frontend\src\components\ImagePreviewModal.js (3.1KB)
+  52. frontend\src\components\LikeButton.js (4.5KB)
+  53. frontend\src\components\ResponsiveThemeTest.js (6.0KB)
+  54. frontend\src\components\ScrollToTop.js (0.3KB)
+  55. frontend\src\components\ShareButtons.js (6.0KB)
+  56. frontend\src\components\ThemeBuilder.js (27.0KB)
+  57. frontend\src\components\ThemePerformanceMonitor.js (7.2KB)
+  58. frontend\src\components\ThemePreview.js (3.3KB)
+  59. frontend\src\components\ThemeSelector.js (10.5KB)
+  60. frontend\src\contexts\AuthContext.js (2.6KB)
+  61. frontend\src\contexts\CartContext.js (9.6KB)
+  62. frontend\src\contexts\ThemeContext.js (13.2KB)
+  63. frontend\src\pages\About.js (6.3KB)
+  64. frontend\src\pages\AccessibilityStatement.js (7.8KB)
+  65. frontend\src\pages\AdminDashboard.js (186.7KB)
+  66. frontend\src\pages\Blog.js (10.0KB)
+  67. frontend\src\pages\BlogPost.js (8.9KB)
+  68. frontend\src\pages\Cart.js (15.9KB)
+  69. frontend\src\pages\Category.js (16.3KB)
+  70. frontend\src\pages\Checkout.js (28.5KB)
+  71. frontend\src\pages\Contact.js (8.9KB)
+  72. frontend\src\pages\CookiePolicy.js (7.3KB)
+  73. frontend\src\pages\DMCANotice.js (7.1KB)
+  74. frontend\src\pages\GeneralSettings.js (68.1KB)
+  75. frontend\src\pages\Home.js (35.3KB)
+  76. frontend\src\pages\InformationSettings.js (31.2KB)
+  77. frontend\src\pages\Login.js (3.5KB)
+  78. frontend\src\pages\MenuSettings.js (55.8KB)
+  79. frontend\src\pages\OrderConfirmation.js (15.6KB)
+  80. frontend\src\pages\Orders.js (30.2KB)
+  81. frontend\src\pages\PrivacyPolicy.js (6.0KB)
+  82. frontend\src\pages\ProductDetail.js (58.9KB)
+  83. frontend\src\pages\Products.js (33.0KB)
+  84. frontend\src\pages\Profile.js (28.9KB)
+  85. frontend\src\pages\Register.js (8.2KB)
+  86. frontend\src\pages\ReturnPolicy.js (7.6KB)
+  87. frontend\src\pages\ShippingPolicy.js (8.7KB)
+  88. frontend\src\pages\SiteSettings2.js (119.7KB)
+  89. frontend\src\pages\TermsOfService.js (7.1KB)
+  90. frontend\src\pages\TestDashboard.js (165.7KB)
+  91. frontend\src\pages\TestDashboard_clean.js (134.8KB)
+  92. frontend\src\pages\UserDashboard.js (44.8KB)
+  93. frontend\src\pages\UserSettings.js (30.3KB)
+  94. frontend\src\themes\index.js (13.9KB)
+  95. frontend\src\themes\performance.js (9.6KB)
+  96. frontend\src\themes\siteSettingsIntegration.js (5.0KB)
+  97. frontend\src\utils\themeTemplate.js (13.9KB)
+
+[CSS]
+  98. frontend\public\themes\blue.css (1.3KB)
+  99. frontend\public\themes\dark.css (1.2KB)
+  100. frontend\public\themes\default.css (8.5KB)
+  101. frontend\public\themes\green.css (1.3KB)
+  102. frontend\public\themes\variables.css (9.7KB)
+  103. frontend\src\App.css (77.6KB)
+  104. frontend\src\components\BackgroundRemovalModal.css (6.6KB)
+  105. frontend\src\components\ImageCropModal.css (3.4KB)
+  106. frontend\src\components\ImagePreviewModal.css (5.2KB)
+  107. frontend\src\components\ResponsiveThemeTest.css (8.9KB)
+  108. frontend\src\components\ThemeBuilder.css (11.6KB)
+  109. frontend\src\components\ThemePerformanceMonitor.css (7.5KB)
+  110. frontend\src\components\ThemePreview.css (6.6KB)
+  111. frontend\src\components\ThemeSelector.css (9.9KB)
+  112. frontend\src\pages\Home.css (15.3KB)
+  113. frontend\src\pages\TestDashboard.css (64.4KB)
+  114. frontend\src\styles\globals.css (2.7KB)
+  115. frontend\src\styles\utilities.css (30.8KB)
+  116. frontend\src\styles\variables.css (6.8KB)
+  117. frontend\src\themes\blue.css (11.8KB)
+  118. frontend\src\themes\dark.css (10.2KB)
+  119. frontend\src\themes\default.css (8.3KB)
+  120. frontend\src\themes\green.css (13.7KB)
+  121. frontend\src\themes\variables.css (9.1KB)

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEBDEQ Multi-Platform Integration</title>
+    <style>
+        body {
+            width: 320px;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background: #ffffff;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            font-size: 20px;
+            color: #f56800;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 2px solid;
+        }
+        
+        .status.connected {
+            background: #f0fdf4;
+            color: #16a34a;
+            border-color: #bbf7d0;
+        }
+        
+        .status.disconnected {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        
+        .status-icon {
+            font-size: 18px;
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #4b5563;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            color: #111827;
+            font-weight: 600;
+        }
+        
+        .actions {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn.primary {
+            background: #f56800;
+            color: white;
+        }
+        
+        .action-btn.primary:hover {
+            background: #ea580c;
+        }
+        
+        .action-btn.secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 12px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #1e40af;
+            line-height: 1.4;
+        }
+        
+        .instructions-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .desktop-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .desktop-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dc2626;
+        }
+        
+        .desktop-indicator.online {
+            background: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🎨 PEBDEQ</div>
+        <div class="subtitle">Multi-Platform Photo Integration</div>
+    </div>
+    
+    <div id="status" class="status disconnected">
+        <span class="status-icon">🔒</span>
+        <span>Connecting...</span>
+    </div>
+    
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">Desktop App</span>
+            <div class="desktop-status">
+                <div id="desktop-status" class="desktop-indicator"></div>
+                <span id="desktop-text">Offline</span>
+            </div>
+        </div>
+        
+
+    </div>
+    
+    <div class="actions">
+        <button id="refresh-btn" class="action-btn primary">
+            🔄 Refresh Status
+        </button>
+        
+        <button id="refresh-tabs-btn" class="action-btn secondary">
+            🔄 Refresh Platform Tabs
+        </button>
+        
+
+        <button id="help-btn" class="action-btn secondary">
+            ❓ Help & Guide
+        </button>
+    </div>
+    
+    <div class="instructions">
+        <div class="instructions-title">How to Use:</div>
+        1. Navigate to any e-commerce platform<br>
+        2. Go to photo upload section<br>
+        3. Look for PEBDEQ checkbox<br>
+        4. Select photos and send to desktop<br>
+        5. Process in desktop app and upload
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

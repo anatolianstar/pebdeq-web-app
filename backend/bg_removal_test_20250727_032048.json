@@ -1,0 +1,203 @@
+{
+  "timestamp": "20250727_032048",
+  "environment": {
+    "python_version": "3.12.3 (tags/v3.12.3:f6650f9, Apr  9 2024, 14:05:25) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "win32",
+    "cwd": "C:\\Users\\Djkya\\PycharmProjects\\pebdeq-git\\pebdeq-home\\backend",
+    "libraries": {
+      "rembg": "\u2705 Available",
+      "transformers": "\u2705 Available",
+      "torch": "\u2705 Available",
+      "cv2": "\u2705 Available",
+      "numpy": "\u2705 Available",
+      "PIL": "\u2705 Available",
+      "requests": "\u2705 Available"
+    }
+  },
+  "api_results": {
+    "rembg": {
+      "red_square": {
+        "success": true,
+        "model_used": "rembg",
+        "processing_time": "23.71s",
+        "actual_time": "25.78s",
+        "input_size": 584,
+        "output_size": 28381,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 37866
+      },
+      "red_circle": {
+        "success": true,
+        "model_used": "rembg",
+        "processing_time": "23.62s",
+        "actual_time": "25.69s",
+        "input_size": 988,
+        "output_size": 5273,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 7054
+      },
+      "gradient": {
+        "success": true,
+        "model_used": "rembg",
+        "processing_time": "23.97s",
+        "actual_time": "26.05s",
+        "input_size": 592,
+        "output_size": 28616,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 38178
+      }
+    },
+    "bria": {
+      "red_square": {
+        "success": true,
+        "model_used": "bria",
+        "processing_time": "2.80s",
+        "actual_time": "4.85s",
+        "input_size": 584,
+        "output_size": 1907,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 2566
+      },
+      "red_circle": {
+        "success": true,
+        "model_used": "bria",
+        "processing_time": "2.90s",
+        "actual_time": "4.96s",
+        "input_size": 988,
+        "output_size": 2455,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 3298
+      },
+      "gradient": {
+        "success": true,
+        "model_used": "bria",
+        "processing_time": "2.83s",
+        "actual_time": "4.92s",
+        "input_size": 592,
+        "output_size": 2149,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 2890
+      }
+    },
+    "simple": {
+      "red_square": {
+        "success": true,
+        "model_used": "simple",
+        "processing_time": "0.00s",
+        "actual_time": "2.08s",
+        "input_size": 584,
+        "output_size": 1907,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 2566
+      },
+      "red_circle": {
+        "success": true,
+        "model_used": "simple",
+        "processing_time": "0.00s",
+        "actual_time": "2.06s",
+        "input_size": 988,
+        "output_size": 2455,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 3298
+      },
+      "gradient": {
+        "success": true,
+        "model_used": "simple",
+        "processing_time": "0.01s",
+        "actual_time": "2.07s",
+        "input_size": 592,
+        "output_size": 2149,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 2890
+      }
+    },
+    "auto": {
+      "red_square": {
+        "success": true,
+        "model_used": "auto",
+        "processing_time": "24.17s",
+        "actual_time": "26.24s",
+        "input_size": 584,
+        "output_size": 28381,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 37866
+      },
+      "red_circle": {
+        "success": true,
+        "model_used": "auto",
+        "processing_time": "23.63s",
+        "actual_time": "25.70s",
+        "input_size": 988,
+        "output_size": 5273,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 7054
+      },
+      "gradient": {
+        "success": true,
+        "model_used": "auto",
+        "processing_time": "23.80s",
+        "actual_time": "25.84s",
+        "input_size": 592,
+        "output_size": 28616,
+        "dimensions": "200x200",
+        "has_preview": true,
+        "preview_size": 38178
+      }
+    }
+  },
+  "direct_rembg": {
+    "red_square": {
+      "u2net": {
+        "success": true,
+        "time": "1.15s",
+        "output_size": 307,
+        "input_size": 584
+      },
+      "birefnet": {
+        "success": true,
+        "time": "23.69s",
+        "output_size": 12046,
+        "error": null
+      }
+    },
+    "red_circle": {
+      "u2net": {
+        "success": true,
+        "time": "1.02s",
+        "output_size": 3755,
+        "input_size": 988
+      },
+      "birefnet": {
+        "success": true,
+        "time": "23.40s",
+        "output_size": 3364,
+        "error": null
+      }
+    },
+    "gradient": {
+      "u2net": {
+        "success": true,
+        "time": "1.02s",
+        "output_size": 20574,
+        "input_size": 592
+      },
+      "birefnet": {
+        "success": true,
+        "time": "24.10s",
+        "output_size": 15563,
+        "error": null
+      }
+    }
+  }
+}

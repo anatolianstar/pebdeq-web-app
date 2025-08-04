@@ -1,0 +1,534 @@
+/* Blue Theme - Canlı ve Modern Mavi Tema */
+/* Okyanus ve gökyüzü temalı, canlı ve harmonik mavi tonları */
+
+[data-theme="blue"] {
+  /* ========== ANA MAVİ RENK PALETİ ========== */
+  --primary-color: #0ea5e9;           /* Canlı sky blue */
+  --primary-hover: #0284c7;           /* Hover koyu sky blue */
+  --primary-active: #0369a1;          /* Active en koyu sky blue */
+  --primary-light: #7dd3fc;           /* Açık sky blue */
+  --primary-dark: #0c4a6e;            /* Çok koyu sky blue */
+  
+  /* ========== İKİNCİL MAVİ TONLARI ========== */
+  --secondary-color: #3b82f6;         /* Parlak blue */
+  --secondary-hover: #2563eb;         /* Hover blue */
+  --secondary-active: #1d4ed8;        /* Active koyu blue */
+  --secondary-light: #93c5fd;         /* Açık blue */
+  --secondary-dark: #1e40af;          /* Koyu blue */
+  
+  /* ========== ACCENT RENKLER ========== */
+  --accent-color: #06b6d4;            /* Cyan accent */
+  --accent-light: #67e8f9;            /* Açık cyan */
+  --accent-dark: #0891b2;             /* Koyu cyan */
+  
+  /* ========== BACKGROUND RENKLER ========== */
+  --bg-primary: #f0f9ff;              /* Çok açık sky blue-beyaz */
+  --bg-secondary: #e0f2fe;            /* Açık sky blue-beyaz */
+  --bg-tertiary: #bae6fd;             /* Orta sky blue */
+  --bg-accent: #f0f9ff;               /* Sky blue tint arka plan */
+  --bg-light: #ffffff;                /* Beyaz arka plan */
+  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+  
+  /* ========== HEADER & FOOTER ========== */
+  --header-bg: linear-gradient(135deg, #0284c7 0%, #0ea5e9 30%, #3b82f6 70%, #7dd3fc 100%);
+  --header-text: #ffffff;
+  --header-shadow: 0 4px 20px rgba(14, 165, 233, 0.25);
+  --footer-bg: linear-gradient(135deg, #0c4a6e 0%, #0369a1 30%, #0284c7 70%, #0ea5e9 100%);
+  --footer-text: #ffffff;
+  
+  /* ========== CARD & CONTAINER RENKLER ========== */
+  --card-bg: #ffffff;                 /* Beyaz card arka plan */
+  --card-border: #93c5fd;             /* Açık blue border */
+  --card-shadow: 0 4px 20px rgba(14, 165, 233, 0.12);
+  --card-hover-bg: #f0f9ff;           /* Hover çok açık sky blue */
+  --card-hover-border: #7dd3fc;       /* Hover parlak sky blue border */
+  --card-hover-shadow: 0 12px 32px rgba(14, 165, 233, 0.2);
+  
+  /* ========== TEXT RENKLER ========== */
+  --text-primary: #1f2937;            /* Ana metin koyu gri */
+  --text-secondary: #374151;          /* İkincil metin orta gri */
+  --text-muted: #6b7280;              /* Soluk metin açık gri */
+  --text-light: #ffffff;              /* Beyaz metin */
+  --text-on-primary: #ffffff;         /* Mavi arka planda beyaz */
+  --text-success: #0369a1;            /* Başarı metni koyu mavi */
+  
+  /* ========== LINK RENKLER ========== */
+  --link-color: #0ea5e9;
+  --link-hover: #0284c7;
+  --link-active: #0369a1;
+  --link-visited: #06b6d4;
+  
+  /* ========== BUTTON RENKLER ========== */
+  --btn-primary-bg: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+  --btn-primary-hover: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+  
+  --btn-secondary-bg: #f0f9ff;
+  --btn-secondary-hover: #e0f2fe;
+  --btn-secondary-text: #0369a1;
+  --btn-secondary-border: #93c5fd;
+  
+  /* ========== FORM ELEMENT RENKLER ========== */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #0ea5e9;
+  --input-focus-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+  --input-text: #1f2937;
+  --input-placeholder: #9ca3af;
+  
+  /* ========== BORDER RENKLER ========== */
+  --border-light: #bae6fd;
+  --border-medium: #93c5fd;
+  --border-dark: #7dd3fc;
+  --border-primary: #0ea5e9;
+  --border-accent: #06b6d4;
+  
+  /* ========== SHADOW EFEKTLER ========== */
+  --shadow-sm: 0 2px 8px rgba(14, 165, 233, 0.08);
+  --shadow-md: 0 4px 16px rgba(14, 165, 233, 0.12);
+  --shadow-lg: 0 8px 28px rgba(14, 165, 233, 0.16);
+  --shadow-xl: 0 16px 48px rgba(14, 165, 233, 0.24);
+  --shadow-glow: 0 0 24px rgba(14, 165, 233, 0.4);
+  
+  /* ========== STATUS RENKLER ========== */
+  --success-color: #059669;
+  --success-bg: #d1fae5;
+  --success-border: #a7f3d0;
+  --warning-color: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger-color: #ef4444;
+  --danger-bg: #fee2e2;
+  --info-color: #0ea5e9;
+  --info-bg: #e0f2fe;
+}
+
+/* ========== GLOBAL ELEMANLAR ========== */
+
+[data-theme="blue"] * {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="blue"] body {
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ========== HEADER STYLING ========== */
+/* Header styling removed - admin settings control header colors */
+
+/* Header text styling removed - admin settings control header text colors */
+
+/* ========== FOOTER STYLING ========== */
+[data-theme="blue"] .footer,
+[data-theme="blue"] .site-footer,
+[data-theme="blue"] .main-footer {
+  background: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+  box-shadow: 0 -4px 20px rgba(14, 165, 233, 0.15) !important;
+}
+
+[data-theme="blue"] .footer *,
+[data-theme="blue"] .site-footer *,
+[data-theme="blue"] .main-footer * {
+  color: var(--footer-text) !important;
+}
+
+/* ========== PRODUCT CARDS ========== */
+[data-theme="blue"] .product-card,
+[data-theme="blue"] .card,
+[data-theme="blue"] .product-item {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+}
+
+[data-theme="blue"] .product-card:hover,
+[data-theme="blue"] .card:hover,
+[data-theme="blue"] .product-item:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--card-hover-border) !important;
+  box-shadow: var(--card-hover-shadow) !important;
+  transform: translateY(-6px) scale(1.02) !important;
+}
+
+/* ========== BUTTONS ========== */
+[data-theme="blue"] .btn-primary,
+[data-theme="blue"] .button-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 14px 28px !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  box-shadow: var(--btn-primary-shadow) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="blue"] .btn-primary:hover,
+[data-theme="blue"] .button-primary:hover {
+  background: var(--btn-primary-hover) !important;
+  box-shadow: var(--shadow-glow) !important;
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+[data-theme="blue"] .btn-secondary {
+  background: var(--btn-secondary-bg) !important;
+  color: var(--btn-secondary-text) !important;
+  border: 2px solid var(--btn-secondary-border) !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="blue"] .btn-secondary:hover {
+  background: var(--btn-secondary-hover) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ========== FORM ELEMENTS ========== */
+[data-theme="blue"] input,
+[data-theme="blue"] textarea,
+[data-theme="blue"] select {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--input-border) !important;
+  border-radius: 10px !important;
+  color: var(--input-text) !important;
+  padding: 14px 18px !important;
+  font-size: 16px !important;
+}
+
+[data-theme="blue"] input:focus,
+[data-theme="blue"] textarea:focus,
+[data-theme="blue"] select:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+  outline: none !important;
+  transform: scale(1.02) !important;
+}
+
+[data-theme="blue"] input::placeholder,
+[data-theme="blue"] textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* ========== LINKS ========== */
+[data-theme="blue"] a {
+  color: var(--link-color) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+[data-theme="blue"] a:hover {
+  color: var(--link-hover) !important;
+  text-decoration: underline !important;
+  text-decoration-color: var(--primary-light) !important;
+  text-decoration-thickness: 2px !important;
+}
+
+/* ========== ADMIN DASHBOARD ========== */
+[data-theme="blue"] .admin-dashboard {
+  background: var(--bg-gradient) !important;
+  min-height: 100vh !important;
+}
+
+/* Ana Content Area */
+[data-theme="blue"] .admin-main {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+/* Sidebar - Modern Gradient */
+[data-theme="blue"] .admin-sidebar {
+  background: linear-gradient(180deg, #0369a1 0%, #0284c7 25%, #0ea5e9 50%, #3b82f6 75%, #7dd3fc 100%) !important;
+  color: var(--text-light) !important;
+  border-right: 3px solid var(--primary-light) !important;
+  box-shadow: 8px 0 32px rgba(14, 165, 233, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Sidebar Buttons */
+[data-theme="blue"] .admin-sidebar button,
+[data-theme="blue"] .admin-sidebar .nav-button {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-light) !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 12px !important;
+  margin: 6px 0 !important;
+  padding: 14px 20px !important;
+  font-weight: 500 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+[data-theme="blue"] .admin-sidebar button:hover,
+[data-theme="blue"] .admin-sidebar .nav-button:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateX(6px) scale(1.02) !important;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="blue"] .admin-sidebar button.active,
+[data-theme="blue"] .admin-sidebar .nav-button.active {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Content Areas */
+[data-theme="blue"] .admin-dashboard .dashboard-content,
+[data-theme="blue"] .admin-dashboard .products-content,
+[data-theme="blue"] .admin-dashboard .users-content,
+[data-theme="blue"] .admin-dashboard .orders-content {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+/* Cards ve Containers */
+[data-theme="blue"] .admin-dashboard .stat-card,
+[data-theme="blue"] .admin-dashboard .recent-activities,
+[data-theme="blue"] .admin-dashboard .card {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--card-shadow) !important;
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+[data-theme="blue"] .admin-dashboard .stat-card:hover,
+[data-theme="blue"] .admin-dashboard .card:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--card-hover-border) !important;
+  box-shadow: var(--card-hover-shadow) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+}
+
+/* Tables */
+[data-theme="blue"] .admin-dashboard table {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+[data-theme="blue"] .admin-dashboard th {
+  background: linear-gradient(135deg, #bae6fd 0%, #93c5fd 50%, #7dd3fc 100%) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--primary-color) !important;
+  font-weight: 700 !important;
+  padding: 16px !important;
+}
+
+[data-theme="blue"] .admin-dashboard td {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: 14px 16px !important;
+}
+
+[data-theme="blue"] .admin-dashboard tr:hover {
+  background: var(--bg-accent) !important;
+  transform: scale(1.01) !important;
+}
+
+/* Form Elements in Admin */
+[data-theme="blue"] .admin-dashboard input,
+[data-theme="blue"] .admin-dashboard textarea,
+[data-theme="blue"] .admin-dashboard select {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--input-border) !important;
+  color: var(--input-text) !important;
+  border-radius: 10px !important;
+}
+
+[data-theme="blue"] .admin-dashboard input:focus,
+[data-theme="blue"] .admin-dashboard textarea:focus,
+[data-theme="blue"] .admin-dashboard select:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+}
+
+/* Theme Selector */
+[data-theme="blue"] .admin-sidebar .theme-selector {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+[data-theme="blue"] .admin-sidebar .theme-selector select {
+  background: rgba(3, 105, 161, 0.9) !important;
+  color: var(--text-light) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 8px !important;
+}
+
+/* ========== SCROLLBAR ========== */
+[data-theme="blue"] ::-webkit-scrollbar {
+  width: 10px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 5px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  border-radius: 5px;
+  border: 1px solid var(--bg-light);
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+}
+
+/* ========== HOVER EFFECTS ========== */
+[data-theme="blue"] .btn:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+
+[data-theme="blue"] .product-card:hover,
+[data-theme="blue"] .card:hover {
+  transform: translateY(-8px) scale(1.03);
+}
+
+/* ========== MAVİ ACCENT EFFECTS ========== */
+[data-theme="blue"] .hero-modern {
+  background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 25%, #3b82f6 50%, #7dd3fc 75%, #93c5fd 100%);
+  color: var(--text-light);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="blue"] .product-card-featured,
+[data-theme="blue"] .blog-card {
+  border-left: 6px solid var(--primary-color);
+  border-image: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) 1;
+}
+
+[data-theme="blue"] .btn-primary:hover {
+  box-shadow: 0 0 32px rgba(14, 165, 233, 0.5);
+}
+
+/* ========== OCEAN THEMED ELEMENTS ========== */
+[data-theme="blue"] .ocean-accent {
+  background: linear-gradient(45deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+  border: 2px solid var(--primary-light);
+  border-radius: 12px;
+}
+
+[data-theme="blue"] .ocean-badge {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: var(--text-light);
+  border-radius: 25px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+/* ========== WAVE EFFECT ========== */
+[data-theme="blue"] .wave-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="blue"] .wave-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+[data-theme="blue"] .wave-effect:hover::before {
+  left: 100%;
+}
+
+/* ========== GLOSSİ EFFECT ========== */
+[data-theme="blue"] .glossy {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="blue"] .glossy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+[data-theme="blue"] .glossy:hover::before {
+  left: 100%;
+}
+
+/* ========== FLOATING ANIMATION ========== */
+[data-theme="blue"] .floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ========== RIPPLE EFFECT ========== */
+[data-theme="blue"] .ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="blue"] .ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(14, 165, 233, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+[data-theme="blue"] .ripple:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  [data-theme="blue"] .admin-sidebar {
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 50%, #3b82f6 100%) !important;
+  }
+  
+  [data-theme="blue"] .card,
+  [data-theme="blue"] .product-card {
+    margin-bottom: 20px !important;
+    border-radius: 12px !important;
+  }
+  
+  [data-theme="blue"] .btn-primary,
+  [data-theme="blue"] .button-primary {
+    padding: 12px 24px !important;
+    font-size: 14px !important;
+  }
+}

@@ -1,0 +1,90 @@
+const fs = require('fs');
+const path = require('path');
+
+// Dosyaları ve import yollarını define et
+const files = [
+  { file: 'frontend/src/components/CategoryManagement.js', importPath: '../utils/config' },
+  { file: 'frontend/src/components/GoogleSignIn.js', importPath: '../utils/config' },
+  { file: 'frontend/src/components/Header.js', importPath: '../utils/config' },
+  { file: 'frontend/src/components/ThemeBuilder.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/About.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/AdminDashboard.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Checkout.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Contact.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/EmailManagement.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/GeneralSettings.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Login.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Orders.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/PrivacyPolicy.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Products.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/Register.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/ReturnPolicy.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/TermsOfService.js', importPath: '../utils/config' },
+  { file: 'frontend/src/pages/UserDashboard.js', importPath: '../utils/config' },
+  { file: 'frontend/src/themes/siteSettingsIntegration.js', importPath: '../utils/config' }
+];
+
+function addImportToFile(filePath, importPath) {
+  try {
+    let content = fs.readFileSync(filePath, 'utf8');
+    
+    // Zaten import var mı kontrol et
+    if (content.includes("createApiUrl")) {
+      console.log(`⚡ ${filePath} - import already exists`);
+      return;
+    }
+    
+    // createApiUrl kullanılıyor mu kontrol et
+    if (!content.includes("createApiUrl(")) {
+      console.log(`⚡ ${filePath} - createApiUrl not used, skipping`);
+      return;
+    }
+    
+    // React import'larından sonra ekle
+    const lines = content.split('\n');
+    let insertIndex = -1;
+    
+    // Son import'u bul
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim().startsWith('import ') && lines[i].includes('from ')) {
+        insertIndex = i + 1;
+      } else if (lines[i].trim() === '' && insertIndex > -1) {
+        // İlk boş satırda dur
+        break;
+      }
+    }
+    
+    if (insertIndex === -1) {
+      // Import bulunamadı, dosyanın başına ekle
+      insertIndex = 0;
+    }
+    
+    // Import'u ekle
+    const importStatement = `import { createApiUrl } from '${importPath}';`;
+    lines.splice(insertIndex, 0, importStatement);
+    
+    // Dosyayı yaz
+    fs.writeFileSync(filePath, lines.join('\n'), 'utf8');
+    console.log(`✅ ${filePath} - import added`);
+    
+  } catch (error) {
+    console.error(`❌ Error processing ${filePath}:`, error.message);
+  }
+}
+
+// Ana işlev
+function main() {
+  console.log('🔧 Fixing missing createApiUrl imports...');
+  
+  files.forEach(({ file, importPath }) => {
+    if (fs.existsSync(file)) {
+      addImportToFile(file, importPath);
+    } else {
+      console.log(`⚠️ File not found: ${file}`);
+    }
+  });
+  
+  console.log('✅ Import fixing completed!');
+}
+
+main(); 

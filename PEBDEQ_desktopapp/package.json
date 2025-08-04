@@ -1,0 +1,102 @@
+{
+  "name": "pebdeq-desktop-pro",
+  "version": "1.0.0",
+  "description": "Professional Background Removal Desktop Application with AI Models",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac", 
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --mac --linux",
+    "pack": "electron-builder --dir",
+    "test": "jest",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "background-removal",
+    "AI",
+    "image-processing",
+    "electron",
+    "desktop-app",
+    "BiRefNet",
+    "U2Net", 
+    "BRIA"
+  ],
+  "author": {
+    "name": "PEBDEQ Team",
+    "email": "info@pebdeq.com"
+  },
+  "license": "Commercial",
+  "homepage": "https://desktop.pebdeq.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pebdeq/desktop-pro.git"
+  },
+  "build": {
+    "appId": "com.pebdeq.desktop-pro",
+    "productName": "PEBDEQ Desktop Pro",
+    "copyright": "Copyright © 2025 PEBDEQ",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "renderer/**/*",
+      "python-backend/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "python-backend",
+        "to": "python-backend",
+        "filter": [
+          "**/*",
+          "!**/__pycache__/**/*",
+          "!**/venv/**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/app-icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icons/app-icon.icns",
+      "category": "public.app-category.graphics-design"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/app-icon.png",
+      "category": "Graphics"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/icons/app-icon.ico",
+      "uninstallerIcon": "assets/icons/app-icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.4",
+    "axios": "^1.5.0",
+    "fabric": "^5.3.0",
+    "fs-extra": "^11.1.1",
+    "path": "^0.12.7",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+} 

@@ -1,0 +1,79 @@
+{
+  "timestamp": "20250803_005123",
+  "total_files_tested": 8,
+  "selected_files": [
+    "backend\\run.py",
+    "backend\\app\\routes\\admin.py",
+    "backend\\app\\routes\\main.py",
+    "backend\\app\\routes\\site_settings.py",
+    "pb_test_suite\\tests\\code_quality\\test_all_project_files.py",
+    "deployment\\deployment_gui.py",
+    "frontend\\src\\components\\ThemeBuilder.js",
+    "frontend\\src\\pages\\AdminDashboard.js"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 2
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 2
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 2
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 8
+    },
+    "Deployment Quality": {
+      "passed": false,
+      "issues": [
+        "Bare except clause found in C:\\Users\\Djkya\\PycharmProjects\\pebdeq-git-rembg\\pebdeq-git\\pebdeq-home\\deployment\\deployment_gui.py",
+        "Large deployment script without proper logging: C:\\Users\\Djkya\\PycharmProjects\\pebdeq-git-rembg\\pebdeq-git\\pebdeq-home\\deployment\\deployment_gui.py"
+      ],
+      "total_files": 1
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 10,
+    "failed_tests": 1
+  }
+}

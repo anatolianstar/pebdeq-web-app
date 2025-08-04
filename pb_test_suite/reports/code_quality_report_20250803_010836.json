@@ -1,0 +1,71 @@
+{
+  "timestamp": "20250803_010836",
+  "total_files_tested": 1,
+  "selected_files": [
+    "deployment\\update_api_urls.js"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Import Dependencies": {
+      "passed": false,
+      "issues": [
+        "Missing React import in C:\\Users\\Djkya\\PycharmProjects\\pebdeq-git-rembg\\pebdeq-git\\pebdeq-home\\deployment\\update_api_urls.js"
+      ],
+      "total_files": 1
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 10,
+    "failed_tests": 1
+  }
+}

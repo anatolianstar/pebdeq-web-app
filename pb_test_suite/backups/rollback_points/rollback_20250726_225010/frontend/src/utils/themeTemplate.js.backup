@@ -1,0 +1,573 @@
+/**
+ * Theme Template Generator
+ * Allows users to create custom themes by providing colors, fonts, and other styling options
+ */
+
+// Default theme structure with all customizable properties
+export const THEME_TEMPLATE = {
+  // Theme metadata
+  name: 'Custom Theme',
+  id: 'custom-theme',
+  description: 'A custom theme created by the user',
+  author: 'User',
+  version: '1.0.0',
+  type: 'light', // light, dark, or custom
+  
+  // Color palette
+  colors: {
+    // Primary colors
+    primary: '#007bff',
+    primaryHover: '#0056b3',
+    primaryActive: '#004085',
+    primaryLight: '#b8daff',
+    primaryDark: '#004085',
+    
+    // Secondary colors
+    secondary: '#6c757d',
+    secondaryHover: '#5a6268',
+    secondaryActive: '#494f54',
+    secondaryLight: '#f8f9fa',
+    secondaryDark: '#343a40',
+    
+    // Status colors
+    success: '#28a745',
+    successHover: '#218838',
+    successLight: '#d4edda',
+    successDark: '#155724',
+    
+    danger: '#dc3545',
+    dangerHover: '#c82333',
+    dangerLight: '#f8d7da',
+    dangerDark: '#721c24',
+    
+    warning: '#ffc107',
+    warningHover: '#e0a800',
+    warningLight: '#fff3cd',
+    warningDark: '#856404',
+    
+    info: '#17a2b8',
+    infoHover: '#138496',
+    infoLight: '#d1ecf1',
+    infoDark: '#0c5460',
+    
+    // Background colors
+    backgroundPrimary: '#ffffff',
+    backgroundSecondary: '#f8f9fa',
+    backgroundTertiary: '#e9ecef',
+    backgroundDark: '#343a40',
+    backgroundLight: '#ffffff',
+    
+    // Text colors
+    textPrimary: '#212529',
+    textSecondary: '#6c757d',
+    textMuted: '#adb5bd',
+    textLight: '#ffffff',
+    textDark: '#212529',
+    textHeading: '#212529',
+    textBody: '#495057',
+    
+    // Border colors
+    borderColor: '#dee2e6',
+    borderLight: '#e9ecef',
+    borderDark: '#495057',
+    
+    // Link colors
+    linkColor: '#007bff',
+    linkHover: '#0056b3',
+    linkActive: '#004085',
+    
+    // Component specific colors
+    headerBackground: '#ffffff',
+    headerText: '#212529',
+    footerBackground: '#343a40',
+    footerText: '#ffffff',
+    navBackground: '#ffffff',
+    navText: '#212529',
+    sidebarBackground: '#f8f9fa',
+    cardBackground: '#ffffff',
+    
+    // Button colors
+    buttonPrimary: '#007bff',
+    buttonPrimaryText: '#ffffff',
+    buttonSecondary: '#6c757d',
+    buttonSecondaryText: '#ffffff',
+    buttonSuccess: '#28a745',
+    buttonSuccessText: '#ffffff',
+    buttonDanger: '#dc3545',
+    buttonDangerText: '#ffffff',
+    buttonWarning: '#ffc107',
+    buttonWarningText: '#212529',
+    buttonInfo: '#17a2b8',
+    buttonInfoText: '#ffffff',
+    
+    // Form colors
+    inputBackground: '#ffffff',
+    inputBorder: '#dee2e6',
+    inputText: '#495057',
+    inputPlaceholder: '#6c757d',
+    inputFocus: '#007bff',
+    
+    // Scrollbar colors
+    scrollbarTrack: '#f1f1f1',
+    scrollbarThumb: '#c1c1c1',
+    scrollbarThumbHover: '#a8a8a8',
+    
+    // Selection colors
+    selectionBackground: 'rgba(0, 123, 255, 0.3)',
+    selectionText: 'inherit',
+    
+    // Shadow colors
+    shadowLight: 'rgba(0, 0, 0, 0.1)',
+    shadowMedium: 'rgba(0, 0, 0, 0.15)',
+    shadowDark: 'rgba(0, 0, 0, 0.25)',
+  },
+  
+  // Typography
+  typography: {
+    // Font families
+    fontFamilyBase: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamilyHeading: 'inherit',
+    fontFamilyMono: 'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    
+    // Font sizes (in rem)
+    fontSizeBase: 1,
+    fontSizeSmall: 0.875,
+    fontSizeLarge: 1.125,
+    fontSizeH1: 2.5,
+    fontSizeH2: 2,
+    fontSizeH3: 1.75,
+    fontSizeH4: 1.5,
+    fontSizeH5: 1.25,
+    fontSizeH6: 1,
+    
+    // Font weights
+    fontWeightLight: 300,
+    fontWeightNormal: 400,
+    fontWeightMedium: 500,
+    fontWeightSemibold: 600,
+    fontWeightBold: 700,
+    fontWeightHeading: 600,
+    
+    // Line heights
+    lineHeightBase: 1.6,
+    lineHeightHeading: 1.2,
+    lineHeightTight: 1.25,
+    lineHeightLoose: 1.8,
+    
+    // Letter spacing
+    letterSpacingNormal: 0,
+    letterSpacingWide: '0.025em',
+    letterSpacingWider: '0.05em',
+  },
+  
+  // Spacing (in rem)
+  spacing: {
+    xs: 0.25,
+    sm: 0.5,
+    md: 1,
+    lg: 1.5,
+    xl: 2,
+    xxl: 2.5,
+    xxxl: 3,
+  },
+  
+  // Border radius (in px)
+  borderRadius: {
+    none: 0,
+    sm: 2,
+    base: 4,
+    lg: 8,
+    xl: 12,
+    full: 9999,
+  },
+  
+  // Shadows
+  shadows: {
+    sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    base: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
+    xl: '0 20px 25px rgba(0, 0, 0, 0.15)',
+    xxl: '0 25px 50px rgba(0, 0, 0, 0.25)',
+  },
+  
+  // Breakpoints (in px)
+  breakpoints: {
+    sm: 576,
+    md: 768,
+    lg: 992,
+    xl: 1200,
+    xxl: 1400,
+  },
+  
+  // Transitions
+  transitions: {
+    fast: '0.15s ease',
+    base: '0.3s ease',
+    slow: '0.5s ease',
+  },
+  
+  // Component specific settings
+  components: {
+    // Header
+    header: {
+      height: '80px',
+      padding: '1rem',
+      shadow: true,
+      sticky: false,
+      background: 'backgroundPrimary',
+      textColor: 'textPrimary',
+    },
+    
+    // Navigation
+    navigation: {
+      height: '60px',
+      padding: '1rem',
+      itemPadding: '0.5rem 1rem',
+      background: 'backgroundPrimary',
+      textColor: 'textPrimary',
+      hoverColor: 'primary',
+    },
+    
+    // Footer
+    footer: {
+      padding: '3rem 0',
+      background: 'backgroundDark',
+      textColor: 'textLight',
+    },
+    
+    // Cards
+    card: {
+      padding: '1.5rem',
+      borderRadius: 'lg',
+      shadow: 'base',
+      background: 'backgroundPrimary',
+      borderColor: 'borderColor',
+    },
+    
+    // Buttons
+    button: {
+      paddingX: '1rem',
+      paddingY: '0.5rem',
+      borderRadius: 'base',
+      fontWeight: 'medium',
+      fontSize: 'base',
+    },
+    
+    // Forms
+    form: {
+      input: {
+        paddingX: '0.75rem',
+        paddingY: '0.5rem',
+        borderRadius: 'base',
+        fontSize: 'base',
+        background: 'backgroundPrimary',
+        borderColor: 'borderColor',
+        textColor: 'textPrimary',
+      },
+    },
+    
+    // Sidebar
+    sidebar: {
+      width: '250px',
+      background: 'backgroundSecondary',
+      borderColor: 'borderColor',
+    },
+  },
+};
+
+/**
+ * Generate CSS from theme template
+ */
+export const generateThemeCSS = (themeData) => {
+  const { colors, typography, spacing, borderRadius, shadows, transitions, components } = themeData;
+  
+  // Generate CSS variables
+  const cssVariables = Object.entries({
+    // Colors
+    ...Object.entries(colors).reduce((acc, [key, value]) => {
+      acc[`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
+      return acc;
+    }, {}),
+    
+    // Typography
+    ...Object.entries(typography).reduce((acc, [key, value]) => {
+      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      acc[`--${cssKey}`] = typeof value === 'number' ? `${value}rem` : value;
+      return acc;
+    }, {}),
+    
+    // Spacing
+    ...Object.entries(spacing).reduce((acc, [key, value]) => {
+      acc[`--spacing-${key}`] = `${value}rem`;
+      return acc;
+    }, {}),
+    
+    // Border radius
+    ...Object.entries(borderRadius).reduce((acc, [key, value]) => {
+      acc[`--border-radius-${key}`] = `${value}px`;
+      return acc;
+    }, {}),
+    
+    // Shadows
+    ...Object.entries(shadows).reduce((acc, [key, value]) => {
+      acc[`--shadow-${key}`] = value;
+      return acc;
+    }, {}),
+    
+    // Transitions
+    ...Object.entries(transitions).reduce((acc, [key, value]) => {
+      acc[`--transition-${key}`] = value;
+      return acc;
+    }, {}),
+  });
+  
+  // Generate CSS string
+  let cssString = `/* ${themeData.name} - Generated Theme */\n`;
+  cssString += `[data-theme="${themeData.id}"] {\n`;
+  
+  Object.entries(cssVariables).forEach(([key, value]) => {
+    cssString += `  ${key}: ${value};\n`;
+  });
+  
+  cssString += '}\n\n';
+  
+  // Add component-specific styles
+  cssString += generateComponentStyles(themeData);
+  
+  return cssString;
+};
+
+/**
+ * Generate component-specific CSS styles
+ */
+const generateComponentStyles = (themeData) => {
+  const { id, components } = themeData;
+  let styles = '';
+  
+  // Header styles
+  if (components.header) {
+    styles += `[data-theme="${id}"] .header {\n`;
+    styles += `  height: ${components.header.height};\n`;
+    styles += `  padding: ${components.header.padding};\n`;
+    styles += `  background-color: var(--${components.header.background.replace(/([A-Z])/g, '-$1').toLowerCase()});\n`;
+    styles += `  color: var(--${components.header.textColor.replace(/([A-Z])/g, '-$1').toLowerCase()});\n`;
+    if (components.header.shadow) {
+      styles += `  box-shadow: var(--shadow-sm);\n`;
+    }
+    if (components.header.sticky) {
+      styles += `  position: sticky;\n`;
+      styles += `  top: 0;\n`;
+      styles += `  z-index: var(--z-sticky);\n`;
+    }
+    styles += '}\n\n';
+  }
+  
+  // Button styles
+  if (components.button) {
+    styles += `[data-theme="${id}"] .btn {\n`;
+    styles += `  padding: ${components.button.paddingY} ${components.button.paddingX};\n`;
+    styles += `  border-radius: var(--border-radius-${components.button.borderRadius});\n`;
+    styles += `  font-weight: var(--font-weight-${components.button.fontWeight});\n`;
+    styles += `  font-size: var(--font-size-${components.button.fontSize});\n`;
+    styles += `  transition: var(--transition-base);\n`;
+    styles += '}\n\n';
+  }
+  
+  // Card styles
+  if (components.card) {
+    styles += `[data-theme="${id}"] .card {\n`;
+    styles += `  padding: ${components.card.padding};\n`;
+    styles += `  border-radius: var(--border-radius-${components.card.borderRadius});\n`;
+    styles += `  box-shadow: var(--shadow-${components.card.shadow});\n`;
+    styles += `  background-color: var(--${components.card.background.replace(/([A-Z])/g, '-$1').toLowerCase()});\n`;
+    styles += `  border: 1px solid var(--${components.card.borderColor.replace(/([A-Z])/g, '-$1').toLowerCase()});\n`;
+    styles += '}\n\n';
+  }
+  
+  return styles;
+};
+
+/**
+ * Validate theme data
+ */
+export const validateTheme = (themeData) => {
+  const errors = [];
+  
+  // Check required fields
+  if (!themeData.name) errors.push('Theme name is required');
+  if (!themeData.id) errors.push('Theme ID is required');
+  if (!themeData.colors) errors.push('Colors are required');
+  if (!themeData.typography) errors.push('Typography is required');
+  
+  // Validate colors
+  if (themeData.colors) {
+    const requiredColors = ['primary', 'secondary', 'backgroundPrimary', 'textPrimary'];
+    requiredColors.forEach(color => {
+      if (!themeData.colors[color]) {
+        errors.push(`Color '${color}' is required`);
+      }
+    });
+    
+    // Validate color format (hex, rgb, rgba)
+    Object.entries(themeData.colors).forEach(([key, value]) => {
+      if (typeof value === 'string' && !isValidColor(value)) {
+        errors.push(`Invalid color format for '${key}': ${value}`);
+      }
+    });
+  }
+  
+  // Validate typography
+  if (themeData.typography) {
+    if (!themeData.typography.fontFamilyBase) {
+      errors.push('Base font family is required');
+    }
+    
+    // Validate font sizes
+    const fontSizes = ['fontSizeBase', 'fontSizeH1', 'fontSizeH2'];
+    fontSizes.forEach(size => {
+      if (themeData.typography[size] && (typeof themeData.typography[size] !== 'number' || themeData.typography[size] <= 0)) {
+        errors.push(`Invalid font size for '${size}'`);
+      }
+    });
+  }
+  
+  return errors;
+};
+
+/**
+ * Check if color is valid
+ */
+const isValidColor = (color) => {
+  // Check for empty or non-string values
+  if (!color || typeof color !== 'string') return false;
+  
+  // Trim whitespace
+  color = color.trim();
+  
+  // Check CSS keywords
+  const cssKeywords = [
+    'inherit', 'initial', 'unset', 'revert', 'transparent', 'currentColor', 'currentcolor',
+    // Named colors
+    'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 
+    'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 
+    'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 
+    'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 
+    'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 
+    'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 
+    'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 
+    'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 
+    'gray', 'grey', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo', 
+    'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 
+    'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgrey', 'lightgreen', 
+    'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 
+    'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 
+    'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 
+    'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 
+    'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 
+    'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 
+    'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 
+    'plum', 'powderblue', 'purple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 
+    'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 
+    'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 
+    'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'
+  ];
+  
+  if (cssKeywords.includes(color.toLowerCase())) return true;
+  
+  // Check CSS variables (var(--variable-name))
+  if (/^var\(--[\w-]+\)$/.test(color)) return true;
+  
+  // Check hex color
+  if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) return true;
+  
+  // Check rgb/rgba
+  if (/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([01](?:\.\d+)?))?\s*\)$/.test(color)) return true;
+  
+  // Check hsl/hsla
+  if (/^hsla?\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*([01](?:\.\d+)?))?\s*\)$/.test(color)) return true;
+  
+  return false;
+};
+
+/**
+ * Create theme from template
+ */
+export const createThemeFromTemplate = (customValues = {}) => {
+  const theme = JSON.parse(JSON.stringify(THEME_TEMPLATE));
+  
+  // Deep merge custom values
+  const mergeDeep = (target, source) => {
+    for (let key in source) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        target[key] = target[key] || {};
+        mergeDeep(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+  };
+  
+  mergeDeep(theme, customValues);
+  
+  return theme;
+};
+
+/**
+ * Export theme data as JSON
+ */
+export const exportTheme = (themeData) => {
+  return JSON.stringify(themeData, null, 2);
+};
+
+/**
+ * Import theme data from JSON
+ */
+export const importTheme = (jsonString) => {
+  try {
+    const themeData = JSON.parse(jsonString);
+    const errors = validateTheme(themeData);
+    
+    if (errors.length > 0) {
+      throw new Error(`Theme validation failed: ${errors.join(', ')}`);
+    }
+    
+    return themeData;
+  } catch (error) {
+    throw new Error(`Failed to import theme: ${error.message}`);
+  }
+};
+
+/**
+ * Generate theme ID from name
+ */
+export const generateThemeId = (name) => {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
+/**
+ * Get theme preview colors
+ */
+export const getThemePreview = (themeData) => {
+  return {
+    primary: themeData.colors.primary,
+    secondary: themeData.colors.secondary,
+    background: themeData.colors.backgroundPrimary,
+    text: themeData.colors.textPrimary,
+    accent: themeData.colors.success,
+  };
+};
+
+export default {
+  THEME_TEMPLATE,
+  generateThemeCSS,
+  validateTheme,
+  createThemeFromTemplate,
+  exportTheme,
+  importTheme,
+  generateThemeId,
+  getThemePreview,
+}; 

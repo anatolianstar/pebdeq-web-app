@@ -1,0 +1,739 @@
+#!/usr/bin/env python3
+"""
+Kod Kalite ve Güvenlik Test Sistemi
+Tüm proje dosyaları için kapsamlı test sistemi
+Kullanıcı seçimli dosya testi ve manuel backup onayı
+"""
+
+import sys
+import os
+from pathlib import Path
+import importlib.util
+import json
+import shutil
+from datetime import datetime
+
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+def run_project_code_quality_tests():
+    """Tüm proje dosyaları için kod kalite testlerini çalıştır"""
+    print(">> ALL PROJECT FILES CODE QUALITY TESTS STARTING...")
+    print("=" * 70)
+    
+    try:
+        # Import the new test module
+        test_file = project_root / "pb_test_suite" / "tests" / "code_quality" / "test_all_project_files.py"
+        
+        if not test_file.exists():
+            print(f"ERROR: Test dosyası bulunamadı: {test_file}")
+            return False
+            
+        spec = importlib.util.spec_from_file_location("test_all_project_files", test_file)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Could not load module from {test_file}")
+        test_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(test_module)
+        
+        # Run the test
+        tester = test_module.AllProjectCodeQualityTest()
+        return tester.run_all_tests()
+        
+    except Exception as e:
+        print(f"ERROR: Test execution error: {str(e)}")
+        return False
+
+def list_all_project_files():
+    """List all project files"""
+    print("\n[INFO] CREATING PROJECT FILE LIST...")
+    
+    try:
+        test_file = project_root / "pb_test_suite" / "tests" / "code_quality" / "test_all_project_files.py"
+        
+        if not test_file.exists():
+            print(f"ERROR: Test file not found: {test_file}")
+            return False
+            
+        spec = importlib.util.spec_from_file_location("test_all_project_files", test_file)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Could not load module from {test_file}")
+        test_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(test_module)
+        
+        # Create tester and scan files
+        tester = test_module.AllProjectCodeQualityTest()
+        
+        print("\n[STATS] PROJECT FILE STATISTICS:")
+        print("=" * 50)
+        
+        total_files = 0
+        total_size = 0
+        
+        for file_type, files in tester.all_files.items():
+            if files:
+                type_size = sum(f['size'] for f in files)
+                total_files += len(files)
+                total_size += type_size
+                
+                print(f"\n[FILES] {file_type.upper()}:")
+                print(f"   File count: {len(files)}")
+                print(f"   Total size: {type_size/1024:.1f} KB")
+                
+                # Show largest files
+                largest = sorted(files, key=lambda x: x['size'], reverse=True)[:3]
+                print(f"   Largest files:")
+                for f in largest:
+                    print(f"     - {f['relative_path']} ({f['size']/1024:.1f}KB)")
+        
+        print(f"\n[SUMMARY] GENERAL SUMMARY:")
+        print(f"   Total files: {total_files}")
+        print(f"   Total size: {total_size/1024:.1f} KB")
+        print(f"   Average size: {(total_size/total_files)/1024:.1f} KB")
+        
+        # For web interface: show all files with IDs
+        print(f"\n[WEB_LIST] ALL FILES:")
+        file_id = 1
+        for file_type, files in tester.all_files.items():
+            if files:
+                print(f"\n[{file_type.upper()}]")
+                for file_info in files:
+                    size_kb = file_info['size'] / 1024
+                    print(f"  {file_id:2d}. {file_info['relative_path']} ({size_kb:.1f}KB)")
+                    file_id += 1
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: File listing error: {str(e)}")
+        return False
+
+def create_rollback_point():
+    """Mevcut kod durumunu rollback noktası olarak kaydet"""
+    print("\n[BACKUP] CREATING ROLLBACK POINT...")
+    
+    try:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        rollback_dir = project_root / "pb_test_suite" / "backups" / "rollback_points" / f"rollback_{timestamp}"
+        rollback_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Get tester to scan files
+        test_file = project_root / "pb_test_suite" / "tests" / "code_quality" / "test_all_project_files.py"
+        spec = importlib.util.spec_from_file_location("test_all_project_files", test_file)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Could not load module from {test_file}")
+        test_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(test_module)
+        
+        tester = test_module.AllProjectCodeQualityTest()
+        
+        # Ask user which files to backup
+        print("\n[SELECT] ROLLBACK İÇİN DOSYA SEÇİMİ:")
+        print("1. Tüm dosyalar")
+        print("2. Sadece critical dosyalar")
+        print("3. Büyük dosyalar (>50KB)")
+        print("4. İptal")
+        
+        choice = input("\nSeçiminiz (1-4): ").strip()
+        
+        files_to_backup = []
+        if choice == "1":
+            # All files
+            for file_type, files in tester.all_files.items():
+                files_to_backup.extend(files)
+        elif choice == "2":
+            # Critical files only
+            critical_names = [
+                "products.py", "categories.py", "cart.py", "models.py",
+                "AdminDashboard.js", "Products.js", "ProductDetail.js", "CategoryManagement.js"
+            ]
+            for file_type, files in tester.all_files.items():
+                for file_info in files:
+                    if any(str(file_info['relative_path']).endswith(name) for name in critical_names):
+                        files_to_backup.append(file_info)
+        elif choice == "3":
+            # Large files only
+            for file_type, files in tester.all_files.items():
+                for file_info in files:
+                    if file_info['size'] > 50000:
+                        files_to_backup.append(file_info)
+        else:
+            print("ERROR: Rollback cancelled.")
+            return False
+        
+        # Backup selected files
+        backed_up_files = []
+        
+        for file_info in files_to_backup:
+            try:
+                source_file = file_info['path']
+                if source_file.exists():
+                    relative_path = file_info['relative_path']
+                    target_file = rollback_dir / relative_path
+                    target_file.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    shutil.copy2(source_file, target_file)
+                    backed_up_files.append(str(relative_path))
+                    print(f"OK: Backup: {relative_path}")
+                    
+            except Exception as e:
+                print(f"WARNING: Backup error for {file_info['relative_path']}: {e}")
+        
+        # Create rollback manifest
+        manifest = {
+            'timestamp': timestamp,
+            'backup_type': 'rollback_point',
+            'total_files': len(files_to_backup),
+            'backed_up_files': backed_up_files,
+            'description': f"Manual rollback point created at {timestamp}"
+        }
+        
+        manifest_file = rollback_dir / 'rollback_manifest.json'
+        with open(manifest_file, 'w', encoding='utf-8') as f:
+            json.dump(manifest, f, indent=2, ensure_ascii=False)
+        
+        print(f"\n[SUCCESS] Rollback point created:")
+        print(f"   Konum: {rollback_dir}")
+        print(f"   Dosya sayısı: {len(backed_up_files)}")
+        print(f"   ID: rollback_{timestamp}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: Rollback creation error: {str(e)}")
+        return False
+
+def create_approved_backup():
+    """Otomatik backup - web interface'den onaylı backup oluştur"""
+    single_file_mode = os.environ.get('BACKUP_SINGLE_FILE', '0') == '1'
+    backup_file_name = os.environ.get('BACKUP_FILE_NAME', '')
+    
+    if single_file_mode and backup_file_name:
+        print(f"\n[INDIVIDUAL-BACKUP] Creating backup for file: {backup_file_name}")
+    else:
+        print("\n[AUTO-BACKUP] CREATING WEB INTERFACE BACKUP...")
+    
+    try:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        # Environment variable'dan description ve dosya bilgileri al
+        backup_description = os.environ.get('BACKUP_DESCRIPTION', 'Automatic backup from web interface')
+        
+        # Create smart folder name 
+        folder_name = "rollback_" + timestamp
+        
+        if single_file_mode and backup_file_name:
+            # Individual file backup - use file name for folder
+            clean_name = backup_file_name.replace('.js', '').replace('.css', '').replace('.py', '')
+            clean_name = clean_name.replace(' ', '_').replace('-', '_').replace('.', '_')
+            folder_name = f"{clean_name}_backup_{timestamp}"
+        elif "Backup after testing:" in backup_description:
+            try:
+                # Parse description like "Backup after testing: TestDashboard.css"
+                files_part = backup_description.split("Backup after testing:")[1].strip()
+                if " and " in files_part:
+                    files_part = files_part.split(" and ")[0]  # Remove "and X more files"
+                
+                file_names = [name.strip() for name in files_part.split(",")]
+                
+                # Create folder name from first file (clean name)
+                if file_names and file_names[0]:
+                    first_file = file_names[0]
+                    # Remove extension and clean name for folder
+                    clean_name = first_file.replace('.js', '').replace('.css', '').replace('.py', '')
+                    clean_name = clean_name.replace(' ', '_').replace('-', '_').replace('.', '_')
+                    folder_name = f"{clean_name}_backup_{timestamp}"
+                        
+            except Exception as e:
+                print(f"Warning: Could not parse file names from description: {e}")
+                # Fall back to default naming
+                pass
+        
+        rollback_dir = project_root / "pb_test_suite" / "backups" / "rollback_points" / folder_name
+        rollback_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Get tester to scan files
+        test_file = project_root / "pb_test_suite" / "tests" / "code_quality" / "test_all_project_files.py"
+        spec = importlib.util.spec_from_file_location("test_all_project_files", test_file)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Could not load module from {test_file}")
+        test_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(test_module)
+        
+        tester = test_module.AllProjectCodeQualityTest()
+        
+        # Get files for backup
+        files_to_backup = []
+        
+        # Check for selected files from web interface
+        selected_files_env = os.environ.get('SELECTED_FILES', '')
+        manual_backup = os.environ.get('MANUAL_BACKUP', '0') == '1'
+        
+        if manual_backup and selected_files_env:
+            # Manual backup mode: use only selected files
+            try:
+                selected_file_paths = [path.strip() for path in selected_files_env.split(',') if path.strip()]
+                print(f"[WEB-BACKUP] Manual backup mode: {len(selected_file_paths)} files selected")
+                print(f"[DEBUG] Selected files from web: {selected_file_paths[:3]}{'...' if len(selected_file_paths) > 3 else ''}")
+                
+                # Check if selected_files are numeric IDs or actual paths
+                if all(path.isdigit() for path in selected_file_paths):
+                    print(f"[ID-CONVERSION] Converting file IDs to paths...")
+                    
+                    # Build complete file list with IDs
+                    all_files_with_ids = []
+                    for file_type, files in tester.all_files.items():
+                        all_files_with_ids.extend(files)
+                    
+                    # Convert IDs to file objects
+                    converted_files = []
+                    for id_str in selected_file_paths:
+                        try:
+                            file_id = int(id_str)
+                            # IDs are 1-based, so subtract 1 for 0-based indexing
+                            if 1 <= file_id <= len(all_files_with_ids):
+                                file_info = all_files_with_ids[file_id - 1]
+                                converted_files.append(file_info)
+                                print(f"[ID-CONVERT] ID {file_id} -> {file_info['relative_path']}")
+                            else:
+                                print(f"[ID-ERROR] Invalid file ID: {file_id} (max: {len(all_files_with_ids)})")
+                        except ValueError:
+                            print(f"[ID-ERROR] Invalid ID format: {id_str}")
+                    
+                    files_to_backup = converted_files
+                    print(f"[ID-CONVERSION] Converted {len(selected_file_paths)} IDs to {len(files_to_backup)} files")
+                
+                else:
+                    # Selected files are paths, find matching files from tester.all_files
+                    for file_type, files in tester.all_files.items():
+                        for file_info in files:
+                            file_path_str = str(file_info['relative_path'])
+                            # Check if this file matches any selected file
+                            if any(selected_path in file_path_str or file_path_str in selected_path 
+                                   for selected_path in selected_file_paths):
+                                files_to_backup.append(file_info)
+                                print(f"[MATCH] Found selected file: {file_path_str}")
+                
+                if not files_to_backup:
+                    print(f"[WARNING] No matching files found for selection. Fallback to all files.")
+                    # Fallback to all files if no matches found
+                    for file_type, files in tester.all_files.items():
+                        files_to_backup.extend(files)
+                else:
+                    print(f"[SUCCESS] Using {len(files_to_backup)} selected files for backup")
+                    
+            except Exception as e:
+                print(f"[ERROR] Failed to parse selected files: {e}")
+                print(f"[FALLBACK] Using all files for backup")
+        else:
+            # Individual backup mode: backup all files for safety, but name folder after target file
+            # This ensures rollback points include all project files for safety
+            for file_type, files in tester.all_files.items():
+                files_to_backup.extend(files)
+            
+            if single_file_mode and backup_file_name:
+                print(f"[INFO] Individual backup mode: Creating backup for {backup_file_name}")
+                print(f"[INFO] For safety, all {len(files_to_backup)} project files will be backed up")
+        
+        # Backup all files with original names + .backup extension
+        backed_up_files = []
+        
+        for file_info in files_to_backup:
+            try:
+                source_file = file_info['path']
+                if source_file.exists():
+                    relative_path = file_info['relative_path']
+                    
+                    # NEW: Keep original name structure + .backup extension
+                    backup_filename = f"{source_file.name}.backup"
+                    target_file = rollback_dir / relative_path.parent / backup_filename
+                    target_file.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    shutil.copy2(source_file, target_file)
+                    backed_up_files.append(str(relative_path))
+                    print(f"OK: Backup: {relative_path} -> {backup_filename}")
+                    
+            except Exception as e:
+                print(f"WARNING: Backup error for {file_info['relative_path']}: {e}")
+        
+        # Create rollback manifest
+        if single_file_mode and backup_file_name:
+            manifest = {
+                'timestamp': timestamp,
+                'backup_type': 'individual_file_backup',
+                'total_files': len(backed_up_files),  # Use actual backed up files count
+                'backed_up_files': backed_up_files,
+                'description': backup_description,
+                'backup_method': 'web_interface_individual',
+                'target_file': backup_file_name
+            }
+        else:
+            manifest = {
+                'timestamp': timestamp,
+                'backup_type': 'approved_backup',
+                'total_files': len(backed_up_files),  # Use actual backed up files count
+                'backed_up_files': backed_up_files,
+                'description': backup_description,
+                'backup_method': 'web_interface_approved'
+            }
+        
+        manifest_file = rollback_dir / 'rollback_manifest.json'
+        
+        try:
+            with open(manifest_file, 'w', encoding='utf-8') as f:
+                json.dump(manifest, f, indent=2, ensure_ascii=False)
+            print(f"[OK] Manifest created: {manifest_file}")
+        except Exception as e:
+            print(f"[WARN] Warning: Failed to create manifest: {e}")
+        
+        if single_file_mode and backup_file_name:
+            print(f"\n[SUCCESS] Individual file backup created:")
+            print(f"   Target file: {backup_file_name}")
+            print(f"   Location: {rollback_dir}")
+            print(f"   Files backed up: {len(backed_up_files)}")
+            print(f"   Backup ID: {folder_name}")
+            print(f"   Description: {backup_description}")
+        else:
+            print(f"\n[SUCCESS] Approved backup created:")
+            print(f"   Location: {rollback_dir}")
+            print(f"   Files backed up: {len(backed_up_files)}")
+            print(f"   Backup ID: {folder_name}")
+            print(f"   Description: {backup_description}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: Approved backup creation failed: {str(e)}")
+        return False
+
+def list_rollback_points():
+    """Mevcut rollback noktalarını listele"""
+    print("\n[LIST] AVAILABLE ROLLBACK POINTS:")
+    print("=" * 50)
+    
+    try:
+        rollback_dir = project_root / "pb_test_suite" / "backups" / "rollback_points"
+        
+        if not rollback_dir.exists():
+            print("[INFO] Henüz rollback noktası yok.")
+            return True
+        
+        rollback_points = []
+        for item in rollback_dir.iterdir():
+            # Check for any directory (both old and new naming schemes)
+            if item.is_dir():
+                manifest_file = item / 'rollback_manifest.json'
+                
+                if manifest_file.exists():
+                    try:
+                        with open(manifest_file, 'r', encoding='utf-8') as f:
+                            manifest = json.load(f)
+                        rollback_points.append((item.name, manifest))
+                    except Exception as e:
+                        # Try to extract timestamp from folder name for backup without valid manifest
+                        timestamp = 'unknown'
+                        if '_backup_' in item.name:
+                            try:
+                                timestamp = item.name.split('_backup_')[-1]
+                            except:
+                                pass
+                        rollback_points.append((item.name, {
+                            'timestamp': timestamp, 
+                            'total_files': 0, 
+                            'description': f'Individual backup (manifest error): {item.name.split("_backup_")[0] if "_backup_" in item.name else "unknown"}'
+                        }))
+                else:
+                    # Extract info from folder name for backups without manifest
+                    timestamp = 'unknown'
+                    description = 'Legacy backup without manifest'
+                    
+                    if '_backup_' in item.name:
+                        try:
+                            parts = item.name.split('_backup_')
+                            file_name = parts[0]
+                            timestamp = parts[1] if len(parts) > 1 else 'unknown'
+                            description = f'Individual backup: {file_name}'
+                        except:
+                            pass
+                    elif item.name.startswith('rollback_'):
+                        try:
+                            timestamp = item.name.replace('rollback_', '')
+                            description = 'Legacy rollback point'
+                        except:
+                            pass
+                    
+                    rollback_points.append((item.name, {
+                        'timestamp': timestamp, 
+                        'total_files': 0, 
+                        'description': description
+                    }))
+        
+        if not rollback_points:
+            print("[INFO] Henüz rollback noktası yok.")
+            return True
+        
+        rollback_points.sort(key=lambda x: x[1].get('timestamp', ''), reverse=True)
+        
+        print(f"[FOUND] Total {len(rollback_points)} rollback points found:\n")
+        
+        for i, (dir_name, manifest) in enumerate(rollback_points, 1):
+            timestamp = manifest.get('timestamp', 'unknown')
+            file_count = manifest.get('total_files', 0)
+            description = manifest.get('description', 'No description')
+            
+            print(f"{i:2d}. ID: {dir_name}")
+            print(f"    Tarih: {timestamp}")
+            print(f"    Dosya sayısı: {file_count}")
+            print(f"    Açıklama: {description}")
+            print()
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: Rollback listing error: {str(e)}")
+        return False
+
+def restore_from_rollback(specific_backup_id=None):
+    """Rollback noktasından geri yükle"""
+    print("\n[RESTORE] ROLLBACK'TEN GERİ YÜKLEME")
+    print("=" * 40)
+    
+    try:
+        rollback_dir = project_root / "pb_test_suite" / "backups" / "rollback_points"
+        
+        if not rollback_dir.exists():
+            print("ERROR: Backup directory does not exist.")
+            return False
+        
+        # Get all backup directories (both old and new naming)
+        rollback_points = []
+        for item in rollback_dir.iterdir():
+            if item.is_dir():
+                rollback_points.append(item)
+        
+        if not rollback_points:
+            print("ERROR: Geri yüklenecek backup noktası yok.")
+            return False
+        
+        # If specific backup ID provided (from web interface), use it directly
+        if specific_backup_id:
+            selected_rollback = rollback_dir / specific_backup_id
+            if not selected_rollback.exists():
+                print(f"ERROR: Backup {specific_backup_id} not found.")
+                return False
+            print(f"[AUTO-RESTORE] Restoring backup: {specific_backup_id}")
+        else:
+            # Interactive mode for command line usage
+            if not list_rollback_points():
+                return False
+        
+            rollback_points.sort(key=lambda x: x.name, reverse=True)
+            
+            print("[SELECT] Enter the number of the rollback point you want to restore:")
+            for i, point in enumerate(rollback_points, 1):
+                print(f"  {i}. {point.name}")
+            
+            choice = input("\nYour choice (1-{} or 'cancel'): ".format(len(rollback_points))).strip()
+            
+            if choice.lower() == 'cancel':
+                print("ERROR: Rollback cancelled.")
+                return False
+            
+            try:
+                choice_idx = int(choice) - 1
+                if 0 <= choice_idx < len(rollback_points):
+                    selected_rollback = rollback_points[choice_idx]
+                else:
+                    print("ERROR: Geçersiz seçim.")
+                    return False
+            except ValueError:
+                print("ERROR: Geçersiz seçim.")
+                return False
+            
+            # Confirm restore in interactive mode
+            print(f"\n⚠️  WARNING: Will restore from {selected_rollback.name} rollback point!")
+            print("This operation will modify current files.")
+            
+            confirm = input("Do you want to continue? (yes/no): ").strip().lower()
+            if confirm not in ['yes', 'y']:
+                print("ERROR: Rollback cancelled.")
+                return False
+        
+        # Restore files
+        manifest_file = selected_rollback / 'rollback_manifest.json'
+        if manifest_file.exists():
+            with open(manifest_file, 'r', encoding='utf-8') as f:
+                manifest = json.load(f)
+            
+            backed_up_files = manifest.get('backed_up_files', [])
+        else:
+            # Scan directory for files
+            backed_up_files = []
+            for item in selected_rollback.rglob('*'):
+                if item.is_file() and item.name != 'rollback_manifest.json':
+                    backed_up_files.append(str(item.relative_to(selected_rollback)))
+        
+        restored_count = 0
+        
+        # Check if this is an individual backup with .backup files
+        is_individual_backup = any('.backup' in str(f) for f in selected_rollback.rglob('*.backup'))
+        
+        if is_individual_backup:
+            print(f"[INFO] Individual backup detected - restoring .backup files")
+            # Restore .backup files to their original names
+            for backup_file in selected_rollback.rglob('*.backup'):
+                try:
+                    # Get relative path from backup directory
+                    relative_backup_path = backup_file.relative_to(selected_rollback)
+                    
+                    # Remove .backup extension to get original filename
+                    original_filename = backup_file.name.replace('.backup', '')
+                    original_relative_path = relative_backup_path.parent / original_filename
+                    
+                    # Target file in project
+                    target_file = project_root / original_relative_path
+                    
+                    if backup_file.exists():
+                        target_file.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(backup_file, target_file)
+                        restored_count += 1
+                        print(f"✅ Restored: {original_relative_path}")
+                except Exception as e:
+                    print(f"⚠️ Restore error for {backup_file.name}: {e}")
+        else:
+            # Legacy restore method for old backups
+            for backed_up_file in backed_up_files:
+                try:
+                    source_file = selected_rollback / backed_up_file
+                    target_file = project_root / backed_up_file
+                    
+                    if source_file.exists():
+                        target_file.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(source_file, target_file)
+                        restored_count += 1
+                        print(f"✅ Restored: {backed_up_file}")
+                except Exception as e:
+                    print(f"⚠️ Restore error for {backed_up_file}: {e}")
+        
+        print(f"\n[SUCCESS] Rollback tamamlandı!")
+        print(f"[INFO] {restored_count} dosya geri yüklendi")
+        print(f"[SOURCE] Kaynak: {selected_rollback.name}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: Rollback error: {str(e)}")
+        return False
+
+def list_changed_files():
+    """List files changed after backup"""
+    print("\n[INFO] SEARCHING FOR CHANGED FILES AFTER BACKUP...")
+    
+    try:
+        import subprocess
+        
+        # Git status ile değişen dosyaları bul
+        result = subprocess.run(
+            ['git', 'status', '--porcelain'],
+            capture_output=True,
+            text=True,
+            cwd=project_root
+        )
+        
+        if result.returncode != 0:
+            print(f"ERROR: Git status check failed: {result.stderr}")
+            return False
+        
+        changed_files = []
+        lines = result.stdout.strip().split('\n')
+        
+        for line in lines:
+            if line.strip():
+                # Git status format: "M  path/to/file.py"
+                parts = line.split(None, 1)
+                if len(parts) >= 2:
+                    status = parts[0].strip()
+                    file_path = parts[1].strip()
+                    
+                    # Skip certain files
+                    if any(skip in file_path.lower() for skip in ['.pyc', '__pycache__', '.git', 'node_modules']):
+                        continue
+                    
+                    changed_files.append({
+                        'path': file_path,
+                        'status': status,
+                        'relative_path': file_path
+                    })
+        
+        if not changed_files:
+            print("✅ RESULT: No files changed after backup.")
+            print("   All files are in the same state as backup.")
+            return True
+        
+        print(f"\n[CHANGED] {len(changed_files)} FILES CHANGED AFTER BACKUP:")
+        print("=" * 60)
+        
+        for file_info in changed_files:
+            status_text = {
+                'M': 'Modified',
+                'A': 'Added',
+                'D': 'Deleted',
+                '??': 'Untracked'
+            }.get(file_info['status'], file_info['status'])
+            
+            print(f"-> {file_info['path']} [{status_text}]")
+        
+        print(f"\n[INFO] You can test these files using the 'Changed Files' button.")
+        
+        return True
+        
+    except Exception as e:
+        print(f"ERROR: Failed to check changed files: {str(e)}")
+        return False
+
+def main():
+    """Ana fonksiyon - command line interface"""
+    if len(sys.argv) < 2:
+        print("[SYSTEM] KOD KALİTE VE GÜVEN TEST SİSTEMİ")
+        print("=" * 50)
+        print("\nKullanım:")
+        print("  python run_code_quality_tests.py [komut]")
+        print("\nKomutlar:")
+        print("  test       - Kod kalite testlerini çalıştır")
+        print("  list       - Tüm proje dosyalarını listele")
+        print("  rollback   - Rollback noktasından geri yükle")
+        print("  create     - Yeni rollback noktası oluştur")
+        print("  backup     - Otomatik onaylı backup oluştur")
+        print("  history    - Rollback geçmişini görüntüle")
+        print("  changed    - List files changed after backup")
+        print("\nExamples:")
+        print("  python run_code_quality_tests.py test")
+        print("  python run_code_quality_tests.py list")
+        print("  python run_code_quality_tests.py create")
+        print("  python run_code_quality_tests.py changed")
+        return
+    
+    command = sys.argv[1].lower()
+    
+    if command == 'test':
+        success = run_project_code_quality_tests()
+        sys.exit(0 if success else 1)
+    elif command == 'list':
+        list_all_project_files()
+    elif command == 'rollback':
+        backup_id = sys.argv[2] if len(sys.argv) > 2 else None
+        restore_from_rollback(backup_id)
+    elif command == 'create':
+        create_rollback_point()
+    elif command == 'history':
+        list_rollback_points()
+    elif command == 'backup':
+        create_approved_backup()
+    elif command == 'changed':
+        list_changed_files()
+    else:
+        print(f"ERROR: Bilinmeyen komut: {command}")
+        print("Yardım için: python run_code_quality_tests.py")
+
+if __name__ == "__main__":
+    main() 

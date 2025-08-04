@@ -1,0 +1,131 @@
+{
+  "timestamp": "20250803_014819",
+  "total_files_tested": 63,
+  "selected_files": [
+    "frontend\\.eslintrc.js",
+    "frontend\\src\\App.js",
+    "frontend\\src\\config.js",
+    "frontend\\src\\index.js",
+    "frontend\\src\\components\\BackgroundRemovalModal.js",
+    "frontend\\src\\components\\BlogManagement.js",
+    "frontend\\src\\components\\CategoryAnalytics.js",
+    "frontend\\src\\components\\CategoryManagement.js",
+    "frontend\\src\\components\\Footer.js",
+    "frontend\\src\\components\\GoogleSignIn.js",
+    "frontend\\src\\components\\Header.js",
+    "frontend\\src\\components\\ImageCropModal.js",
+    "frontend\\src\\components\\ImagePreviewModal.js",
+    "frontend\\src\\components\\LikeButton.js",
+    "frontend\\src\\components\\ProductCard.js",
+    "frontend\\src\\components\\ResponsiveThemeTest.js",
+    "frontend\\src\\components\\ScrollToTop.js",
+    "frontend\\src\\components\\ShareButtons.js",
+    "frontend\\src\\components\\ThemeBuilder.js",
+    "frontend\\src\\components\\ThemePerformanceMonitor.js",
+    "frontend\\src\\components\\ThemePreview.js",
+    "frontend\\src\\components\\ThemeSelector.js",
+    "frontend\\src\\contexts\\AuthContext.js",
+    "frontend\\src\\contexts\\CartContext.js",
+    "frontend\\src\\contexts\\ThemeContext.js",
+    "frontend\\src\\pages\\About.js",
+    "frontend\\src\\pages\\AccessibilityStatement.js",
+    "frontend\\src\\pages\\AdminDashboard.js",
+    "frontend\\src\\pages\\AdminDashboard_backup.js",
+    "frontend\\src\\pages\\Blog.js",
+    "frontend\\src\\pages\\BlogPost.js",
+    "frontend\\src\\pages\\Cart.js",
+    "frontend\\src\\pages\\Category.js",
+    "frontend\\src\\pages\\Checkout.js",
+    "frontend\\src\\pages\\Contact.js",
+    "frontend\\src\\pages\\CookiePolicy.js",
+    "frontend\\src\\pages\\DMCANotice.js",
+    "frontend\\src\\pages\\EmailManagement.js",
+    "frontend\\src\\pages\\GeneralSettings.js",
+    "frontend\\src\\pages\\Home.js",
+    "frontend\\src\\pages\\InformationSettings.js",
+    "frontend\\src\\pages\\Login.js",
+    "frontend\\src\\pages\\MenuSettings.js",
+    "frontend\\src\\pages\\OrderConfirmation.js",
+    "frontend\\src\\pages\\Orders.js",
+    "frontend\\src\\pages\\PrivacyPolicy.js",
+    "frontend\\src\\pages\\ProductDetail.js",
+    "frontend\\src\\pages\\Products.js",
+    "frontend\\src\\pages\\Profile.js",
+    "frontend\\src\\pages\\Register.js",
+    "frontend\\src\\pages\\ReturnPolicy.js",
+    "frontend\\src\\pages\\ShippingPolicy.js",
+    "frontend\\src\\pages\\SiteSettings2.js",
+    "frontend\\src\\pages\\TermsOfService.js",
+    "frontend\\src\\pages\\TestDashboard.js",
+    "frontend\\src\\pages\\TestDashboard_clean.js",
+    "frontend\\src\\pages\\UserDashboard.js",
+    "frontend\\src\\pages\\UserSettings.js",
+    "frontend\\src\\themes\\index.js",
+    "frontend\\src\\themes\\performance.js",
+    "frontend\\src\\themes\\siteSettingsIntegration.js",
+    "frontend\\src\\utils\\config.js",
+    "frontend\\src\\utils\\themeTemplate.js"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 63
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0
+  }
+}

@@ -1,0 +1,533 @@
+/* Aurora Theme - Kuzey Işıkları Temalı Karışık Renkli Tema */
+/* Mor, pembe, turuncu ve mavi tonlarının büyülü karışımı */
+
+[data-theme="aurora"] {
+  /* ========== ANA AURORA RENK PALETİ ========== */
+  --primary-color: #8b5cf6;           /* Canlı mor (violet) */
+  --primary-hover: #7c3aed;           /* Hover koyu mor */
+  --primary-active: #6d28d9;          /* Active en koyu mor */
+  --primary-light: #c4b5fd;           /* Açık mor */
+  --primary-dark: #5b21b6;            /* Çok koyu mor */
+  
+  /* ========== İKİNCİL PEMBE TONLARI ========== */
+  --secondary-color: #ec4899;         /* Canlı pembe */
+  --secondary-hover: #db2777;         /* Hover koyu pembe */
+  --secondary-active: #be185d;        /* Active en koyu pembe */
+  --secondary-light: #f9a8d4;         /* Açık pembe */
+  --secondary-dark: #9d174d;          /* Koyu pembe */
+  
+  /* ========== ACCENT RENKLER ========== */
+  --accent-orange: #f97316;           /* Turuncu accent */
+  --accent-orange-light: #fed7aa;     /* Açık turuncu */
+  --accent-orange-dark: #ea580c;      /* Koyu turuncu */
+  
+  --accent-cyan: #06b6d4;             /* Cyan accent */
+  --accent-cyan-light: #a5f3fc;       /* Açık cyan */
+  --accent-cyan-dark: #0891b2;        /* Koyu cyan */
+  
+  --accent-emerald: #10b981;          /* Emerald accent */
+  --accent-emerald-light: #a7f3d0;    /* Açık emerald */
+  
+  /* ========== BACKGROUND RENKLER ========== */
+  --bg-primary: #fdf4ff;              /* Çok açık mor-beyaz */
+  --bg-secondary: #faf5ff;            /* Açık mor-beyaz */
+  --bg-tertiary: #f3e8ff;             /* Orta mor */
+  --bg-accent: #fdf2f8;               /* Pembe tint arka plan */
+  --bg-light: #ffffff;                /* Beyaz arka plan */
+  --bg-gradient: linear-gradient(135deg, #fdf4ff 0%, #faf5ff 25%, #f3e8ff 50%, #fdf2f8 75%, #ffffff 100%);
+  --bg-aurora: linear-gradient(135deg, #8b5cf6 0%, #ec4899 25%, #f97316 50%, #06b6d4 75%, #10b981 100%);
+  
+  /* ========== HEADER & FOOTER ========== */
+  --header-bg: linear-gradient(135deg, #8b5cf6 0%, #ec4899 25%, #f97316 50%, #06b6d4 75%, #10b981 100%);
+  --header-text: #ffffff;
+  --header-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+  --footer-bg: linear-gradient(135deg, #5b21b6 0%, #9d174d 25%, #ea580c 50%, #0891b2 75%, #059669 100%);
+  --footer-text: #ffffff;
+  
+  /* ========== CARD & CONTAINER RENKLER ========== */
+  --card-bg: #ffffff;                 /* Beyaz card arka plan */
+  --card-border: #e9d5ff;             /* Açık mor border */
+  --card-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  --card-hover-bg: #fdf4ff;           /* Hover çok açık mor */
+  --card-hover-border: #c4b5fd;       /* Hover parlak mor border */
+  --card-hover-shadow: 0 12px 32px rgba(139, 92, 246, 0.25);
+  
+  /* ========== TEXT RENKLER ========== */
+  --text-primary: #1f2937;            /* Ana metin koyu gri */
+  --text-secondary: #374151;          /* İkincil metin orta gri */
+  --text-muted: #6b7280;              /* Soluk metin açık gri */
+  --text-light: #ffffff;              /* Beyaz metin */
+  --text-on-primary: #ffffff;         /* Renkli arka planda beyaz */
+  --text-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
+
+  /* ========== LINK RENKLER ========== */
+  --link-color: #8b5cf6;
+  --link-hover: #7c3aed;
+  --link-active: #6d28d9;
+  --link-visited: #ec4899;
+
+  /* ========== BUTTON RENKLER ========== */
+  --btn-primary-bg: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
+  --btn-primary-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #ea580c 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+
+  --btn-secondary-bg: #fdf4ff;
+  --btn-secondary-hover: #f3e8ff;
+  --btn-secondary-text: #6d28d9;
+  --btn-secondary-border: #e9d5ff;
+
+  /* ========== FORM ELEMENT RENKLER ========== */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #8b5cf6;
+  --input-focus-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  --input-text: #1f2937;
+  --input-placeholder: #9ca3af;
+
+  /* ========== BORDER RENKLER ========== */
+  --border-light: #f3e8ff;
+  --border-medium: #e9d5ff;
+  --border-dark: #c4b5fd;
+  --border-primary: #8b5cf6;
+  --border-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
+
+  /* ========== SHADOW EFEKTLER ========== */
+  --shadow-sm: 0 2px 8px rgba(139, 92, 246, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 92, 246, 0.15);
+  --shadow-lg: 0 8px 28px rgba(139, 92, 246, 0.2);
+  --shadow-xl: 0 16px 48px rgba(139, 92, 246, 0.3);
+  --shadow-aurora: 0 0 40px rgba(139, 92, 246, 0.6);
+  --shadow-rainbow: 0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(236, 72, 153, 0.2), 0 0 90px rgba(249, 115, 22, 0.1);
+
+  /* ========== STATUS RENKLER ========== */
+  --success-color: #10b981;
+  --success-bg: #d1fae5;
+  --success-border: #a7f3d0;
+  --warning-color: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger-color: #ef4444;
+  --danger-bg: #fee2e2;
+  --info-color: #06b6d4;
+  --info-bg: #cffafe;
+
+  /* ========== AURORA ÖZEL RENKLER ========== */
+  --aurora-purple: #8b5cf6;
+  --aurora-pink: #ec4899;
+  --aurora-orange: #f97316;
+  --aurora-cyan: #06b6d4;
+  --aurora-emerald: #10b981;
+}
+
+/* ========== GLOBAL ELEMANLAR ========== */
+
+[data-theme="aurora"] * {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="aurora"] body {
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ========== HEADER STYLING - REMOVED ========== */
+/* Header styling completely removed to allow admin settings to work */
+/* Components use inline styles from site settings, no CSS override needed */
+
+/* All header pseudo-elements and text styling removed for admin control */
+
+/* ========== FOOTER STYLING ========== */
+[data-theme="aurora"] .footer,
+[data-theme="aurora"] .site-footer,
+[data-theme="aurora"] .main-footer {
+  background: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+  box-shadow: 0 -4px 20px rgba(139, 92, 246, 0.2) !important;
+}
+
+[data-theme="aurora"] .footer *,
+[data-theme="aurora"] .site-footer *,
+[data-theme="aurora"] .main-footer * {
+  color: var(--footer-text) !important;
+}
+
+/* ========== PRODUCT CARDS ========== */
+[data-theme="aurora"] .product-card,
+[data-theme="aurora"] .card,
+[data-theme="aurora"] .product-item {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+[data-theme="aurora"] .product-card::before,
+[data-theme="aurora"] .card::before,
+[data-theme="aurora"] .product-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--bg-aurora);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+[data-theme="aurora"] .product-card:hover,
+[data-theme="aurora"] .card:hover,
+[data-theme="aurora"] .product-item:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--card-hover-border) !important;
+  box-shadow: var(--shadow-rainbow) !important;
+  transform: translateY(-8px) scale(1.03) !important;
+}
+
+[data-theme="aurora"] .product-card:hover::before,
+[data-theme="aurora"] .card:hover::before,
+[data-theme="aurora"] .product-item:hover::before {
+  opacity: 1;
+}
+
+/* ========== BUTTONS ========== */
+[data-theme="aurora"] .btn-primary,
+[data-theme="aurora"] .button-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border: none !important;
+  border-radius: 15px !important;
+  padding: 16px 32px !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  box-shadow: var(--btn-primary-shadow) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+[data-theme="aurora"] .btn-primary::before,
+[data-theme="aurora"] .button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+[data-theme="aurora"] .btn-primary:hover,
+[data-theme="aurora"] .button-primary:hover {
+  background: var(--btn-primary-hover) !important;
+  box-shadow: var(--shadow-aurora) !important;
+  transform: translateY(-3px) scale(1.05) !important;
+}
+
+[data-theme="aurora"] .btn-primary:hover::before,
+[data-theme="aurora"] .button-primary:hover::before {
+  left: 100%;
+}
+
+[data-theme="aurora"] .btn-secondary {
+  background: var(--btn-secondary-bg) !important;
+  color: var(--btn-secondary-text) !important;
+  border: 2px solid var(--btn-secondary-border) !important;
+  border-radius: 15px !important;
+  padding: 14px 28px !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="aurora"] .btn-secondary:hover {
+  background: var(--btn-secondary-hover) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* ========== FORM ELEMENTS ========== */
+[data-theme="aurora"] input,
+[data-theme="aurora"] textarea,
+[data-theme="aurora"] select {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--input-border) !important;
+  border-radius: 12px !important;
+  color: var(--input-text) !important;
+  padding: 16px 20px !important;
+  font-size: 16px !important;
+}
+
+[data-theme="aurora"] input:focus,
+[data-theme="aurora"] textarea:focus,
+[data-theme="aurora"] select:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+  outline: none !important;
+  transform: scale(1.02) !important;
+}
+
+/* ========== LINKS ========== */
+[data-theme="aurora"] a {
+  background: var(--text-gradient);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  position: relative !important;
+}
+
+[data-theme="aurora"] a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--bg-aurora);
+  transition: width 0.3s ease;
+}
+
+[data-theme="aurora"] a:hover::after {
+  width: 100%;
+}
+
+/* ========== ADMIN DASHBOARD ========== */
+[data-theme="aurora"] .admin-dashboard {
+  background: var(--bg-gradient) !important;
+  min-height: 100vh !important;
+}
+
+/* Sidebar - Aurora Gradient */
+[data-theme="aurora"] .admin-sidebar {
+  background: linear-gradient(180deg, #6d28d9 0%, #8b5cf6 20%, #ec4899 40%, #f97316 60%, #06b6d4 80%, #10b981 100%) !important;
+  color: var(--text-light) !important;
+  border-right: 3px solid transparent !important;
+  border-image: var(--border-gradient) 1 !important;
+  box-shadow: 12px 0 40px rgba(139, 92, 246, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  position: relative !important;
+}
+
+[data-theme="aurora"] .admin-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Sidebar Buttons */
+[data-theme="aurora"] .admin-sidebar button,
+[data-theme="aurora"] .admin-sidebar .nav-button {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-light) !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 15px !important;
+  margin: 8px 0 !important;
+  padding: 16px 24px !important;
+  font-weight: 600 !important;
+  backdrop-filter: blur(8px) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+[data-theme="aurora"] .admin-sidebar button::before,
+[data-theme="aurora"] .admin-sidebar .nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.4s;
+}
+
+[data-theme="aurora"] .admin-sidebar button:hover,
+[data-theme="aurora"] .admin-sidebar .nav-button:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateX(8px) scale(1.02) !important;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="aurora"] .admin-sidebar button:hover::before,
+[data-theme="aurora"] .admin-sidebar .nav-button:hover::before {
+  left: 100%;
+}
+
+[data-theme="aurora"] .admin-sidebar button.active,
+[data-theme="aurora"] .admin-sidebar .nav-button.active {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Cards ve Containers */
+[data-theme="aurora"] .admin-dashboard .stat-card,
+[data-theme="aurora"] .admin-dashboard .recent-activities,
+[data-theme="aurora"] .admin-dashboard .card {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--card-shadow) !important;
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(12px) !important;
+  position: relative !important;
+}
+
+[data-theme="aurora"] .admin-dashboard .stat-card:hover,
+[data-theme="aurora"] .admin-dashboard .card:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--card-hover-border) !important;
+  box-shadow: var(--shadow-rainbow) !important;
+  transform: translateY(-6px) scale(1.03) !important;
+}
+
+/* Tables */
+[data-theme="aurora"] .admin-dashboard table {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 15px !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+[data-theme="aurora"] .admin-dashboard th {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 50%, #ddd6fe 100%) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 3px solid var(--primary-color) !important;
+  font-weight: 800 !important;
+  padding: 18px !important;
+}
+
+[data-theme="aurora"] .admin-dashboard td {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: 16px 18px !important;
+}
+
+[data-theme="aurora"] .admin-dashboard tr:hover {
+  background: linear-gradient(135deg, #fdf4ff 0%, #faf5ff 100%) !important;
+  transform: scale(1.01) !important;
+}
+
+/* ========== SCROLLBAR ========== */
+[data-theme="aurora"] ::-webkit-scrollbar {
+  width: 12px;
+}
+
+[data-theme="aurora"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+[data-theme="aurora"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-aurora);
+  border-radius: 6px;
+  border: 2px solid var(--bg-light);
+}
+
+[data-theme="aurora"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--secondary-hover) 100%);
+}
+
+/* ========== ÖZEL AURORA EFEKTLERİ ========== */
+[data-theme="aurora"] .aurora-text {
+  background: var(--text-gradient);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="aurora"] .aurora-border {
+  border: 3px solid transparent !important;
+  border-image: var(--border-gradient) 1 !important;
+  border-radius: 15px !important;
+}
+
+[data-theme="aurora"] .aurora-glow {
+  box-shadow: var(--shadow-aurora) !important;
+}
+
+[data-theme="aurora"] .aurora-badge {
+  background: var(--bg-aurora);
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  animation: aurora-pulse 2s infinite;
+}
+
+@keyframes aurora-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
+}
+
+/* ========== FLOATING PARTICLES ========== */
+[data-theme="aurora"] .particles {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="aurora"] .particles::before,
+[data-theme="aurora"] .particles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: floating-particles 4s infinite ease-in-out;
+}
+
+[data-theme="aurora"] .particles::before {
+  background: var(--aurora-purple);
+  top: 20%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+[data-theme="aurora"] .particles::after {
+  background: var(--aurora-pink);
+  top: 60%;
+  right: 30%;
+  animation-delay: 2s;
+}
+
+@keyframes floating-particles {
+  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+  50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  [data-theme="aurora"] .admin-sidebar {
+    background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 25%, #ec4899 50%, #f97316 75%, #06b6d4 100%) !important;
+  }
+
+  [data-theme="aurora"] .card,
+  [data-theme="aurora"] .product-card {
+    margin-bottom: 24px !important;
+    border-radius: 16px !important;
+  }
+
+  [data-theme="aurora"] .btn-primary,
+  [data-theme="aurora"] .button-primary {
+    padding: 14px 28px !important;
+    font-size: 15px !important;
+  }
+}

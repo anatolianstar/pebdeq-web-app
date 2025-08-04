@@ -1,0 +1,58 @@
+{
+  "timestamp": "20250803_103737",
+  "test_type": "Invoice System Tests",
+  "summary": {
+    "total_tests": 9,
+    "passed_tests": 9,
+    "failed_tests": 0,
+    "error_tests": 0,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "test": "Invoice List Endpoint",
+      "status": "PASS",
+      "message": "Retrieved 1 invoices successfully"
+    },
+    {
+      "test": "Invoice List Unauthorized",
+      "status": "PASS",
+      "message": "Correctly rejected unauthorized access to invoice list"
+    },
+    {
+      "test": "Invoice Statistics",
+      "status": "PASS",
+      "message": "Invoice stats retrieved. Available fields: total_invoices, total_amount, paid_invoices, pending_invoices"
+    },
+    {
+      "test": "Invoice Creation Validation",
+      "status": "PASS",
+      "message": "Invoice validation correctly rejects invalid data"
+    },
+    {
+      "test": "Invoice Number Generation",
+      "status": "PASS",
+      "message": "Invoice number generation endpoint accessible and validates properly"
+    },
+    {
+      "test": "Invoice PDF Generation",
+      "status": "PASS",
+      "message": "Invoice PDF generation successful"
+    },
+    {
+      "test": "Invoice Email Functionality",
+      "status": "PASS",
+      "message": "Invoice email endpoint tested (may not be configured)"
+    },
+    {
+      "test": "Order to Invoice Creation",
+      "status": "PASS",
+      "message": "Order-to-invoice endpoint accessible"
+    },
+    {
+      "test": "Invoice Template System",
+      "status": "PASS",
+      "message": "Invoice template system functional"
+    }
+  ]
+}

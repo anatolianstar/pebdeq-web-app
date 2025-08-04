@@ -1,0 +1,92 @@
+{
+  "timestamp": "20250803_103701",
+  "test_type": "Admin Tests",
+  "categories": {
+    "authentication": {
+      "results": [
+        {
+          "test": "Admin Stats Unauthorized",
+          "status": "PASS",
+          "message": "Correctly rejected unauthorized access"
+        }
+      ],
+      "count": 1
+    },
+    "admin_api": {
+      "results": [
+        {
+          "test": "Admin Stats Endpoint",
+          "status": "PASS",
+          "message": "Admin stats retrieved successfully. Found: totalProducts, totalCategories, totalOrders, totalUsers"
+        },
+        {
+          "test": "Admin Stats Regular User",
+          "status": "PASS",
+          "message": "Correctly rejected regular user access"
+        },
+        {
+          "test": "Admin Dashboard Endpoint",
+          "status": "PASS",
+          "message": "Admin dashboard data retrieved successfully"
+        },
+        {
+          "test": "Admin Health Check",
+          "status": "PASS",
+          "message": "System health check passed"
+        },
+        {
+          "test": "Admin Users List",
+          "status": "PASS",
+          "message": "Retrieved 1 users successfully"
+        },
+        {
+          "test": "Admin Products List",
+          "status": "PASS",
+          "message": "Retrieved 10 products successfully"
+        }
+      ],
+      "count": 6
+    },
+    "site_settings": {
+      "results": [],
+      "count": 0
+    }
+  },
+  "all_results": [
+    {
+      "test": "Admin Stats Endpoint",
+      "status": "PASS",
+      "message": "Admin stats retrieved successfully. Found: totalProducts, totalCategories, totalOrders, totalUsers"
+    },
+    {
+      "test": "Admin Stats Unauthorized",
+      "status": "PASS",
+      "message": "Correctly rejected unauthorized access"
+    },
+    {
+      "test": "Admin Stats Regular User",
+      "status": "PASS",
+      "message": "Correctly rejected regular user access"
+    },
+    {
+      "test": "Admin Dashboard Endpoint",
+      "status": "PASS",
+      "message": "Admin dashboard data retrieved successfully"
+    },
+    {
+      "test": "Admin Health Check",
+      "status": "PASS",
+      "message": "System health check passed"
+    },
+    {
+      "test": "Admin Users List",
+      "status": "PASS",
+      "message": "Retrieved 1 users successfully"
+    },
+    {
+      "test": "Admin Products List",
+      "status": "PASS",
+      "message": "Retrieved 10 products successfully"
+    }
+  ]
+}

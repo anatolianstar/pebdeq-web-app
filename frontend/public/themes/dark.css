@@ -1,0 +1,448 @@
+/* 🌙 COMPACT DARK THEME - Modern & Minimal */
+/* Sleek dark interface with essential colors only */
+
+[data-theme="dark"] {
+  /* ========== CORE COLORS - KOMPAKT PALETİ ========== */
+  
+  /* Ana Background Renkleri */
+  --background-primary: #0f0f0f;      /* Ana koyu arka plan */
+  --background-secondary: #1a1a1a;    /* Koyu gri arka plan */
+  --background-tertiary: #2a2a2a;     /* Orta koyu gri */
+  
+  /* Card ve Component Renkleri */
+  --card-bg: #1e1e1e;                 /* Card arka planı */
+  --card-bg-hover: #2a2a2a;           /* Card hover arka planı */
+  --modal-bg: #1a1a1a;                /* Modal arka planı */
+  --sidebar-bg: #141414;              /* Sidebar arka planı */
+  
+  /* Metin Renkleri */
+  --text-primary: #ffffff;            /* Ana beyaz metin */
+  --text-secondary: #b0b0b0;          /* İkincil gri metin */
+  --text-muted: #707070;              /* Soluk metin */
+  --text-light: #ffffff;              /* Açık metin */
+  
+  /* Vurgu Renkleri */
+  --primary-color: #3b82f6;           /* Mavi primary */
+  --primary-hover: #2563eb;           /* Koyu mavi hover */
+  --success-color: #10b981;           /* Yeşil success */
+  --danger-color: #ef4444;            /* Kırmızı danger */
+  --warning-color: #f59e0b;           /* Turuncu warning */
+  --info-color: #06b6d4;              /* Cyan info */
+  
+  /* Border ve Çizgi Renkleri */
+  --border-color: #333333;            /* Ana border gri */
+  --border-color-light: #404040;      /* Açık border gri */
+  --border-color-focus: #3b82f6;      /* Focus mavi border */
+  
+  /* Input ve Form Renkleri */
+  --input-bg: #262626;                /* Input arka planı */
+  --input-border: #404040;            /* Input border */
+  --input-focus: #3b82f6;             /* Input focus border */
+  --placeholder-color: #707070;       /* Placeholder metin */
+  
+  /* Table Renkleri */
+  --table-bg: #1e1e1e;                /* Tablo arka planı */
+  --table-header-bg: #262626;         /* Tablo başlık arka planı */
+  --table-border: #333333;            /* Tablo border */
+  --table-hover: #2a2a2a;             /* Tablo satır hover */
+  
+  /* Gölge Efektleri */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+  
+  /* Geçiş Efektleri */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --border-radius: 6px;
+}
+
+/* ========== GENEL DARK TEMA ELEMANLARI ========== */
+
+[data-theme="dark"] {
+  background-color: var(--background-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--background-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========== GLOBAL INHERIT REMOVED ========== */
+/* Global inherit removed to allow inline styles from admin settings */
+
+[data-theme="dark"] div,
+[data-theme="dark"] section,
+[data-theme="dark"] article,
+[data-theme="dark"] main,
+[data-theme="dark"] footer,
+[data-theme="dark"] nav {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+}
+/* Header removed from list - controlled by admin settings via inline styles */
+
+/* Ana Containerlar */
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid,
+[data-theme="dark"] .row,
+[data-theme="dark"] .col,
+[data-theme="dark"] .col-md-12 {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+/* TÜM ADMIN DASHBOARD ELEMANLARI ZORLA */
+[data-theme="dark"] .admin-dashboard *,
+[data-theme="dark"] .admin-dashboard div,
+[data-theme="dark"] .admin-dashboard section,
+[data-theme="dark"] .admin-dashboard article {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+/* BEYAZ BACKGROUND OLAN TÜM ALANLAR ZORLA DEĞİŞSİN */
+[data-theme="dark"] .admin-dashboard .dashboard-content,
+[data-theme="dark"] .admin-dashboard .dashboard-stats,
+[data-theme="dark"] .admin-dashboard .products-content,
+[data-theme="dark"] .admin-dashboard .users-content,
+[data-theme="dark"] .admin-dashboard .orders-content,
+[data-theme="dark"] .admin-dashboard .returns-content,
+[data-theme="dark"] .admin-dashboard .messages-content,
+[data-theme="dark"] .admin-dashboard .variations-content,
+[data-theme="dark"] .admin-dashboard .invoices-content,
+[data-theme="dark"] .admin-dashboard .form-container,
+[data-theme="dark"] .admin-dashboard .table-container,
+[data-theme="dark"] .admin-dashboard .content-wrapper,
+[data-theme="dark"] .admin-dashboard .settings-form,
+[data-theme="dark"] .admin-dashboard .site-settings-form {
+  background-color: var(--background-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========== ADMIN DASHBOARD ÖZEL STİLLERİ ========== */
+
+/* Ana Container */
+[data-theme="dark"] .admin-dashboard {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .admin-main {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+}
+
+/* Sidebar */
+[data-theme="dark"] .admin-sidebar {
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+}
+
+/* Sidebar Buttons */
+[data-theme="dark"] .admin-sidebar button {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .admin-sidebar button:hover {
+  background-color: var(--background-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color-light);
+}
+
+[data-theme="dark"] .admin-sidebar button.active {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border-color: var(--primary-color);
+}
+
+/* ========== CARD VE CONTAINER ELEMANLARI ========== */
+
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .recent-activities,
+[data-theme="dark"] .card,
+[data-theme="dark"] .products-content,
+[data-theme="dark"] .users-content,
+[data-theme="dark"] .orders-content,
+[data-theme="dark"] .modal-content {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+[data-theme="dark"] .stat-card:hover,
+[data-theme="dark"] .card:hover {
+  background-color: var(--card-bg-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  transition: var(--transition-normal);
+}
+
+/* ========== BAŞLIKLAR ========== */
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .section-header,
+[data-theme="dark"] .settings-header {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+/* ========== FORM ELEMANLARI ========== */
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius);
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+[data-theme="dark"] label {
+  color: var(--text-secondary);
+}
+
+/* ========== TABLOLAR ========== */
+
+[data-theme="dark"] table {
+  background-color: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+[data-theme="dark"] th {
+  background-color: var(--table-header-bg);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+}
+
+[data-theme="dark"] td {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+}
+
+[data-theme="dark"] tr:hover {
+  background-color: var(--table-hover);
+}
+
+[data-theme="dark"] tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* ========== BUTONLAR ========== */
+
+[data-theme="dark"] .btn {
+  border-radius: var(--border-radius);
+  transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn {
+  background-color: var(--background-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .btn-secondary:hover,
+[data-theme="dark"] .btn:hover {
+  background-color: var(--card-bg-hover);
+  border-color: var(--border-color-light);
+}
+
+[data-theme="dark"] .btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .btn-warning {
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+  color: var(--text-light);
+}
+
+/* ========== MODAL VE OVERLAY ========== */
+
+[data-theme="dark"] .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="dark"] .modal-header {
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ========== NAVİGASYON VE LİNKLER ========== */
+
+[data-theme="dark"] .nav a {
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+}
+
+[data-theme="dark"] .nav a:hover {
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] a {
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--primary-hover);
+}
+
+/* ========== SCROLLBAR STİLLERİ ========== */
+
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color-light);
+}
+
+/* ========== STATUS BADGE VE İKONLAR ========== */
+
+[data-theme="dark"] .status-badge.pending {
+  background-color: var(--warning-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .status-badge.success,
+[data-theme="dark"] .status-badge.delivered {
+  background-color: var(--success-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .status-badge.danger,
+[data-theme="dark"] .status-badge.cancelled {
+  background-color: var(--danger-color);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .status-badge.info,
+[data-theme="dark"] .status-badge.shipped {
+  background-color: var(--info-color);
+  color: var(--text-light);
+}
+
+/* ========== ANİMASYONLAR VE GEÇİŞLER ========== */
+
+[data-theme="dark"] * {
+  transition: background-color var(--transition-fast), 
+              color var(--transition-fast), 
+              border-color var(--transition-fast);
+}
+
+/* ========== RESPONSIVE DÜZENLEMELER ========== */
+
+@media (max-width: 768px) {
+  [data-theme="dark"] .admin-sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  [data-theme="dark"] .modal-content {
+    margin: 10px;
+    max-height: 90vh;
+  }
+}
+
+/* ========== ERİŞİLEBİLİRLİK ========== */
+
+[data-theme="dark"] :focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+[data-theme="dark"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== TEMA GEÇİŞ ANİMASYONU ========== */
+
+[data-theme="dark"] .fade-in {
+  animation: darkFadeIn 0.3s ease-in-out;
+}
+
+@keyframes darkFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

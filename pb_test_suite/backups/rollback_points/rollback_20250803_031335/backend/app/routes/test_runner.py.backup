@@ -1,0 +1,1721 @@
+"""
+Test Runner API Routes
+Handles running and managing tests through the web interface.
+"""
+
+import os
+import sys
+import json
+import subprocess
+import time
+import shutil
+import threading
+from pathlib import Path
+from datetime import datetime, timedelta
+from flask import Blueprint, request, jsonify, current_app
+from app.utils.decorators import admin_required
+
+def ensure_test_suite_structure():
+    """Ensure pb_test_suite directory structure exists"""
+    try:
+        # Get the project root - be more flexible about the path
+        current_file = Path(__file__)
+        project_root = None
+        
+        # Try different approaches to find project root
+        for i in range(5):  # Go up max 5 levels
+            potential_root = current_file.parents[i]
+            if (potential_root / 'backend').exists() and (potential_root / 'frontend').exists():
+                project_root = potential_root
+                break
+            elif (potential_root / 'pb_test_suite').exists():
+                project_root = potential_root
+                break
+        
+        if not project_root:
+            # Fallback to the standard approach
+            project_root = Path(__file__).parent.parent.parent.parent
+        
+        test_suite_dir = project_root / 'pb_test_suite'
+        print(f"[INIT] Project root: {project_root}")
+        print(f"[INIT] Test suite dir: {test_suite_dir}")
+        
+        # Create main pb_test_suite directory
+        test_suite_dir.mkdir(exist_ok=True)
+        print(f"[INIT] Created main directory: {test_suite_dir}")
+        
+        # Create required subdirectories - be more conservative
+        # Check if Backups (capital B) exists first for compatibility
+        if (test_suite_dir / 'Backups').exists():
+            backup_base = 'Backups'
+        else:
+            backup_base = 'backups'
+            
+        required_dirs = [
+            backup_base,
+            f'{backup_base}/rollback_points', 
+            f'{backup_base}/code_quality',
+            f'{backup_base}/snapshots',
+            f'{backup_base}/successful_states',
+            'reports'
+        ]
+        
+        for dir_path in required_dirs:
+            try:
+                full_path = test_suite_dir / dir_path
+                full_path.mkdir(parents=True, exist_ok=True)
+                print(f"[INIT] Created: {dir_path}")
+            except Exception as e:
+                print(f"[WARNING] Could not create {dir_path}: {e}")
+                # Continue with other directories
+        
+        print(f"[INIT] Test suite structure ensured at: {test_suite_dir}")
+        return test_suite_dir
+        
+    except Exception as e:
+        print(f"[ERROR] Failed to create test suite structure: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Try to return a basic fallback directory
+        try:
+            fallback_dir = Path.cwd() / 'pb_test_suite'
+            fallback_dir.mkdir(exist_ok=True)
+            (fallback_dir / 'backups').mkdir(exist_ok=True)
+            (fallback_dir / 'reports').mkdir(exist_ok=True)
+            print(f"[FALLBACK] Created fallback directory: {fallback_dir}")
+            return fallback_dir
+        except:
+            print("[CRITICAL] Could not create any test suite directory")
+            return None
+
+test_runner_bp = Blueprint('test_runner', __name__, url_prefix='/api/admin')
+
+# Global variable to store test results
+test_results = {}
+test_status = {}
+
+@test_runner_bp.route('/tests', methods=['GET'])
+@admin_required
+def get_available_tests():
+    """Get list of available test suites."""
+    try:
+        test_suites = [
+            {
+                'id': 'auth_tests',
+                'name': 'Authentication API Tests',
+                'description': 'Login/logout, JWT token validation, user roles testing',
+                'category': 'Backend API',
+                'status': test_status.get('auth_tests', 'ready'),
+                'script': 'scripts/run_auth_tests.py'
+            },
+            {
+                'id': 'admin_tests',
+                'name': 'Admin API Tests',
+                'description': 'Site settings CRUD, theme settings, admin operations',
+                'category': 'Backend API',
+                'status': test_status.get('admin_tests', 'ready'),
+                'script': 'scripts/run_admin_tests.py'
+            },
+            {
+                'id': 'product_tests',
+                'name': 'Product Management Tests',
+                'description': 'Product CRUD, category management, variations testing',
+                'category': 'Backend API',
+                'status': test_status.get('product_tests', 'ready'),
+                'script': 'scripts/run_product_tests.py'
+            },
+            {
+                'id': 'invoice_tests',
+                'name': 'Invoice System Tests',
+                'description': 'PDF generation, invoice numbering, template testing',
+                'category': 'Backend API',
+                'status': test_status.get('invoice_tests', 'ready'),
+                'script': 'scripts/run_invoice_tests.py'
+            },
+            {
+                'id': 'order_tests',
+                'name': 'Order Management Tests',
+                'description': 'Order creation, status updates, order history testing',
+                'category': 'Backend API',
+                'status': test_status.get('order_tests', 'ready'),
+                'script': 'scripts/run_order_tests.py'
+            },
+            {
+                'id': 'theme_tests',
+                'name': 'Theme System Tests',
+                'description': 'Theme switching API, CSS variable updates, theme persistence',
+                'category': 'Backend API',
+                'status': test_status.get('theme_tests', 'ready'),
+                'script': 'scripts/run_theme_tests.py'
+            },
+            {
+                'id': 'upload_tests',
+                'name': 'File Upload Tests',
+                'description': 'Image upload, file validation, storage testing',
+                'category': 'Backend API',
+                'status': test_status.get('upload_tests', 'ready'),
+                'script': 'scripts/run_upload_tests.py'
+            },
+            {
+                'id': 'frontend_ui_tests',
+                'name': 'Frontend UI Tests',
+                'description': 'User interface components, forms, navigation testing',
+                'category': 'Frontend UI',
+                'status': test_status.get('frontend_ui_tests', 'ready'),
+                'script': 'scripts/run_frontend_tests.py'
+            },
+            {
+                'id': 'integration_tests',
+                'name': 'Integration Tests',
+                'description': 'Full workflow tests, user journey, system integration',
+                'category': 'Integration',
+                'status': test_status.get('integration_tests', 'ready'),
+                'script': 'scripts/run_integration_tests.py'
+            },
+            {
+                'id': 'performance_tests',
+                'name': 'Performance Tests',
+                'description': 'API response times, frontend loading speeds, optimization',
+                'category': 'Performance',
+                'status': test_status.get('performance_tests', 'ready'),
+                'script': 'scripts/run_performance_tests.py'
+            },
+            {
+                'id': 'security_tests',
+                'name': 'Security Tests',
+                'description': 'Input validation, SQL injection prevention, XSS protection',
+                'category': 'Security',
+                'status': test_status.get('security_tests', 'ready'),
+                'script': 'scripts/run_security_tests.py'
+            },
+            {
+                'id': 'code_integrity_tests',
+                'name': 'Code Integrity Tests',
+                'description': 'Duplicate code detection, quality metrics, backup validation',
+                'category': 'Code Quality',
+                'status': test_status.get('code_integrity_tests', 'ready'),
+                'script': 'scripts/run_code_integrity_tests.py'
+            }
+        ]
+        
+        return jsonify({'test_suites': test_suites})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/<test_id>/run', methods=['POST'])
+@admin_required
+def run_test_suite(test_id):
+    """Run a specific test suite."""
+    try:
+        # Check if test is already running
+        if test_status.get(test_id) == 'running':
+            return jsonify({'error': 'Test is already running'}), 400
+        
+        # Set test status to running
+        test_status[test_id] = 'running'
+        
+        # Run test in background thread
+        thread = threading.Thread(target=_run_test_background, args=(test_id,))
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            'message': f'Test {test_id} started',
+            'status': 'running'
+        })
+    
+    except Exception as e:
+        test_status[test_id] = 'error'
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/<test_id>/results', methods=['GET'])
+@admin_required
+def get_test_results(test_id):
+    """Get results for a specific test suite."""
+    try:
+        current_status = test_status.get(test_id, 'ready')
+        
+        if test_id not in test_results:
+            # Return appropriate message based on test status
+            if current_status == 'running':
+                return jsonify({
+                    'test_id': test_id,
+                    'status': current_status,
+                    'message': 'Test is currently running, results not yet available'
+                }), 202  # Accepted
+            else:
+                return jsonify({
+                    'test_id': test_id,
+                    'status': current_status,
+                    'message': 'Test has not been run yet'
+                }), 404
+        
+        return jsonify({
+            'test_id': test_id,
+            'status': current_status,
+            'results': test_results[test_id]
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/all/run', methods=['POST'])
+@admin_required
+def run_all_tests():
+    """Run all available test suites."""
+    try:
+        # Get list of test IDs that aren't currently running
+        available_tests = ['auth_tests', 'admin_tests', 'product_tests', 'invoice_tests', 
+                          'order_tests', 'theme_tests', 'upload_tests']
+        
+        running_tests = []
+        for test_id in available_tests:
+            if test_status.get(test_id) != 'running':
+                test_status[test_id] = 'running'
+                thread = threading.Thread(target=_run_test_background, args=(test_id,))
+                thread.daemon = True
+                thread.start()
+                running_tests.append(test_id)
+        
+        return jsonify({
+            'message': f'Started {len(running_tests)} test suites',
+            'running_tests': running_tests
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/status', methods=['GET'])
+@admin_required
+def get_all_test_status():
+    """Get status of all tests."""
+    try:
+        return jsonify({
+            'test_status': test_status,
+            'last_updated': datetime.now().isoformat()
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def _run_test_background(test_id):
+    """Run test in background thread."""
+    try:
+        # Map test IDs to script paths
+        script_map = {
+            'auth_tests': 'scripts/run_auth_tests.py',
+            'admin_tests': 'scripts/run_admin_tests.py',
+            'product_tests': 'scripts/run_product_tests.py',
+            'invoice_tests': 'scripts/run_invoice_tests.py',
+            'order_tests': 'scripts/run_order_tests.py',
+            'theme_tests': 'scripts/run_theme_tests.py',
+            'upload_tests': 'scripts/run_upload_tests.py',
+            'frontend_ui_tests': 'scripts/run_frontend_tests.py',
+            'integration_tests': 'scripts/run_integration_tests.py',
+            'performance_tests': 'scripts/run_performance_tests.py',
+            'security_tests': 'scripts/run_security_tests.py',
+            'code_integrity_tests': 'scripts/run_code_integrity_tests.py'
+        }
+        
+        script_path = script_map.get(test_id)
+        if not script_path:
+            test_status[test_id] = 'error'
+            test_results[test_id] = {'error': 'Unknown test ID'}
+            return
+        
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        
+        # Change to test suite directory
+        original_dir = os.getcwd()
+        os.chdir(test_suite_dir)
+        
+        try:
+            # Set UTF-8 environment
+            env = os.environ.copy()
+            env['PYTHONIOENCODING'] = 'utf-8'
+            env['PYTHONUTF8'] = '1'
+            
+            # Run the test script using sys.executable
+            result = subprocess.run(
+                [sys.executable, script_path],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                errors='replace',
+                timeout=300,
+                env=env
+            )
+            
+            # Parse results
+            test_results[test_id] = {
+                'exit_code': result.returncode,
+                'stdout': result.stdout,
+                'stderr': result.stderr,
+                'timestamp': datetime.now().isoformat(),
+                'success': result.returncode == 0
+            }
+            
+            test_status[test_id] = 'completed' if result.returncode == 0 else 'failed'
+            
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        test_status[test_id] = 'error'
+        test_results[test_id] = {
+            'error': str(e),
+            'timestamp': datetime.now().isoformat(),
+            'success': False
+        }
+
+@test_runner_bp.route('/tests/<test_id>/logs', methods=['GET'])
+@admin_required
+def get_test_logs(test_id):
+    """Get detailed logs for a specific test."""
+    try:
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        
+        # Look for log files
+        logs_dir = test_suite_dir / 'reports' / f'{test_id}'
+        
+        logs = {}
+        if logs_dir.exists():
+            # Get all log files
+            for log_file in logs_dir.glob('*.txt'):
+                with open(log_file, 'r') as f:
+                    logs[log_file.name] = f.read()
+            
+            for log_file in logs_dir.glob('*.json'):
+                with open(log_file, 'r') as f:
+                    logs[log_file.name] = json.load(f)
+        
+        return jsonify({
+            'test_id': test_id,
+            'logs': logs
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500 
+
+@test_runner_bp.route('/tests/debug/file-scanning', methods=['GET'])
+@admin_required
+def debug_file_scanning():
+    """Debug file scanning issues on server"""
+    try:
+        # Get the project root (same as backend directory parent)
+        project_root = Path(__file__).parent.parent.parent.parent
+        debug_script = project_root / 'backend' / 'debug_file_scan.py'
+        
+        if not debug_script.exists():
+            return jsonify({'error': f'Debug script not found: {debug_script}'}), 500
+        
+        # Run the debug script
+        result = subprocess.run(
+            [sys.executable, str(debug_script)],
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            timeout=60,
+            cwd=str(project_root)
+        )
+        
+        return jsonify({
+            'success': True,
+            'output': result.stdout,
+            'error': result.stderr,
+            'return_code': result.returncode
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Debug failed: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/files', methods=['GET'])
+@admin_required
+def get_project_files():
+    """Get list of all project files for code quality testing."""
+    try:
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        if not scripts_dir.exists():
+            return jsonify({'error': f'Scripts directory not found: {scripts_dir}'}), 500
+        
+        # Change to scripts directory to run the command
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Check if the script exists
+            script_path = scripts_dir / 'run_code_quality_tests.py'
+            
+            if not script_path.exists():
+                return jsonify({'error': f'Script not found: {script_path}'}), 500
+            
+            # Run the file discovery command using sys.executable
+            result = subprocess.run(
+                [sys.executable, 'run_code_quality_tests.py', 'list'],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                # Send raw output to frontend for parsing
+                return jsonify({
+                    'success': True,
+                    'raw_output': result.stdout,
+                    'selection_options': [
+                        {'id': 0, 'name': 'All Files', 'description': 'Test all project files'},
+                        {'id': 99, 'name': 'Critical Files', 'description': 'Core system files (8 files)'},
+                        {'id': 98, 'name': 'Large Files', 'description': 'Files larger than 50KB'},
+                        {'id': 97, 'name': 'Backend Only', 'description': 'Python files only'},
+                        {'id': 96, 'name': 'Frontend Only', 'description': 'JavaScript/React files'},
+                        {'id': 94, 'name': 'CSS Only', 'description': 'All CSS/Style files'},
+                        {'id': 95, 'name': 'Recommended', 'description': 'Recommended test selection'}
+                    ]
+                })
+            else:
+                return jsonify({'error': f'File discovery failed: {result.stderr}'}), 500
+                
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        return jsonify({'error': f'Exception: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/run', methods=['POST'])
+@admin_required
+def run_code_quality_tests():
+    """Run code quality tests with selected files."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        selected_files = data.get('selected_files', [])
+
+        
+        if not selected_files:
+            return jsonify({'error': 'No files selected'}), 400
+        
+        print(f"🔍 DEBUG - Starting test for {len(selected_files)} files: {selected_files}")
+        
+        # Set test status to running
+        test_status['code_quality'] = 'running'
+        
+        # Run test in background thread
+        thread = threading.Thread(target=_run_code_quality_background, args=(selected_files,))
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            'message': 'Code quality tests started',
+            'status': 'running',
+            'selected_files_count': len(selected_files),
+            'testing_mode': 'individual' if len(selected_files) == 1 else 'batch'
+        })
+    
+    except Exception as e:
+        test_status['code_quality'] = 'error'
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/code-quality/backup/approve', methods=['POST'])
+@admin_required
+def approve_backup():
+    """Approve and create backup."""
+    try:
+        data = request.get_json() or {}
+        tested_files_info = data.get('tested_files_info', [])
+        
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        if not scripts_dir.exists():
+            return jsonify({'error': f'Scripts directory not found: {scripts_dir}'}), 500
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Check if the script exists
+            script_path = scripts_dir / 'run_code_quality_tests.py'
+            
+            if not script_path.exists():
+                return jsonify({'error': f'Script not found: {script_path}'}), 500
+            
+            # Create individual backups for each tested file
+            created_backups = []
+            
+            if tested_files_info:
+                for index, file_info in enumerate(tested_files_info):
+                    file_name = file_info.get('name', 'unknown')
+                    file_path = file_info.get('path', '')
+                    
+                    # Create individual backup description
+                    description = f"Backup after testing: {file_name}"
+                    
+                    # Add small delay to ensure unique timestamps
+                    import time
+                    if index > 0:
+                        time.sleep(1)  # 1 second delay between backups
+                    
+                    # Run backup command for individual file
+                    env = dict(os.environ, 
+                              WEB_BACKUP_APPROVE='1',
+                              BACKUP_DESCRIPTION=description,
+                              BACKUP_SINGLE_FILE='1',
+                              BACKUP_FILE_NAME=file_name,
+                              BACKUP_FILE_PATH=file_path)
+                    
+                    result = subprocess.run(
+                        [sys.executable, 'run_code_quality_tests.py', 'backup'],
+                        capture_output=True,
+                        text=True,
+                        encoding='utf-8',
+                        timeout=60,
+                        input='y\n',  # Automatically approve backup
+                        env=env
+                    )
+                    
+                    if result.returncode == 0:
+                        created_backups.append(file_name)
+                        print(f"✅ Individual backup created for: {file_name}")
+                    else:
+                        print(f"Warning: Backup failed for {file_name}: {result.stderr}")
+                
+                # Summary result
+                if created_backups:
+                    result_description = f"Created {len(created_backups)} individual backups: {', '.join(created_backups[:3])}"
+                    if len(created_backups) > 3:
+                        result_description += f" and {len(created_backups) - 3} more"
+                else:
+                    result_description = "No backups created successfully"
+                    result = subprocess.run(['echo', 'No successful backups'], capture_output=True, text=True)
+            else:
+                # Fallback to general backup
+                description = "Manual backup after successful tests"
+                env = dict(os.environ, 
+                          WEB_BACKUP_APPROVE='1',
+                          BACKUP_DESCRIPTION=description)
+                
+                result = subprocess.run(
+                    [sys.executable, 'run_code_quality_tests.py', 'backup'],
+                    capture_output=True,
+                    text=True,
+                    encoding='utf-8',
+                    timeout=60,
+                    input='y\n',  # Automatically approve backup
+                    env=env
+                )
+                result_description = description
+            
+            if result.returncode == 0:
+                return jsonify({
+                    'success': True,
+                    'message': 'Backup created successfully',
+                    'backup_output': result.stdout,
+                    'description': result_description
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'message': 'Backup creation failed',
+                    'error': result.stderr
+                }), 500
+                
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        print(f"🔴 EXCEPTION in approve_backup: {str(e)}")
+        print(f"🔴 TRACEBACK: {traceback.format_exc()}")
+        return jsonify({'error': f'Exception: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/backup/history', methods=['GET'])
+@admin_required
+def get_backup_history():
+    """Get backup history from ALL backup directories."""
+    try:
+        # Ensure test suite structure exists
+        test_suite_dir = ensure_test_suite_structure()
+        print(f"🔍 BACKUP DEBUG - test_suite_dir: {test_suite_dir}")
+        
+        if not test_suite_dir:
+            print("🔴 BACKUP DEBUG - test_suite_dir is None!")
+            return jsonify({'error': 'Failed to initialize test suite structure'}), 500
+            
+        backups_dir = test_suite_dir / 'backups'
+        print(f"🔍 BACKUP DEBUG - backups_dir: {backups_dir}")
+        print(f"🔍 BACKUP DEBUG - backups_dir exists: {backups_dir.exists()}")
+        
+        # Also check for capital B version
+        backups_dir_alt = test_suite_dir / 'Backups'
+        print(f"🔍 BACKUP DEBUG - backups_dir_alt (capital B): {backups_dir_alt}")
+        print(f"🔍 BACKUP DEBUG - backups_dir_alt exists: {backups_dir_alt.exists()}")
+        
+        # Use the directory that actually exists AND has content
+        # Prefer the directory with actual backup content
+        actual_backups_dir = None
+        
+        # Check both directories for content with explicit error handling
+        if backups_dir_alt.exists():
+            # Check if Backups (capital B) has any subdirectories with content
+            has_content = False
+            print(f"🔍 BACKUP DEBUG - checking Backups (capital B) for content...")
+            for subdir_name in ['code_quality', 'rollback_points', 'snapshots', 'successful_states']:
+                subdir_path = backups_dir_alt / subdir_name
+                print(f"🔍 BACKUP DEBUG - checking subdir: {subdir_path}")
+                if subdir_path.exists():
+                    try:
+                        items = list(subdir_path.iterdir())
+                        item_count = len(items)
+                        print(f"🔍 BACKUP DEBUG - {subdir_name} has {item_count} items")
+                        if item_count > 0:
+                            has_content = True
+                            print(f"🔍 BACKUP DEBUG - found content in {subdir_name}!")
+                            break
+                    except Exception as e:
+                        print(f"🔍 BACKUP DEBUG - error checking {subdir_name}: {e}")
+                        continue
+                else:
+                    print(f"🔍 BACKUP DEBUG - {subdir_name} does not exist")
+            
+            if has_content:
+                actual_backups_dir = backups_dir_alt
+                print(f"🔍 BACKUP DEBUG - ✅ SELECTED Backups (capital B) because it has content")
+            else:
+                print(f"🔍 BACKUP DEBUG - Backups (capital B) has no content")
+        
+        # If capital B doesn't have content, check lowercase b
+        if actual_backups_dir is None and backups_dir.exists():
+            print(f"🔍 BACKUP DEBUG - checking backups (lowercase b) for content...")
+            has_content_lowercase = False
+            for subdir_name in ['code_quality', 'rollback_points', 'snapshots', 'successful_states']:
+                subdir_path = backups_dir / subdir_name
+                if subdir_path.exists():
+                    try:
+                        items = list(subdir_path.iterdir())
+                        if len(items) > 0:
+                            has_content_lowercase = True
+                            print(f"🔍 BACKUP DEBUG - found content in lowercase {subdir_name}!")
+                            break
+                    except Exception as e:
+                        continue
+            
+            actual_backups_dir = backups_dir
+            print(f"🔍 BACKUP DEBUG - ✅ SELECTED backups (lowercase b) - content: {has_content_lowercase}")
+        
+        # Fallback to whichever exists
+        if actual_backups_dir is None:
+            actual_backups_dir = backups_dir_alt if backups_dir_alt.exists() else backups_dir
+            print(f"🔍 BACKUP DEBUG - fallback to: {actual_backups_dir}")
+        
+        print(f"🔍 BACKUP DEBUG - final actual_backups_dir: {actual_backups_dir}")
+        
+        all_backups = []
+        
+        # Check all backup subdirectories
+        backup_subdirs = ['code_quality', 'rollback_points', 'snapshots', 'successful_states']
+        
+        for subdir_name in backup_subdirs:
+            subdir_path = actual_backups_dir / subdir_name
+            print(f"🔍 BACKUP DEBUG - checking subdir: {subdir_path}")
+            print(f"🔍 BACKUP DEBUG - subdir exists: {subdir_path.exists()}")
+            
+            if subdir_path.exists():
+                try:
+                    backup_folders = list(subdir_path.iterdir())
+                    print(f"🔍 BACKUP DEBUG - found {len(backup_folders)} items in {subdir_name}")
+                    
+                    for backup_folder in backup_folders:
+                        print(f"🔍 BACKUP DEBUG - checking item: {backup_folder}")
+                        print(f"🔍 BACKUP DEBUG - is_dir: {backup_folder.is_dir()}")
+                        
+                        if backup_folder.is_dir():
+                            # Get backup info
+                            backup_info = {
+                                'name': backup_folder.name,
+                                'type': subdir_name,
+                                'path': str(backup_folder),
+                                'created': backup_folder.stat().st_mtime,
+                                'size': sum(f.stat().st_size for f in backup_folder.rglob('*') if f.is_file()),
+                                'description': ''
+                            }
+                            
+                            # Try to read manifest file for description
+                            manifest_file = backup_folder / 'rollback_manifest.json'
+                            print(f"🔍 BACKUP DEBUG - manifest file: {manifest_file}")
+                            print(f"🔍 BACKUP DEBUG - manifest exists: {manifest_file.exists()}")
+                            
+                            if manifest_file.exists():
+                                try:
+                                    import json
+                                    with open(manifest_file, 'r', encoding='utf-8') as f:
+                                        manifest = json.load(f)
+                                        backup_info['description'] = manifest.get('description', '')
+                                        backup_info['file_count'] = manifest.get('total_files', 0)
+                                        backup_info['backup_type_detail'] = manifest.get('backup_type', '')
+                                        backup_info['timestamp'] = manifest.get('timestamp', '')
+                                        print(f"🔍 BACKUP DEBUG - manifest loaded: {backup_info['file_count']} files")
+                                except Exception as e:
+                                    print(f"⚠️ Warning: Could not read manifest for {backup_folder.name}: {e}")
+                            
+                            all_backups.append(backup_info)
+                            print(f"✅ BACKUP DEBUG - added backup: {backup_folder.name}")
+                            
+                except Exception as e:
+                    print(f"🔴 Error reading {subdir_name}: {e}")
+            else:
+                print(f"⚠️ BACKUP DEBUG - subdir {subdir_name} does not exist at {subdir_path}")
+        
+        # Sort by creation time (newest first)
+        all_backups.sort(key=lambda x: x['created'], reverse=True)
+        
+        print(f"🔍 DEBUG - Found {len(all_backups)} total backups across all directories")
+        print(f"🔍 DEBUG - Backup names: {[b['name'] for b in all_backups]}")
+        
+        return jsonify({
+            'success': True,
+            'backups': all_backups,
+            'total_count': len(all_backups),
+            'by_type': {
+                subdir: len([b for b in all_backups if b['type'] == subdir]) 
+                for subdir in backup_subdirs
+            }
+        })
+                
+    except Exception as e:
+        print(f"🔴 BACKUP HISTORY ERROR: {str(e)}")
+        return jsonify({'error': f'Failed to get backup history: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/backup/<backup_id>', methods=['DELETE'])
+@admin_required
+def delete_backup(backup_id):
+    """Delete a specific backup."""
+    try:
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        # Detect correct backup directory case (Backups vs backups)
+        backup_base = "Backups" if (test_suite_dir / "Backups").exists() else "backups"
+        rollback_dir = test_suite_dir / backup_base / 'rollback_points' / backup_id
+        
+        if not rollback_dir.exists():
+            return jsonify({'error': f'Backup {backup_id} not found'}), 404
+        
+        # Remove the entire backup directory
+        import shutil
+        shutil.rmtree(rollback_dir)
+        
+        return jsonify({
+            'success': True,
+            'message': f'Backup {backup_id} deleted successfully'
+        })
+        
+    except Exception as e:
+        print(f"🔴 EXCEPTION in delete_backup: {str(e)}")
+        return jsonify({'error': f'Failed to delete backup: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/rollback', methods=['POST'])
+@admin_required
+def rollback_code():
+    """Rollback to a previous backup."""
+    try:
+        data = request.get_json()
+        backup_id = data.get('backup_id') if data else None
+        
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Run rollback command
+            cmd = [sys.executable, 'run_code_quality_tests.py', 'rollback']
+            if backup_id:
+                cmd.extend([backup_id])
+                
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=120
+            )
+            
+            return jsonify({
+                'success': result.returncode == 0,
+                'message': 'Rollback completed successfully' if result.returncode == 0 else 'Rollback failed',
+                'output': result.stdout,
+                'error': result.stderr if result.returncode != 0 else None
+            })
+            
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/code-quality/rollback/bulk', methods=['POST'])
+@admin_required
+def bulk_rollback_code():
+    """Rollback to multiple backups (applies the latest selected backup)."""
+    try:
+        data = request.get_json()
+        backup_ids = data.get('backup_ids', []) if data else []
+        
+        if not backup_ids:
+            return jsonify({'error': 'No backup IDs provided'}), 400
+        
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # If multiple backups selected, find the latest one (most recent)
+            if len(backup_ids) > 1:
+                # Sort backup IDs by timestamp (assuming format: rollback_YYYYMMDD_HHMMSS)
+                sorted_backups = sorted(backup_ids, reverse=True)  # Latest first
+                backup_id = sorted_backups[0]
+                print(f"🔍 Multiple backups selected, using latest: {backup_id}")
+                print(f"🔍 All selected: {backup_ids}")
+            else:
+                backup_id = backup_ids[0]
+                print(f"🔍 Single backup selected: {backup_id}")
+            
+            # Run rollback command
+            cmd = [sys.executable, 'run_code_quality_tests.py', 'rollback', backup_id]
+                
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=120
+            )
+            
+            print(f"🔍 Rollback return code: {result.returncode}")
+            print(f"🔍 Rollback stdout: {result.stdout[:500]}...")
+            
+            success_message = f'Backup {backup_id} restored successfully'
+            if len(backup_ids) > 1:
+                success_message += f' (latest from {len(backup_ids)} selected)'
+            
+            return jsonify({
+                'success': result.returncode == 0,
+                'message': success_message if result.returncode == 0 else 'Restore failed',
+                'output': result.stdout,
+                'error': result.stderr if result.returncode != 0 else None,
+                'restored_backup': backup_id,
+                'selected_count': len(backup_ids)
+            })
+            
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        print(f"🔴 EXCEPTION in bulk_rollback_code: {str(e)}")
+        print(f"🔴 TRACEBACK: {traceback.format_exc()}")
+        return jsonify({'error': str(e)}), 500
+
+@test_runner_bp.route('/tests/code-quality/results', methods=['GET'])
+@admin_required
+def get_code_quality_results():
+    """Get code quality test results."""
+    try:
+        current_status = test_status.get('code_quality', 'ready')
+        
+        if 'code_quality' not in test_results:
+            if current_status == 'running':
+                return jsonify({
+                    'status': current_status,
+                    'message': 'Tests are currently running'
+                }), 202
+            else:
+                return jsonify({
+                    'status': current_status,
+                    'message': 'Tests have not been run yet'
+                }), 404
+        
+        return jsonify({
+            'status': current_status,
+            'results': test_results['code_quality']
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def parse_file_list_output(output):
+    """Parse the output from file listing command."""
+    lines = output.strip().split('\n')
+    
+    files = []
+    stats = {}
+    options = [
+        {'id': 0, 'name': 'All Files', 'description': 'Test all project files'},
+        {'id': 99, 'name': 'Critical Files', 'description': 'Core system files (8 files)'},
+        {'id': 98, 'name': 'Large Files', 'description': 'Files larger than 50KB'},
+        {'id': 97, 'name': 'Backend Only', 'description': 'Python files only'},
+        {'id': 96, 'name': 'Frontend Only', 'description': 'JavaScript/React files'},
+        {'id': 95, 'name': 'Recommended', 'description': 'Recommended test selection'}
+    ]
+    
+    current_section = None
+    file_counter = 1
+    
+    # Parse stats from the Turkish output
+    for line in lines:
+        line = line.strip()
+        
+        if 'PYTHON:' in line:
+            current_section = 'python'
+        elif 'JAVASCRIPT:' in line:
+            current_section = 'javascript' 
+        elif 'CSS:' in line:
+            current_section = 'css'
+        elif current_section:
+            # Parse numbered file entry: "   67. pb_test_suite\tests\backend\test_admin_api.py (12.5KB)"
+            import re
+            match = re.match(r'^\s*\d+\.\s+(.+?)\s+\(([^)]+)\)$', line)
+            if match:
+                file_path = match.group(1).strip()
+                size = match.group(2)
+                
+                files.append({
+                    'id': file_counter,
+                    'path': file_path,
+                    'size': size,
+                    'category': current_section,
+                    'type': current_section
+                })
+                
+                file_counter += 1
+        elif 'File count:' in line:
+            if current_section:
+                count = line.split(':')[1].strip()
+                stats[f'{current_section}_files'] = count
+        elif 'Total size:' in line:
+            if current_section:
+                size = line.split(':')[1].strip()
+                stats[f'{current_section}_size'] = size
+        elif 'Total files:' in line:
+            stats['total_files'] = line.split(':')[1].strip()
+        elif 'Total size:' in line and 'GENERAL SUMMARY' in output[:output.index(line)]:
+            stats['total_size'] = line.split(':')[1].strip()
+    
+    return {
+        'files': files,
+        'stats': stats,
+        'options': options
+    }
+
+def parse_backup_history(output):
+    """Parse backup history output."""
+    lines = output.strip().split('\n')
+    backups = []
+    
+    current_backup = None
+    
+    for line in lines:
+        line = line.strip()
+        
+        # Look for numbered backup entries: " 1. ID: rollback_20250715_204429"
+        if line and line[0].isdigit() and '. ID:' in line:
+            # Save previous backup if exists
+            if current_backup:
+                backups.append(current_backup)
+            
+            # Start new backup
+            backup_id = line.split('ID:')[1].strip()
+            current_backup = {
+                'id': backup_id,
+                'date': '',
+                'file_count': '',
+                'description': ''
+            }
+        elif current_backup and 'Tarih:' in line:
+            current_backup['date'] = line.split('Tarih:')[1].strip()
+        elif current_backup and 'Dosya sayısı:' in line:
+            current_backup['file_count'] = line.split('Dosya sayısı:')[1].strip()
+        elif current_backup and 'Açıklama:' in line:
+            current_backup['description'] = line.split('Açıklama:')[1].strip()
+    
+    # Add the last backup if exists
+    if current_backup:
+        backups.append(current_backup)
+    
+    return {'backups': backups}
+
+def _run_code_quality_background(selected_files):
+    """Run code quality tests in background thread."""
+    try:
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Debug: Log received files
+            print(f"🔍 DEBUG - Received selected_files: {selected_files}")
+            print(f"🔍 DEBUG - Type of selected_files[0]: {type(selected_files[0]) if selected_files else 'No files'}")
+            
+            # Prepare file selection for web interface
+            if isinstance(selected_files[0], dict):
+                # If files are objects with id
+                file_selection = ','.join([str(f['id']) for f in selected_files])
+                print(f"🔍 DEBUG - File selection from dict IDs: {file_selection}")
+            else:
+                # If files are just indices
+                file_selection = ','.join([str(f) for f in selected_files])
+                print(f"🔍 DEBUG - File selection from indices: {file_selection}")
+            
+            # Set environment variable for web interface mode
+            env = os.environ.copy()
+            env['WEB_FILE_SELECTION'] = file_selection
+            env['PYTHONIOENCODING'] = 'utf-8'  # Force UTF-8 encoding
+            env['PYTHONUTF8'] = '1'  # Enable UTF-8 mode in Python 3.7+
+            
+            print(f"🔍 DEBUG - Setting WEB_FILE_SELECTION = {file_selection}")
+            print(f"🔍 DEBUG - Running in directory: {os.getcwd()}")
+            
+            # Run code quality tests with environment variable
+            process = subprocess.run(
+                [sys.executable, 'run_code_quality_tests.py', 'test'],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                errors='replace',  # Handle encoding errors gracefully
+                timeout=300,  # 5 minute timeout
+                env=env
+            )
+            
+            print(f"🔍 DEBUG - Command returncode: {process.returncode}")
+            print(f"🔍 DEBUG - Stdout length: {len(process.stdout)}")
+            if process.stderr:
+                print(f"🔍 DEBUG - Stderr: {process.stderr}")
+            
+            # Parse results
+            test_results['code_quality'] = {
+                'exit_code': process.returncode,
+                'stdout': process.stdout,
+                'stderr': process.stderr,
+                'timestamp': datetime.now().isoformat(),
+                'success': process.returncode == 0,
+                'selected_files': selected_files,
+                'tests_passed': 'PASSED' in process.stdout,
+                'tests_failed': 'FAILED' in process.stdout,
+                'file_selection': file_selection
+            }
+            
+            # Parse detailed results
+            if process.stdout:
+                test_results['code_quality']['detailed_results'] = parse_test_results(process.stdout)
+            
+            test_status['code_quality'] = 'completed' if process.returncode == 0 else 'failed'
+            
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        print(f"🔴 EXCEPTION in _run_code_quality_background: {str(e)}")
+        test_status['code_quality'] = 'error'
+        test_results['code_quality'] = {
+            'error': str(e),
+            'timestamp': datetime.now().isoformat(),
+            'success': False
+        }
+
+def parse_test_results(output):
+    """Parse test results from output."""
+    results = {
+        'categories': [],
+        'summary': {}
+    }
+    
+    lines = output.split('\n')
+    current_test = None
+    
+    for line in lines:
+        line = line.strip()
+        
+        # Test category results
+        if ('✅' in line or '❌' in line) or ('OK:' in line or 'ERROR:' in line):
+            if ':' in line:
+                parts = line.split(':', 1)
+                test_name = parts[0].replace('✅', '').replace('❌', '').replace('OK', '').replace('ERROR', '').strip()
+                status = 'PASSED' if ('✅' in line or 'OK:' in line) else 'FAILED'
+                
+                test_info = {'name': test_name, 'status': status}
+                
+                if len(parts) > 1:
+                    test_info['details'] = parts[1].strip()
+                
+                results['categories'].append(test_info)
+        
+        # Issues count
+        elif 'Issues:' in line:
+            try:
+                issues_count = int(line.split('Issues:')[1].strip())
+                if results['categories']:
+                    results['categories'][-1]['issues_count'] = issues_count
+            except:
+                pass
+    
+    return results 
+
+@test_runner_bp.route('/tests/code-quality/changed-files', methods=['GET'])
+@admin_required
+def get_changed_files():
+    """Get list of files that have changed since last backup."""
+    try:
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        if not scripts_dir.exists():
+            return jsonify({'error': f'Scripts directory not found: {scripts_dir}'}), 500
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Check if the script exists
+            script_path = scripts_dir / 'run_code_quality_tests.py'
+            
+            if not script_path.exists():
+                return jsonify({'error': f'Script not found: {script_path}'}), 500
+            
+            # Run command to get changed files
+            result = subprocess.run(
+                [sys.executable, 'run_code_quality_tests.py', 'changed'],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                # Parse changed files from output
+                changed_files = parse_changed_files_output(result.stdout)
+                return jsonify({
+                    'success': True,
+                    'changed_files': changed_files,
+                    'raw_output': result.stdout
+                })
+            else:
+                return jsonify({'error': f'Failed to get changed files: {result.stderr}'}), 500
+                
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        print(f"🔴 EXCEPTION in get_changed_files: {str(e)}")
+        print(f"🔴 TRACEBACK: {traceback.format_exc()}")
+        return jsonify({'error': f'Exception: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/changed-files/select', methods=['POST'])
+@admin_required
+def select_changed_files():
+    """Select changed files for testing."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        changed_file_paths = data.get('changed_files', [])
+        
+        if not changed_file_paths:
+            return jsonify({'error': 'No files provided'}), 400
+        
+        # Get all project files to match paths with IDs
+        # Get test suite directory
+        test_suite_dir = Path(__file__).parent.parent.parent.parent / 'pb_test_suite'
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        if not scripts_dir.exists():
+            return jsonify({'error': f'Scripts directory not found: {scripts_dir}'}), 500
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Get all files list first
+            result = subprocess.run(
+                [sys.executable, 'run_code_quality_tests.py', 'list'],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=30
+            )
+            
+            if result.returncode != 0:
+                return jsonify({'error': f'Failed to get file list: {result.stderr}'}), 500
+            
+            # Parse all files
+            parsed_data = parse_file_list_output(result.stdout)
+            all_files = parsed_data['files']
+            
+            # Match changed file paths with file IDs
+            selected_file_ids = []
+            matched_files = []
+            
+            print(f"🔍 Trying to match {len(changed_file_paths)} changed files with {len(all_files)} project files")
+            
+            for changed_path in changed_file_paths:
+                # Normalize path separators for comparison
+                normalized_changed = changed_path.replace('\\', '/').replace('//', '/').strip()
+                changed_basename = normalized_changed.split('/')[-1]  # Just the filename
+                
+                print(f"🔍 Looking for: {normalized_changed} (basename: {changed_basename})")
+                
+                match_found = False
+                for file_info in all_files:
+                    normalized_file = file_info['path'].replace('\\', '/').replace('//', '/').strip()
+                    file_basename = normalized_file.split('/')[-1]  # Just the filename
+                    
+                    # Multiple matching strategies
+                    exact_match = normalized_file == normalized_changed
+                    ends_with_match = normalized_file.endswith(normalized_changed) or normalized_changed.endswith(normalized_file)
+                    basename_match = file_basename == changed_basename and changed_basename != ''
+                    
+                    # More flexible path matching - check if the significant parts match
+                    # Split paths and compare components
+                    changed_parts = [p for p in normalized_changed.split('/') if p]
+                    file_parts = [p for p in normalized_file.split('/') if p]
+                    
+                    # Check if all changed parts exist in file parts in the same order
+                    path_components_match = False
+                    if len(changed_parts) > 0 and len(file_parts) > 0:
+                        # Try to find a subsequence match
+                        if len(changed_parts) <= len(file_parts):
+                            for i in range(len(file_parts) - len(changed_parts) + 1):
+                                if file_parts[i:i+len(changed_parts)] == changed_parts:
+                                    path_components_match = True
+                                    break
+                    
+                    if exact_match or ends_with_match or basename_match or path_components_match:
+                        print(f"✅ MATCHED: {normalized_changed} -> {normalized_file} (ID: {file_info['id']})")
+                        print(f"   Match reason: exact={exact_match}, ends_with={ends_with_match}, basename={basename_match}, components={path_components_match}")
+                        
+                        selected_file_ids.append(file_info['id'])
+                        matched_files.append({
+                            'id': file_info['id'],
+                            'path': file_info['path'],
+                            'size': file_info['size'],
+                            'category': file_info['category'],
+                            'changed_path': changed_path
+                        })
+                        match_found = True
+                        break
+                
+                if not match_found:
+                    print(f"❌ NO MATCH FOUND for: {normalized_changed}")
+            
+            print(f"🔍 Final result: {len(selected_file_ids)} matches out of {len(changed_file_paths)} changed files")
+            
+            return jsonify({
+                'success': True,
+                'selected_file_ids': selected_file_ids,
+                'matched_files': matched_files,
+                'total_changed': len(changed_file_paths),
+                'total_matched': len(selected_file_ids)
+            })
+                
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        print(f"🔴 EXCEPTION in select_changed_files: {str(e)}")
+        print(f"🔴 TRACEBACK: {traceback.format_exc()}")
+        return jsonify({'error': f'Exception: {str(e)}'}), 500
+
+@test_runner_bp.route('/tests/code-quality/backup/manual', methods=['POST'])
+@admin_required
+def create_manual_backup():
+    """Create manual backup for selected files."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        selected_files = data.get('selected_files', [])
+        description = data.get('description', 'Manual backup')
+        
+        # DEBUG: Log what we received from frontend
+        print(f"🔍 BACKEND DEBUG - Received data: {data}")
+        print(f"🔍 BACKEND DEBUG - selected_files type: {type(selected_files)}")
+        print(f"🔍 BACKEND DEBUG - selected_files length: {len(selected_files)}")
+        print(f"🔍 BACKEND DEBUG - selected_files content: {selected_files}")
+        
+        if not selected_files:
+            return jsonify({'error': 'No files selected for backup'}), 400
+        
+        # Ensure test suite structure exists
+        test_suite_dir = ensure_test_suite_structure()
+        if not test_suite_dir:
+            return jsonify({'error': 'Failed to initialize test suite structure'}), 500
+            
+        scripts_dir = test_suite_dir / 'scripts'
+        
+        # Change to scripts directory
+        original_dir = os.getcwd()
+        os.chdir(scripts_dir)
+        
+        try:
+            # Check if the script exists
+            script_path = scripts_dir / 'run_code_quality_tests.py'
+            if not script_path.exists():
+                return jsonify({'error': f'Script not found: {script_path}'}), 500
+            
+            print(f"🔍 Creating manual backup for {len(selected_files)} files")
+            print(f"🔍 Description: {description}")
+            print(f"🔍 Selected file IDs: {selected_files}")
+            
+            # Set environment variables for manual backup
+            env = dict(os.environ, 
+                      WEB_BACKUP_APPROVE='1',
+                      BACKUP_DESCRIPTION=description,
+                      MANUAL_BACKUP='1',
+                      SELECTED_FILES=','.join([str(f) for f in selected_files]))
+            
+            # Run manual backup command
+            result = subprocess.run(
+                [sys.executable, 'run_code_quality_tests.py', 'backup'],
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                timeout=120,
+                input='y\n',  # Automatically approve backup
+                env=env
+            )
+            
+            print(f"🔍 Manual backup return code: {result.returncode}")
+            print(f"🔍 Manual backup stdout: {result.stdout[:500]}...")
+            
+            if result.returncode == 0:
+                return jsonify({
+                    'success': True,
+                    'message': 'Manual backup created successfully',
+                    'output': result.stdout
+                })
+            else:
+                return jsonify({'error': f'Manual backup failed: {result.stderr}'}), 500
+                
+        finally:
+            os.chdir(original_dir)
+    
+    except Exception as e:
+        import traceback
+        print(f"🔴 EXCEPTION in create_manual_backup: {str(e)}")
+        print(f"🔴 TRACEBACK: {traceback.format_exc()}")
+        return jsonify({'error': f'Exception: {str(e)}'}), 500
+
+def parse_changed_files_output(output):
+    """Parse the output from changed files command."""
+    lines = output.strip().split('\n')
+    changed_files = []
+    
+    for line in lines:
+        line = line.strip()
+        
+        # Look for lines that indicate changed files
+        if line.startswith('M ') or line.startswith('A ') or line.startswith('D ') or line.startswith('?? '):
+            # Git status format: "M  path/to/file.py"
+            parts = line.split(None, 1)
+            if len(parts) >= 2:
+                file_path = parts[1].strip()
+                status = parts[0].strip()
+                
+                # Map git status to readable format
+                status_map = {
+                    'M': 'Modified',
+                    'A': 'Added', 
+                    'D': 'Deleted',
+                    '??': 'Untracked'
+                }
+                
+                changed_files.append({
+                    'path': file_path,
+                    'status': status_map.get(status, status),
+                    'git_status': status
+                })
+        elif line.startswith('-> '):
+            # Custom format from script: "-> frontend/src/pages/TestDashboard.js [Modified]"
+            file_line = line[3:].strip()  # Remove "-> "
+            
+            if '[' in file_line and file_line.endswith(']'):
+                # Split path and status: "frontend/src/pages/TestDashboard.js [Modified]"
+                parts = file_line.rsplit(' [', 1)
+                if len(parts) == 2:
+                    file_path = parts[0].strip()
+                    status_text = parts[1][:-1].strip()  # Remove closing bracket
+                    
+                    # Map status text to git status format
+                    status_map = {
+                        'Modified': 'M',
+                        'Added': 'A',
+                        'Deleted': 'D',
+                        'Untracked': '??'
+                    }
+                    
+                    changed_files.append({
+                        'path': file_path,
+                        'status': status_text,
+                        'git_status': status_map.get(status_text, 'M')
+                    })
+        elif '->' in line and 'changed since last backup' in output:
+            # Fallback format: "-> path/to/file.py"
+            file_path = line.replace('->', '').strip()
+            if file_path:
+                changed_files.append({
+                    'path': file_path,
+                    'status': 'Modified',
+                    'git_status': 'M'
+                })
+    
+    return changed_files 
+
+@test_runner_bp.route('/tests/cleanup/reports', methods=['DELETE'])
+@admin_required
+def cleanup_test_reports():
+    """Clean up old test reports."""
+    try:
+        # Ensure test suite structure exists
+        test_suite_dir = ensure_test_suite_structure()
+        if not test_suite_dir:
+            return jsonify({'error': 'Failed to initialize test suite structure'}), 500
+            
+        reports_dir = test_suite_dir / 'reports'
+        
+        deleted_files = []
+        deleted_count = 0
+        
+        # Clean up JSON report files and subdirectories
+        for item in reports_dir.iterdir():
+            try:
+                if item.is_file() and item.suffix == '.json':
+                    # Delete JSON report files
+                    deleted_files.append(str(item.name))
+                    item.unlink()
+                    deleted_count += 1
+                elif item.is_dir():
+                    # Clean up test subdirectories
+                    for subfile in item.rglob('*.json'):
+                        if subfile.is_file():
+                            deleted_files.append(f"{item.name}/{subfile.name}")
+                            subfile.unlink()
+                            deleted_count += 1
+                    
+                    # Remove empty directories
+                    if item.exists() and not any(item.iterdir()):
+                        item.rmdir()
+                        
+            except Exception as e:
+                print(f"Warning: Could not delete {item}: {e}")
+                continue
+        
+        return jsonify({
+            'message': f'Successfully cleaned up {deleted_count} report files',
+            'deleted_count': deleted_count,
+            'deleted_files': deleted_files[:10]  # Show first 10 for brevity
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Cleanup failed: {str(e)}'}), 500
+
+
+@test_runner_bp.route('/tests/cleanup/backups', methods=['DELETE'])
+@admin_required
+def cleanup_test_backups():
+    """Clean up old backup files."""
+    try:
+        # Ensure test suite structure exists
+        test_suite_dir = ensure_test_suite_structure()
+        if not test_suite_dir:
+            return jsonify({'error': 'Failed to initialize test suite structure'}), 500
+            
+        backups_dir = test_suite_dir / 'backups'
+        
+        deleted_items = []
+        deleted_count = 0
+        
+        # Clean up backup subdirectories but keep the structure
+        for backup_type in ['rollback_points', 'code_quality', 'snapshots', 'successful_states']:
+            backup_path = backups_dir / backup_type
+            if backup_path.exists():
+                for item in backup_path.iterdir():
+                    try:
+                        if item.is_dir():
+                            # Remove backup directories
+                            import shutil
+                            shutil.rmtree(item)
+                            deleted_items.append(f"{backup_type}/{item.name}")
+                            deleted_count += 1
+                        elif item.is_file():
+                            # Remove backup files
+                            item.unlink()
+                            deleted_items.append(f"{backup_type}/{item.name}")
+                            deleted_count += 1
+                    except Exception as e:
+                        print(f"Warning: Could not delete {item}: {e}")
+                        continue
+        
+        return jsonify({
+            'message': f'Successfully cleaned up {deleted_count} backup items',
+            'deleted_count': deleted_count,
+            'deleted_items': deleted_items[:10]  # Show first 10 for brevity
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Backup cleanup failed: {str(e)}'}), 500
+
+
+@test_runner_bp.route('/tests/cleanup/all', methods=['DELETE'])
+@admin_required  
+def cleanup_all_test_data():
+    """Clean up all test reports and backups."""
+    try:
+        # Clean reports
+        reports_response = cleanup_test_reports()
+        reports_data = reports_response[0].get_json()
+        
+        # Clean backups
+        backups_response = cleanup_test_backups()
+        backups_data = backups_response[0].get_json()
+        
+        total_deleted = reports_data.get('deleted_count', 0) + backups_data.get('deleted_count', 0)
+        
+        return jsonify({
+            'message': f'Successfully cleaned up all test data',
+            'total_deleted': total_deleted,
+            'reports_deleted': reports_data.get('deleted_count', 0),
+            'backups_deleted': backups_data.get('deleted_count', 0)
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Full cleanup failed: {str(e)}'}), 500
+
+
+@test_runner_bp.route('/tests/cleanup/stats', methods=['GET'])
+@admin_required
+def get_cleanup_stats():
+    """Get statistics about test files that can be cleaned up."""
+    try:
+        # Ensure test suite structure exists
+        test_suite_dir = ensure_test_suite_structure()
+        if not test_suite_dir:
+            return jsonify({'error': 'Failed to initialize test suite structure'}), 500
+        
+        stats = {
+            'reports': {'count': 0, 'size_mb': 0, 'types': {}},
+            'backups': {'count': 0, 'size_mb': 0, 'types': {}}
+        }
+        
+        # Count reports
+        reports_dir = test_suite_dir / 'reports'
+        if reports_dir.exists():
+            for item in reports_dir.rglob('*.json'):
+                if item.is_file():
+                    stats['reports']['count'] += 1
+                    stats['reports']['size_mb'] += item.stat().st_size / (1024 * 1024)
+                    
+                    # Categorize by parent directory
+                    parent_name = item.parent.name
+                    if parent_name not in stats['reports']['types']:
+                        stats['reports']['types'][parent_name] = 0
+                    stats['reports']['types'][parent_name] += 1
+        
+        # Count backups - use enhanced directory detection like backup history
+        backups_dir = test_suite_dir / 'backups'
+        backups_dir_alt = test_suite_dir / 'Backups'
+        
+        # Use the same logic as backup history to find the correct directory
+        actual_backups_dir = None
+        
+        # Check both directories for content with explicit error handling
+        if backups_dir_alt.exists():
+            # Check if Backups (capital B) has any subdirectories with content
+            has_content = False
+            for subdir_name in ['code_quality', 'rollback_points', 'snapshots', 'successful_states']:
+                subdir_path = backups_dir_alt / subdir_name
+                if subdir_path.exists():
+                    try:
+                        items = list(subdir_path.iterdir())
+                        if len(items) > 0:
+                            has_content = True
+                            break
+                    except Exception as e:
+                        continue
+            
+            if has_content:
+                actual_backups_dir = backups_dir_alt
+                print(f"🔍 CLEANUP STATS - ✅ SELECTED Backups (capital B) because it has content")
+            else:
+                print(f"🔍 CLEANUP STATS - Backups (capital B) has no content")
+        
+        # If capital B doesn't have content, check lowercase b
+        if actual_backups_dir is None and backups_dir.exists():
+            actual_backups_dir = backups_dir
+            print(f"🔍 CLEANUP STATS - ✅ SELECTED backups (lowercase b)")
+        
+        # Fallback to whichever exists
+        if actual_backups_dir is None:
+            actual_backups_dir = backups_dir_alt if backups_dir_alt.exists() else backups_dir
+            print(f"🔍 CLEANUP STATS - fallback to: {actual_backups_dir}")
+        
+        print(f"🔍 CLEANUP STATS - final actual_backups_dir: {actual_backups_dir}")
+        
+        if actual_backups_dir.exists():
+            for backup_type in ['rollback_points', 'code_quality', 'snapshots', 'successful_states']:
+                backup_path = actual_backups_dir / backup_type
+                if backup_path.exists():
+                    type_count = 0
+                    for item in backup_path.iterdir():
+                        if item.exists():
+                            stats['backups']['count'] += 1
+                            type_count += 1
+                            if item.is_dir():
+                                # Calculate directory size
+                                for subitem in item.rglob('*'):
+                                    if subitem.is_file():
+                                        stats['backups']['size_mb'] += subitem.stat().st_size / (1024 * 1024)
+                            else:
+                                stats['backups']['size_mb'] += item.stat().st_size / (1024 * 1024)
+                    
+                    if type_count > 0:
+                        stats['backups']['types'][backup_type] = type_count
+        
+        # Round size values
+        stats['reports']['size_mb'] = round(stats['reports']['size_mb'], 2)
+        stats['backups']['size_mb'] = round(stats['backups']['size_mb'], 2)
+        
+        return jsonify(stats), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Stats calculation failed: {str(e)}'}), 500 

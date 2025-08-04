@@ -1,0 +1,69 @@
+{
+  "timestamp": "20250803_010450",
+  "total_files_tested": 1,
+  "selected_files": [
+    "frontend\\src\\pages\\MenuSettings.js"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0
+  }
+}

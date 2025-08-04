@@ -1,0 +1,75 @@
+{
+  "manifest_version": 3,
+  "name": "PEBDEQ Multi-Platform Integration", 
+  "version": "2.1.0",
+  "description": "Seamless photo upload integration between PEBDEQ and desktop e-commerce platforms (Etsy, Shopify, eBay, Amazon, AliExpress, Walmart)",
+  
+  "permissions": [
+    "nativeMessaging",
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  
+  "host_permissions": [
+    "https://*.etsy.com/*",
+    "https://*.shopify.com/*",
+    "https://*.myshopify.com/*",
+    "https://*.ebay.com/*",
+    "https://*.pebdeq.com/*",
+    "https://*.amazon.com/*",
+    "https://*.aliexpress.com/*",
+    "https://*.walmart.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.etsy.com/*",
+        "https://*.shopify.com/*", 
+        "https://*.myshopify.com/*",
+        "https://*.ebay.com/*",
+        "https://*.pebdeq.com/*",
+        "https://*.amazon.com/*",
+        "https://*.aliexpress.com/*",
+        "https://*.walmart.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["multi-platform-integration.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PEBDEQ Multi-Platform Integration"
+  },
+  
+  "icons": {
+    "16": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI4IiBjeT0iOCIgcj0iNyIgZmlsbD0iI2Y1NjgwMCIvPgogIDx0ZXh0IHg9IjgiIHk9IjEyIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+OqDwvdGV4dD4KPC9zdmc+",
+    "32": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNCIgZmlsbD0iI2Y1NjgwMCIvPgogIDx0ZXh0IHg9IjE2IiB5PSIyMiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjonwn46oPC90ZXh0Pgo8L3N2Zz4=",
+    "48": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyMCIgZmlsbD0iI2Y1NjgwMCIvPgogIDx0ZXh0IHg9IjI0IiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBFQkRFUTwvdGV4dD4KPC9zdmc+",
+    "128": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGNpcmNsZSBjeD0iNjQiIGN5PSI2NCIgcj0iNTUiIGZpbGw9IiNmNTY4MDAiLz4KICA8dGV4dCB4PSI2NCIgeT0iNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QRUJERVEtRXRzeTwvdGV4dD4KPC9zdmc+"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["multi-platform-integration.css"],
+      "matches": [
+        "https://*.etsy.com/*",
+        "https://*.shopify.com/*",
+        "https://*.myshopify.com/*", 
+        "https://*.ebay.com/*",
+        "https://*.pebdeq.com/*",
+        "https://*.amazon.com/*",
+        "https://*.aliexpress.com/*",
+        "https://*.walmart.com/*"
+      ]
+    }
+  ]
+}

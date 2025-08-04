@@ -1,0 +1,705 @@
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { updateSiteSettingsToMatchTheme, applyThemeSyncedStyles } from '../themes/siteSettingsIntegration';
+import { createApiUrl } from '../utils/config';
+
+const ThemeContext = createContext();
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
+
+export const ThemeProvider = ({ children }) => {
+  const [currentTheme, setCurrentTheme] = useState('default');
+  const [siteSettings, setSiteSettings] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isUpdatingSiteSettings, setIsUpdatingSiteSettings] = useState(false);
+  const [customThemes, setCustomThemes] = useState([]);
+  const [userIsAdmin, setUserIsAdmin] = useState(null); // null=unknown, false=not admin, true=admin
+
+  // Load custom themes from localStorage
+  const loadCustomThemes = () => {
+    try {
+      const storedCustomThemes = localStorage.getItem('customThemes');
+      if (storedCustomThemes) {
+        const parsed = JSON.parse(storedCustomThemes);
+        console.log('🎨 Loaded custom themes:', parsed.length, parsed);
+        setCustomThemes(parsed);
+        return parsed;
+      } else {
+        console.log('🎨 No custom themes found in localStorage');
+        setCustomThemes([]);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error loading custom themes:', error);
+      setCustomThemes([]);
+      return [];
+    }
+  };
+
+  // Delete custom theme from localStorage and state
+  const deleteCustomTheme = (themeId) => {
+    try {
+      console.log('🗑️ Deleting custom theme:', themeId);
+      
+      // Get current custom themes
+      const storedCustomThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
+      
+      // Filter out the theme to delete
+      const updatedThemes = storedCustomThemes.filter(theme => theme.id !== themeId);
+      
+      // Update localStorage
+      localStorage.setItem('customThemes', JSON.stringify(updatedThemes));
+      
+      // Update state
+      setCustomThemes(updatedThemes);
+      
+      // If currently selected theme is being deleted, switch to default
+      if (currentTheme === themeId) {
+        console.log('🔄 Deleted theme was active, switching to default theme');
+        changeTheme('default');
+      }
+      
+      console.log('✅ Custom theme deleted successfully');
+      
+      // Dispatch event for other components that might be listening
+      const event = new CustomEvent('customThemeDeleted', { 
+        detail: { themeId, remainingCount: updatedThemes.length } 
+      });
+      window.dispatchEvent(event);
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting custom theme:', error);
+      return false;
+    }
+  };
+
+  // Listen for custom theme addition events and reload on dependency changes
+  useEffect(() => {
+    // Load custom themes on mount
+    loadCustomThemes();
+
+    // Listen for custom theme events
+    const handleCustomThemeAdded = (event) => {
+      console.log('🎨 Custom theme added event:', event.detail);
+      loadCustomThemes(); // Reload all custom themes
+    };
+
+    window.addEventListener('customThemeAdded', handleCustomThemeAdded);
+    
+    return () => {
+      window.removeEventListener('customThemeAdded', handleCustomThemeAdded);
+    };
+  }, []); // Only run once on mount
+
+  // NOTE: Theme change request listener moved below changeTheme definition
+
+  // Re-apply current theme when custom themes change and current theme is custom
+  useEffect(() => {
+    if (customThemes.length > 0 && currentTheme) {
+      const isCurrentThemeCustom = customThemes.find(theme => theme.id === currentTheme);
+      if (isCurrentThemeCustom) {
+        console.log('🔄 Re-applying current custom theme after state update:', isCurrentThemeCustom.name);
+        setTimeout(() => {
+          applyCustomTheme(isCurrentThemeCustom);
+        }, 100);
+      }
+    }
+  }, [customThemes, currentTheme]); // Run when custom themes or current theme changes
+
+  // Apply custom theme
+  const applyCustomTheme = (customThemeData) => {
+    try {
+      console.log('🎨 Applying custom theme:', customThemeData);
+      console.log('📊 Theme data:', customThemeData.data);
+      
+      // First, clear existing theme CSS links
+      const existingThemeLinks = document.querySelectorAll('link[data-theme]');
+      existingThemeLinks.forEach(link => link.remove());
+      
+      // Remove any existing inline theme styles
+      const existingThemeStyles = document.querySelectorAll('style[data-custom-theme]');
+      existingThemeStyles.forEach(style => style.remove());
+      
+      // Clear root styles from built-in themes
+      const root = document.documentElement;
+      root.removeAttribute('data-theme');
+      
+      // Generate CSS from theme data
+      const cssVariables = generateCSSFromThemeData(customThemeData.data);
+      console.log('🎨 Generated CSS variables:', cssVariables);
+      
+      // Apply CSS variables to document root
+      Object.entries(cssVariables).forEach(([property, value]) => {
+        root.style.setProperty(property, value);
+        console.log(`Setting ${property}: ${value}`);
+      });
+      
+      // Create and inject custom theme CSS
+      const customCSS = generateCustomThemeCSS(customThemeData.data);
+      if (customCSS) {
+        const styleElement = document.createElement('style');
+        styleElement.setAttribute('data-custom-theme', customThemeData.id);
+        styleElement.textContent = customCSS;
+        document.head.appendChild(styleElement);
+        console.log('💅 Injected custom theme CSS');
+      }
+      
+      // Set data-theme attribute for custom theme
+      root.setAttribute('data-theme', customThemeData.id);
+      
+      console.log(`✅ Successfully applied custom theme: ${customThemeData.name}`);
+    } catch (error) {
+      console.error('❌ Error applying custom theme:', error);
+      console.error('Stack:', error.stack);
+    }
+  };
+
+  // Generate CSS variables from theme data with proper mapping
+  const generateCSSFromThemeData = (themeData) => {
+    const cssVariables = {};
+    
+    // Map colors with proper CSS variable names
+    if (themeData.colors) {
+      Object.entries(themeData.colors).forEach(([key, value]) => {
+        // Convert camelCase to kebab-case for CSS variables
+        const cssKey = `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+        cssVariables[cssKey] = value;
+        
+        // Also add common CSS variable mappings
+        const commonMappings = {
+          'primary': '--primary-color',
+          'secondary': '--secondary-color', 
+          'backgroundPrimary': '--background-primary',
+          'backgroundSecondary': '--background-secondary',
+          'textPrimary': '--text-primary',
+          'textSecondary': '--text-secondary',
+          'borderColor': '--border-color'
+        };
+        
+        if (commonMappings[key]) {
+          cssVariables[commonMappings[key]] = value;
+        }
+      });
+    }
+    
+    // Map typography with proper units
+    if (themeData.typography) {
+      Object.entries(themeData.typography).forEach(([key, value]) => {
+        const cssKey = `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+        
+        // Handle different value types
+        if (typeof value === 'number') {
+          // Font sizes should be in rem
+          if (key.includes('fontSize') || key.includes('Size')) {
+            cssVariables[cssKey] = `${value}rem`;
+          } else {
+            cssVariables[cssKey] = value;
+          }
+        } else {
+          cssVariables[cssKey] = value;
+        }
+      });
+    }
+    
+    // Map spacing values
+    if (themeData.spacing) {
+      Object.entries(themeData.spacing).forEach(([key, value]) => {
+        const cssKey = `--spacing-${key}`;
+        cssVariables[cssKey] = typeof value === 'number' ? `${value}rem` : value;
+      });
+    }
+    
+    return cssVariables;
+  };
+
+  // Generate complete CSS for custom theme
+  const generateCustomThemeCSS = (themeData) => {
+    let css = `/* Custom Theme CSS */\n`;
+    
+    // Add theme-specific styles
+    if (themeData.colors) {
+      css += `
+        /* Custom Theme Color Overrides */
+        body {
+          background-color: var(--background-primary, ${themeData.colors.backgroundPrimary || '#ffffff'});
+          color: var(--text-primary, ${themeData.colors.textPrimary || '#212529'});
+        }
+        
+        .btn-primary {
+          background-color: var(--primary-color, ${themeData.colors.primary || '#007bff'});
+          border-color: var(--primary-color, ${themeData.colors.primary || '#007bff'});
+        }
+        
+        .btn-secondary {
+          background-color: var(--secondary-color, ${themeData.colors.secondary || '#6c757d'});
+          border-color: var(--secondary-color, ${themeData.colors.secondary || '#6c757d'});
+        }
+      `;
+    }
+    
+    return css;
+  };
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+    console.log('🎨 Loading saved theme:', savedTheme);
+    console.log('🔍 Theme system initializing...');
+    setCurrentTheme(savedTheme);
+    
+    // Load custom themes first to check if savedTheme is custom
+    const storedCustomThemes = loadCustomThemes();
+    
+    // Check if saved theme is a custom theme
+    const isCustomTheme = storedCustomThemes.find(theme => theme.id === savedTheme);
+    
+    if (isCustomTheme) {
+      console.log('🎨 Applying saved custom theme:', isCustomTheme.name);
+      // Apply custom theme directly
+      setTimeout(() => {
+        applyCustomTheme(isCustomTheme);
+      }, 100);
+    } else {
+      console.log('🎨 Loading built-in theme:', savedTheme);
+      // Load built-in theme CSS
+      loadThemeCSS(savedTheme);
+      
+      // Debug: Check if theme CSS files exist
+      fetch('/themes/variables.css')
+        .then(response => {
+          if (response.ok) {
+            console.log('✅ variables.css found');
+          } else {
+            console.error('❌ variables.css not found');
+          }
+        })
+        .catch(error => console.error('❌ Error checking variables.css:', error));
+        
+      fetch(`/themes/${savedTheme}.css`)
+        .then(response => {
+          if (response.ok) {
+            console.log(`✅ ${savedTheme}.css found`);
+          } else {
+            console.error(`❌ ${savedTheme}.css not found`);
+          }
+        })
+        .catch(error => console.error(`❌ Error checking ${savedTheme}.css:`, error));
+    }
+  }, []);
+
+  // Load theme CSS
+  const loadThemeCSS = async (themeId) => {
+    try {
+      console.log(`🎨 Loading theme CSS for: ${themeId}`);
+      
+      // Remove existing theme CSS
+      const existingThemeLink = document.querySelector(`link[data-theme]`);
+      if (existingThemeLink) {
+        existingThemeLink.remove();
+      }
+      
+      // Add new theme CSS
+      const themeLink = document.createElement('link');
+      themeLink.rel = 'stylesheet';
+      themeLink.href = `/themes/${themeId}.css`;
+      themeLink.setAttribute('data-theme', themeId);
+      document.head.appendChild(themeLink);
+      
+      // Wait for CSS to load
+      await new Promise((resolve) => {
+        themeLink.onload = resolve;
+        themeLink.onerror = resolve; // Don't fail if CSS doesn't exist
+      });
+      
+      // Set data-theme attribute on document
+      document.documentElement.setAttribute('data-theme', themeId);
+      
+      console.log(`✅ Theme CSS loaded for: ${themeId}`);
+    } catch (error) {
+      console.error(`❌ Error loading theme CSS for ${themeId}:`, error);
+    }
+  };
+
+  // Force CSS variables update
+  const forceThemeUpdate = (themeId) => {
+    const root = document.documentElement;
+    
+    // Ensure data-theme attribute is set
+    root.setAttribute('data-theme', themeId);
+    
+    // Force style recalculation
+    const body = document.body;
+    const originalDisplay = body.style.display;
+    body.style.display = 'none';
+    void body.offsetHeight; // Trigger reflow
+    body.style.display = originalDisplay;
+    
+    // Dispatch a custom event to notify components
+    const event = new CustomEvent('themeForceUpdate', { 
+      detail: { themeId } 
+    });
+    document.dispatchEvent(event);
+    
+    console.log(`🔄 Forced theme update for: ${themeId}`);
+  };
+
+  // Fetch site settings
+  const fetchSiteSettings = async () => {
+    try {
+      // Get auth token for admin endpoint
+      const token = localStorage.getItem('token');
+      console.log('🔍 ThemeContext - Token found:', token ? 'YES' : 'NO');
+      console.log('🔍 ThemeContext - User admin status:', userIsAdmin);
+      
+      // If no token OR user is known to not be admin, use public endpoint
+      if (!token || userIsAdmin === false) {
+        try {
+          const response = await fetch(createApiUrl('api/site-settings'), {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            signal: AbortSignal.timeout(2000) // 2 second timeout
+          });
+          
+          if (response.ok) {
+            const settings = await response.json();
+            console.log('📊 Site settings loaded from public endpoint:', Object.keys(settings).length, 'settings');
+            setSiteSettings(settings);
+            applyThemeSyncedStyles(settings);
+            return settings;
+          } else {
+            console.warn('Public endpoint returned:', response.status);
+            return null;
+          }
+        } catch (publicError) {
+          console.warn('Public endpoint failed:', publicError.message);
+          return null;
+        }
+      }
+      
+      // Try admin endpoint with auth token
+      try {
+        const response = await fetch(createApiUrl('api/admin/site-settings'), {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+          },
+          signal: AbortSignal.timeout(2000) // 2 second timeout
+        });
+        
+        if (response.ok) {
+          const settings = await response.json();
+          console.log('📊 Site settings loaded from admin endpoint:', Object.keys(settings).length, 'settings');
+          // User has admin access
+          setUserIsAdmin(true);
+          setSiteSettings(settings);
+          applyThemeSyncedStyles(settings);
+          return settings;
+        } else {
+          console.warn('Admin endpoint returned:', response.status);
+          if (response.status === 403) {
+            console.log('🔒 User does not have admin privileges, marking as non-admin');
+            // User is not admin, remember this to avoid future attempts
+            setUserIsAdmin(false);
+          }
+          // Fall back to public endpoint directly (avoid infinite recursion)
+          console.log('🔄 Falling back to public endpoint...');
+          
+          try {
+            const publicResponse = await fetch(createApiUrl('api/site-settings'), {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+              },
+              signal: AbortSignal.timeout(2000)
+            });
+            
+            if (publicResponse.ok) {
+              const settings = await publicResponse.json();
+              console.log('📊 Site settings loaded from public fallback:', Object.keys(settings).length, 'settings');
+              setSiteSettings(settings);
+              applyThemeSyncedStyles(settings);
+              return settings;
+            } else {
+              console.warn('Public fallback also returned:', publicResponse.status);
+              return null;
+            }
+          } catch (publicFallbackError) {
+            console.warn('Public fallback failed:', publicFallbackError.message);
+            return null;
+          }
+        }
+      } catch (adminError) {
+        console.warn('Admin endpoint failed:', adminError.message);
+        // If it's a network error or auth error, user might not be admin
+        if (adminError.message.includes('403') || adminError.message.includes('Forbidden')) {
+          console.log('🔒 User likely not admin due to error, marking as non-admin');
+          setUserIsAdmin(false);
+        }
+        console.log('🔄 Falling back to public endpoint...');
+        
+        // Remove token and try public endpoint once
+        try {
+          const response = await fetch(createApiUrl('api/site-settings'), {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            signal: AbortSignal.timeout(2000)
+          });
+          
+          if (response.ok) {
+            const settings = await response.json();
+            console.log('📊 Site settings loaded from public fallback:', Object.keys(settings).length, 'settings');
+            setSiteSettings(settings);
+            applyThemeSyncedStyles(settings);
+            return settings;
+          }
+        } catch (fallbackError) {
+          console.warn('Fallback also failed:', fallbackError.message);
+        }
+        
+        return null;
+      }
+      
+    } catch (error) {
+      console.error('❌ Critical error fetching site settings:', error.message);
+      // Return null instead of throwing to prevent loops
+      return null;
+    }
+  };
+
+  // Initial setup: load site settings and sync with saved theme - OPTIMIZED
+  useEffect(() => {
+    let isInitializing = false; // Guard against multiple initializations
+    
+    const initializeThemeAndSettings = async () => {
+      if (isInitializing || isInitialized) {
+        console.log('🛑 Initialization already in progress or completed, skipping...');
+        return;
+      }
+      
+      isInitializing = true;
+      console.log('🚀 Fast initialization starting...');
+      
+      try {
+        // Get saved theme
+        const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+        
+        // Set theme immediately (don't wait for CSS load)
+        setCurrentTheme(savedTheme);
+        
+        // Mark as initialized early so header can render
+        setIsInitialized(true);
+        isInitializing = false;
+        console.log('⚡ Quick initialization completed - UI can render');
+        
+        // Load theme CSS in background
+        loadThemeCSS(savedTheme).then(() => {
+          forceThemeUpdate(savedTheme);
+          console.log('🎨 Theme CSS loaded in background');
+        }).catch(error => {
+          console.error('❌ Error loading theme CSS in background:', error);
+        });
+        
+        // Load site settings in background with shorter timeout
+        setTimeout(async () => {
+          console.log('🔄 Loading site settings in background...');
+          try {
+            const settings = await Promise.race([
+              fetchSiteSettings(),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout')), 3000)
+              )
+            ]);
+            
+            if (settings) {
+              console.log('✅ Site settings loaded successfully');
+              applyThemeSyncedStyles(settings);
+            } else {
+              console.warn('⚠️ Site settings failed to load');
+            }
+          } catch (error) {
+            console.warn('⚠️ Site settings loading timed out or failed:', error.message);
+            // Continue with default settings
+          }
+        }, 100); // Load settings after 100ms
+        
+      } catch (error) {
+        console.error('❌ Error during fast initialization:', error);
+        // Still mark as initialized so app doesn't get stuck
+        setIsInitialized(true);
+        isInitializing = false;
+      }
+    };
+    
+    // Only initialize once
+    if (!isInitialized) {
+      initializeThemeAndSettings();
+    }
+  }, [isInitialized]); // Add isInitialized as dependency to prevent multiple runs
+
+  // Change theme function with site settings sync
+  const changeTheme = useCallback(async (themeId) => {
+    if (themeId === currentTheme) return;
+    
+    console.log(`🎨 Changing theme from ${currentTheme} to ${themeId}`);
+    console.log('🔍 Available custom themes:', customThemes);
+    
+    try {
+      // Set updating flag
+      setIsUpdatingSiteSettings(true);
+      
+      // Check if this is a custom theme (check both raw and localStorage)
+      let customTheme = customThemes.find(theme => theme.id === themeId);
+      
+      // Fallback: also check localStorage directly
+      if (!customTheme) {
+        const storedCustomThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
+        customTheme = storedCustomThemes.find(theme => theme.id === themeId);
+        console.log('🔍 Checked localStorage custom themes:', storedCustomThemes);
+      }
+      
+      if (customTheme) {
+        // Handle custom theme
+        console.log(`🎨 Found and applying custom theme:`, customTheme);
+        applyCustomTheme(customTheme);
+      } else {
+        // Handle built-in theme
+        console.log(`🎨 Applying built-in theme: ${themeId}`);
+        
+        // Load new theme CSS
+        await loadThemeCSS(themeId);
+        
+        // Force theme update to ensure CSS variables are applied
+        forceThemeUpdate(themeId);
+        
+        // Update site settings to match new theme colors (only if user is admin)
+        // Don't block UI with settings sync
+        setTimeout(async () => {
+          try {
+            if (userIsAdmin === true) {
+              console.log('🔧 User is admin, syncing site settings with theme in background...');
+              const success = await updateSiteSettingsToMatchTheme(themeId);
+              if (success) {
+                const updatedSettings = await fetchSiteSettings();
+                if (updatedSettings) {
+                  console.log('✅ Site settings synchronized with theme');
+                  applyThemeSyncedStyles(updatedSettings);
+                }
+              }
+            }
+          } catch (error) {
+            console.error('❌ Error syncing site settings with theme:', error);
+          }
+        }, 100);
+        
+        // Theme change is now immediate, settings sync happens in background
+      }
+      
+      // Update theme state
+      setCurrentTheme(themeId);
+      localStorage.setItem('selectedTheme', themeId);
+      
+      console.log(`✅ Theme changed to: ${themeId}`);
+      
+    } catch (error) {
+      console.error('Error changing theme:', error);
+    } finally {
+      setIsUpdatingSiteSettings(false);
+    }
+  }, [currentTheme, customThemes]);
+
+  // Listen for theme change requests (after changeTheme is available)
+  useEffect(() => {
+    const handleChangeThemeRequest = (event) => {
+      console.log('🎨 Theme change request:', event.detail);
+      if (event.detail.themeId) {
+        changeTheme(event.detail.themeId);
+      }
+    };
+
+    window.addEventListener('changeThemeRequest', handleChangeThemeRequest);
+    
+    return () => {
+      window.removeEventListener('changeThemeRequest', handleChangeThemeRequest);
+    };
+  }, [changeTheme]); // Depend on changeTheme function
+
+  // Refresh site settings (for manual updates)
+  const refreshSiteSettings = async () => {
+    console.log('🔄 Refreshing site settings...');
+    try {
+      const settings = await fetchSiteSettings();
+      return settings;
+    } catch (error) {
+      console.error('❌ Error refreshing site settings:', error);
+      return null;
+    }
+  };
+
+  // Available themes array
+  const builtInThemes = [
+    { id: 'default', name: 'Default', icon: '🌟', type: 'builtin' },
+    { id: 'dark', name: 'Dark', icon: '🌙', type: 'builtin' },
+    { id: 'blue', name: 'Blue', icon: '💙', type: 'builtin' },
+    { id: 'green', name: 'Green', icon: '💚', type: 'builtin' }
+  ];
+
+  // Custom themes formatted for theme selector
+  const formattedCustomThemes = customThemes.map(theme => ({
+    id: theme.id,
+    name: theme.name,
+    icon: '🎨',
+    type: 'custom',
+    description: theme.description
+  }));
+
+  // Combined themes array
+  const themesArray = [...builtInThemes, ...formattedCustomThemes];
+
+  const value = {
+    currentTheme,
+    siteSettings,
+    isInitialized,
+    isUpdatingSiteSettings,
+    changeTheme,
+    refreshSiteSettings,
+    themesArray,
+    builtInThemes,
+    customThemes: formattedCustomThemes,
+    loadCustomThemes,
+    deleteCustomTheme,
+    applyCustomTheme,
+    // Debug function
+    debugCustomThemes: () => {
+      console.log('🐛 CUSTOM THEME DEBUG:');
+      console.log('📊 Raw custom themes state:', customThemes);
+      console.log('📊 Formatted custom themes:', formattedCustomThemes);
+      console.log('📊 localStorage custom themes:', JSON.parse(localStorage.getItem('customThemes') || '[]'));
+      console.log('📊 Current theme:', currentTheme);
+      console.log('📊 All available themes:', themesArray);
+      console.log('📊 Is current theme custom:', customThemes.some(theme => theme.id === currentTheme));
+    },
+    // Theme utilities
+    isDarkMode: currentTheme === 'dark',
+    isLightMode: currentTheme === 'default',
+    isBlueTheme: currentTheme === 'blue',
+    isGreenTheme: currentTheme === 'green',
+    isCustomTheme: customThemes.some(theme => theme.id === currentTheme)
+  };
+
+  return (
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}; 

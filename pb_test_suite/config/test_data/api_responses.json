@@ -1,0 +1,23 @@
+{
+  "auth_login_success": {
+    "token": "sample_jwt_token",
+    "user": {
+      "id": 1,
+      "username": "test_user",
+      "role": "user"
+    }
+  },
+  "auth_login_admin": {
+    "token": "sample_admin_jwt_token",
+    "user": {
+      "id": 2,
+      "username": "test_admin",
+      "role": "admin"
+    }
+  },
+  "site_settings_response": {
+    "site_title": "Test Site",
+    "theme": "default",
+    "google_client_id": "test_google_client_id"
+  }
+}

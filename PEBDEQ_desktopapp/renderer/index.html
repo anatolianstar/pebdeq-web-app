@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEBDEQ Desktop Pro - Professional Background Removal</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Window Controls -->
+    <div class="window-controls">
+        <button id="minimize-btn" class="window-btn minimize" title="Minimize">
+            <span>−</span>
+        </button>
+        <button id="maximize-btn" class="window-btn maximize" title="Maximize/Restore">
+            <span>□</span>
+        </button>
+        <button id="fullscreen-btn" class="window-btn fullscreen" title="Full Screen">
+            <span>⛶</span>
+        </button>
+        <button id="close-btn" class="window-btn close" title="Close">
+            <span>✕</span>
+        </button>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo">
+                <span class="logo-icon">🎯</span>
+                <span class="logo-text">PEBDEQ Desktop Pro</span>
+            </div>
+            <div class="status-indicators">
+                <div id="python-status" class="status-indicator offline">
+                    <span class="status-dot"></span>
+                    <span class="status-text">AI Service</span>
+                </div>
+                <div id="extension-status" class="status-indicator offline">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Extensions (<span id="extension-count">0</span>)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="model-selector">
+                <select id="model-select">
+                    <option value="u2net">⚡ U2Net (Fast)</option>
+                    <option value="birefnet">🌟 BiRefNet (Premium)</option>
+                    <option value="bria">🚀 BRIA RMBG (Ultra)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button id="batch-mode-btn" class="header-btn">
+                <span>📦</span> Batch Mode
+            </button>
+            <button id="settings-btn" class="header-btn">
+                <span>⚙️</span> Settings
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>📁 Project</h3>
+                <button id="open-images-btn" class="sidebar-btn primary">
+                    <span>📷</span> Open Images
+                </button>
+                <button id="save-project-btn" class="sidebar-btn">
+                    <span>💾</span> Save Project
+                </button>
+            </div>
+            
+            <div class="sidebar-section" id="background-templates-section">
+                <h3>🖼️ Background Library</h3>
+                
+                <!-- New Layout: Left Categories + Right Content -->
+                <div class="bg-library-layout">
+                    <!-- Left Side: Categories (Vertical) -->
+                    <div class="bg-categories-sidebar">
+                        <button class="bg-category-btn active" data-category="all">
+                            <span>🎯</span>
+                            <span class="category-label">All</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="etsy">
+                            <span>🛍️</span>
+                            <span class="category-label">Etsy</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="studio">
+                            <span>📸</span>
+                            <span class="category-label">Studio</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="nature">
+                            <span>🌿</span>
+                            <span class="category-label">Nature</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="urban">
+                            <span>🏙️</span>
+                            <span class="category-label">Urban</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="abstract">
+                            <span>🎨</span>
+                            <span class="category-label">Abstract</span>
+                        </button>
+                        <button class="bg-category-btn" data-category="custom">
+                            <span>📁</span>
+                            <span class="category-label">Custom</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Right Side: Content (Vertical, Scrollable) -->
+                    <div class="bg-content-area">
+                        <!-- Search Box -->
+                        <div class="bg-search">
+                            <input type="text" id="bg-search-input" placeholder="🔍 Search backgrounds..." />
+                        </div>
+                        
+                        <!-- Custom Background Upload -->
+                        <button class="sidebar-btn secondary" id="upload-bg-btn">
+                            <span>📤</span> Upload Background
+                        </button>
+                        
+                        <!-- Background Templates Grid -->
+                        <div class="bg-templates-grid" id="bg-templates-grid">
+                            <!-- Loading placeholder -->
+                            <div class="bg-loading">
+                                <span>🔄 Loading backgrounds...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Background Effects Panel -->
+                <div class="bg-effects hidden" id="bg-effects">
+                    <h4>🎛️ Background Effects</h4>
+                    <div class="effect-controls">
+                        <div class="effect-item">
+                            <label for="bg-blur">Blur Effect:</label>
+                            <input type="range" id="bg-blur" min="0" max="20" value="0" />
+                            <span id="bg-blur-value">0px</span>
+                        </div>
+                        <div class="effect-item">
+                            <label for="bg-opacity">Background Opacity:</label>
+                            <input type="range" id="bg-opacity" min="10" max="100" value="100" />
+                            <span id="bg-opacity-value">100%</span>
+                        </div>
+                        <div class="effect-item">
+                            <label for="bg-scale">Background Scale:</label>
+                            <input type="range" id="bg-scale" min="50" max="200" value="100" />
+                            <span id="bg-scale-value">100%</span>
+                        </div>
+                    </div>
+                    <button class="sidebar-btn primary" id="apply-bg-effects">
+                        <span>✨</span> Apply Effects
+                    </button>
+                    
+                    <!-- Composition Mode Controls -->
+                    <div class="composition-controls hidden" id="composition-controls">
+                        <h4>🎨 Composition Mode</h4>
+                        <p>Drag to move • Scroll to scale</p>
+                        <div class="composition-note">
+                            <small>💡 Final image will be full resolution</small>
+                        </div>
+                        <div class="composition-actions">
+                            <button class="sidebar-btn success" id="generate-final-btn">
+                                <span>📸</span> Generate Final
+                            </button>
+                            <button class="sidebar-btn primary" id="multi-generate-btn">
+                                <span>🎨</span> Multi Generate
+                            </button>
+                            <button class="sidebar-btn secondary" id="exit-composition-btn">
+                                <span>🚪</span> Exit Composition
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>🔧 Tools</h3>
+                <button id="manual-refine-btn" class="sidebar-btn">
+                    <span>✏️</span> Manual Refine
+                </button>
+                <button id="edge-smooth-btn" class="sidebar-btn">
+                    <span>〰️</span> Smooth Edges
+                </button>
+                <button id="color-correct-btn" class="sidebar-btn">
+                    <span>🎨</span> Color Correct
+                </button>
+                <button id="shadow-toggle-btn" class="sidebar-btn">
+                    <span>🌑</span> Drop Shadow
+                </button>
+                
+                <!-- Drop Shadow Controls -->
+                <div class="shadow-controls hidden" id="shadow-controls">
+                    <div class="effect-item">
+                        <label for="shadow-blur">Shadow Blur:</label>
+                        <input type="range" id="shadow-blur" min="0" max="20" value="10" />
+                        <span id="shadow-blur-value">10px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-offset-x">Shadow X Offset:</label>
+                        <input type="range" id="shadow-offset-x" min="-30" max="30" value="5" />
+                        <span id="shadow-offset-x-value">5px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-offset-y">Shadow Y Offset:</label>
+                        <input type="range" id="shadow-offset-y" min="-30" max="30" value="5" />
+                        <span id="shadow-offset-y-value">5px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-opacity">Shadow Opacity:</label>
+                        <input type="range" id="shadow-opacity" min="10" max="100" value="50" />
+                        <span id="shadow-opacity-value">50%</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-color">Shadow Color:</label>
+                        <input type="color" id="shadow-color" value="#000000" />
+                    </div>
+                </div>
+                
+                <button id="object-shadow-toggle-btn" class="sidebar-btn">
+                    <span>📦</span> Object Shadow
+                </button>
+                
+                <!-- Object Shadow Controls -->
+                <div class="object-shadow-controls hidden" id="object-shadow-controls">
+                    <div class="effect-item">
+                        <label for="light-angle">Light Angle:</label>
+                        <input type="range" id="light-angle" min="0" max="360" value="330" />
+                        <span id="light-angle-value">330°</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="light-distance">Light Distance:</label>
+                        <input type="range" id="light-distance" min="10" max="200" value="200" />
+                        <span id="light-distance-value">200</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="object-height">Shadow Distance:</label>
+                        <input type="range" id="object-height" min="10" max="300" value="300" />
+                        <span id="object-height-value">300px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-distance">Object Height:</label>
+                        <input type="range" id="shadow-distance" min="0" max="150" value="0" />
+                        <span id="shadow-distance-value">0px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="shadow-perspective">Shadow Perspective:</label>
+                        <input type="range" id="shadow-perspective" min="0.1" max="1" step="0.1" value="1" />
+                        <span id="shadow-perspective-value">1</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="object-shadow-blur">Shadow Blur:</label>
+                        <input type="range" id="object-shadow-blur" min="5" max="30" value="10" />
+                        <span id="object-shadow-blur-value">10px</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="object-shadow-opacity">Shadow Opacity:</label>
+                        <input type="range" id="object-shadow-opacity" min="0" max="100" value="60" />
+                        <span id="object-shadow-opacity-value">60%</span>
+                    </div>
+                    <div class="effect-item">
+                        <label for="object-shadow-color">Shadow Color:</label>
+                        <input type="color" id="object-shadow-color" value="#000000" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section" id="crop-section">
+                <h3>✂️ Crop Image</h3>
+                <button id="crop-mode-btn" class="sidebar-btn">
+                    <span>✂️</span> Enable Crop Mode
+                </button>
+                
+                <div id="crop-controls" class="crop-controls hidden">
+                    <div class="aspect-ratio-selector">
+                        <label>Aspect Ratio:</label>
+                        <select id="aspect-ratio-select">
+                            <option value="free">Free</option>
+                            <option value="1:1">Square (1:1)</option>
+                            <option value="4:3">Standard (4:3)</option>
+                            <option value="16:9">Landscape (16:9)</option>
+                            <option value="3:4">Portrait (3:4)</option>
+                            <option value="9:16">Vertical (9:16)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="crop-actions">
+                        <button id="apply-crop-btn" class="sidebar-btn primary">
+                            <span>✓</span> Apply Crop
+                        </button>
+                        <button id="cut-export-btn" class="sidebar-btn success" title="Cut image and preview result">
+                            <span>✂️💾</span> Cut and Export
+                        </button>
+                        <button id="cancel-crop-btn" class="sidebar-btn">
+                            <span>✗</span> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Canvas Area -->
+        <section class="canvas-section">
+            <div class="canvas-toolbar">
+                <div class="toolbar-left">
+                    <button id="zoom-fit-btn" class="tool-btn">
+                        <span>🔍</span> Fit
+                    </button>
+                    <button id="zoom-100-btn" class="tool-btn">
+                        <span>1:1</span>
+                    </button>
+                    <div class="zoom-controls">
+                        <button id="zoom-out-btn" class="tool-btn">-</button>
+                        <span id="zoom-level">100%</span>
+                        <button id="zoom-in-btn" class="tool-btn">+</button>
+                    </div>
+                    <button id="force-refresh-btn" class="tool-btn" title="Force canvas refresh if image not visible">
+                        <span>🔄</span> Refresh
+                    </button>
+                    <div class="rotate-controls">
+                        <button id="rotate-left-btn" class="tool-btn" title="Rotate left 1° • Hold: continuous • Shift+Click: 90° • Ctrl+Wheel: precise">
+                            <span>↶</span>
+                        </button>
+                        <button id="rotate-right-btn" class="tool-btn" title="Rotate right 1° • Hold: continuous • Shift+Click: 90° • Ctrl+Wheel: precise">
+                            <span>↷</span>
+                        </button>
+                        <button id="reset-rotation-btn" class="tool-btn" title="Reset rotation to 0° (Ctrl+0)">
+                            <span>⟲</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="toolbar-center">
+                    <div class="view-modes">
+                        <button id="view-original-btn" class="view-btn active">Original</button>
+                        <button id="view-processed-btn" class="view-btn">Processed</button>
+                        <button id="view-comparison-btn" class="view-btn">Compare</button>
+                    </div>
+                </div>
+                
+                <div class="toolbar-right">
+                    <!-- Accept/Discard Controls -->
+                    <div id="result-controls" class="result-controls">
+                        <button id="discard-btn" class="tool-btn discard">
+                            <span>✗</span> Try Another Model
+                        </button>
+                        <button id="accept-btn" class="tool-btn accept">
+                            <span>✓</span> Accept Result
+                        </button>
+                    </div>
+                    
+                    <!-- Standard Controls -->
+                    <div id="standard-controls" class="standard-controls">
+                    <button id="undo-btn" class="tool-btn" disabled title="No actions to undo (Ctrl+Z)">
+                        <span>↶</span> Undo
+                    </button>
+                    <button id="redo-btn" class="tool-btn" disabled title="No actions to redo (Ctrl+Y)">
+                        <span>↷</span> Redo
+                    </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Drop Zone -->
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">📷</div>
+                    <h2>Drop images here or click to select</h2>
+                    <p>Supports JPG, PNG, WEBP • Max 10MB per image</p>
+                    <button id="select-files-btn" class="select-btn">
+                        Choose Images
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Canvas Container -->
+            <div id="canvas-container" class="canvas-container hidden">
+                <canvas id="main-canvas"></canvas>
+                
+                <!-- Layer Indicator -->
+                <div id="layer-indicator" class="layer-indicator hidden">
+                    <div class="layer-badge">
+                        <span class="layer-icon">🎨</span>
+                        <span class="layer-text">Layer 1</span>
+                    </div>
+                </div>
+                
+                <div id="loading-overlay" class="loading-overlay hidden">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Processing with AI...</div>
+                    <div class="loading-progress">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <span id="progress-text">0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Queue -->
+        <aside class="image-queue">
+            <div class="queue-header">
+                <h3>📋 Image Queue</h3>
+                <button id="clear-queue-btn" class="clear-btn">Clear</button>
+            </div>
+            <div id="image-list" class="image-list">
+                <!-- Dynamic image items will be added here -->
+            </div>
+            
+            <div class="queue-actions">
+                <button id="process-all-btn" class="action-btn primary" disabled>
+                    <span>⚡</span> Process All
+                </button>
+                <button id="reset-all-btn" class="action-btn warning" disabled>
+                    <span>🔄</span> Reset All Processed
+                </button>
+                <button id="export-all-btn" class="action-btn" disabled>
+                    <span>💾</span> Export All
+                </button>
+                <button id="send-to-platform-btn" class="action-btn platform-send" disabled>
+                    <span>🌐</span> Send to Platform
+                </button>
+            </div>
+        </aside>
+
+        <!-- Extension Processing Queue -->
+        <aside class="extension-queue">
+            <div class="queue-header">
+                <h3>🌐 Extension Queue</h3>
+                <button id="refresh-extension-queue-btn" class="refresh-btn">🔄</button>
+            </div>
+            <div id="extension-queue-list" class="extension-queue-list">
+                <div class="empty-queue-message">
+                    <span>✅</span>
+                    <p>Extension Integration Active</p>
+                    <small>Photos are processed automatically. Queue clears after "Send Platform"</small>
+                </div>
+            </div>
+            
+            <div class="extension-queue-actions">
+                <button id="process-extension-queue-btn" class="action-btn primary" disabled>
+                    <span>🎨</span> Process Queue
+                </button>
+                <button id="clear-extension-queue-btn" class="action-btn warning">
+                    <span>🧹</span> Clear All Extension Data
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Manual Refine Modal -->
+    <div id="manual-refine-modal" class="modal hidden">
+        <div class="modal-content refine-modal-content">
+            <div class="modal-header">
+                <h2>✏️ Manual Refine</h2>
+                <button id="close-refine-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="refine-controls">
+                    <div class="brush-controls">
+                        <div class="control-group">
+                            <label>Brush Mode:</label>
+                            <div class="brush-mode-buttons">
+                                <button id="erase-mode-btn" class="mode-btn active">
+                                    <span>🗑️</span> Erase
+                                </button>
+                                <button id="restore-mode-btn" class="mode-btn">
+                                    <span>➕</span> Restore
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="brush-size">Brush Size:</label>
+                            <input type="range" id="brush-size" min="5" max="50" value="20">
+                            <span id="brush-size-value">20px</span>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="brush-hardness">Hardness:</label>
+                            <input type="range" id="brush-hardness" min="0" max="100" value="80">
+                            <span id="brush-hardness-value">80%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="refine-actions">
+                        <button id="undo-refine-btn" class="tool-btn">
+                            <span>↶</span> Undo
+                        </button>
+                        <button id="reset-refine-btn" class="tool-btn">
+                            <span>🔄</span> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="refine-canvas-container">
+                    <div class="refine-zoom-controls">
+                        <button id="refine-zoom-fit" class="refine-zoom-btn" title="Fit to window">
+                            ⬜
+                        </button>
+                        <button id="refine-zoom-100" class="refine-zoom-btn" title="100% zoom">
+                            1:1
+                        </button>
+                        <button id="refine-zoom-in" class="refine-zoom-btn" title="Zoom in">
+                            +
+                        </button>
+                        <button id="refine-zoom-out" class="refine-zoom-btn" title="Zoom out">
+                            −
+                        </button>
+                    </div>
+                    <div class="refine-canvas-wrapper" id="refine-canvas-wrapper">
+                        <canvas id="refine-canvas"></canvas>
+                    </div>
+                    <div id="brush-cursor" class="brush-cursor"></div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="cancel-refine-btn" class="btn secondary">
+                    <span>✗</span> Cancel
+                </button>
+                <button id="apply-refine-btn" class="btn primary">
+                    <span>✓</span> Apply Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smooth Edges Modal -->
+    <div id="smooth-edges-modal" class="modal hidden">
+        <div class="modal-content smooth-modal-content">
+            <div class="modal-header">
+                <h2>〰️ Smooth Edges</h2>
+                <button id="close-smooth-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="smooth-controls">
+                    <div class="control-group">
+                        <label for="smooth-radius">Smoothing Radius:</label>
+                        <input type="range" id="smooth-radius" min="1" max="10" value="3">
+                        <span id="smooth-radius-value">3px</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="smooth-strength">Strength:</label>
+                        <input type="range" id="smooth-strength" min="10" max="100" value="50">
+                        <span id="smooth-strength-value">50%</span>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <div class="preview-comparison">
+                            <div class="preview-side">
+                                <h4>Before</h4>
+                                <canvas id="smooth-before-canvas"></canvas>
+                            </div>
+                            <div class="preview-side">
+                                <h4>After</h4>
+                                <canvas id="smooth-after-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="cancel-smooth-btn" class="btn secondary">
+                    <span>✗</span> Cancel
+                </button>
+                <button id="apply-smooth-btn" class="btn primary">
+                    <span>✓</span> Apply Smoothing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crop Preview Modal -->
+    <div id="crop-preview-modal" class="modal hidden">
+        <div class="modal-content crop-preview-content">
+            <div class="modal-header">
+                <h2>✂️ Crop Preview</h2>
+                <button id="close-crop-preview-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="crop-preview-container">
+                    <img id="crop-preview-image" src="" alt="Cropped preview" />
+                    <div class="crop-info">
+                        <span id="crop-dimensions">0x0</span>
+                        <span id="crop-filesize">0 KB</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="retry-crop-btn" class="btn secondary">
+                    <span>🔄</span> Retry Crop
+                </button>
+                <button id="save-crop-btn" class="btn primary">
+                    <span>💾</span> Save Image
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Correction Modal -->
+    <div id="color-correct-modal" class="modal hidden">
+        <div class="modal-content color-modal-content">
+            <div class="modal-header">
+                <h3>🎨 Color Correction</h3>
+                <button id="close-color-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="color-controls-panel">
+                    <!-- Presets -->
+                    <div class="control-section">
+                        <h4>📋 Presets</h4>
+                        <div class="preset-buttons">
+                            <button id="preset-auto" class="preset-btn">Auto</button>
+                            <button id="preset-vivid" class="preset-btn">Vivid</button>
+                            <button id="preset-warm" class="preset-btn">Warm</button>
+                            <button id="preset-cool" class="preset-btn">Cool</button>
+                            <button id="preset-vintage" class="preset-btn">Vintage</button>
+                            <button id="preset-bw" class="preset-btn">B&W</button>
+                        </div>
+                    </div>
+
+                    <!-- Basic Adjustments -->
+                    <div class="control-section">
+                        <h4>⚡ Basic</h4>
+                        <div class="control-row">
+                            <label for="brightness-slider">Brightness:</label>
+                            <input type="range" id="brightness-slider" min="-100" max="100" value="0" step="1">
+                            <span id="brightness-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="contrast-slider">Contrast:</label>
+                            <input type="range" id="contrast-slider" min="-100" max="100" value="0" step="1">
+                            <span id="contrast-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="saturation-slider">Saturation:</label>
+                            <input type="range" id="saturation-slider" min="-100" max="100" value="0" step="1">
+                            <span id="saturation-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="vibrance-slider">Vibrance:</label>
+                            <input type="range" id="vibrance-slider" min="-100" max="100" value="0" step="1">
+                            <span id="vibrance-value">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Color Balance -->
+                    <div class="control-section">
+                        <h4>🌈 Color Balance</h4>
+                        <div class="control-row">
+                            <label for="temperature-slider">Temperature:</label>
+                            <input type="range" id="temperature-slider" min="-100" max="100" value="0" step="1">
+                            <span id="temperature-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="tint-slider">Tint:</label>
+                            <input type="range" id="tint-slider" min="-100" max="100" value="0" step="1">
+                            <span id="tint-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="hue-slider">Hue Shift:</label>
+                            <input type="range" id="hue-slider" min="-180" max="180" value="0" step="1">
+                            <span id="hue-value">0°</span>
+                        </div>
+                    </div>
+
+                    <!-- Advanced -->
+                    <div class="control-section">
+                        <h4>🔧 Advanced</h4>
+                        <div class="control-row">
+                            <label for="highlights-slider">Highlights:</label>
+                            <input type="range" id="highlights-slider" min="-100" max="100" value="0" step="1">
+                            <span id="highlights-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="shadows-slider">Shadows:</label>
+                            <input type="range" id="shadows-slider" min="-100" max="100" value="0" step="1">
+                            <span id="shadows-value">0</span>
+                        </div>
+                        <div class="control-row">
+                            <label for="clarity-slider">Clarity:</label>
+                            <input type="range" id="clarity-slider" min="-100" max="100" value="0" step="1">
+                            <span id="clarity-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="color-preview-container">
+                    <div class="preview-side">
+                        <h4>🔍 Before</h4>
+                        <canvas id="color-before-canvas"></canvas>
+                    </div>
+                    <div class="preview-side">
+                        <h4>✨ After</h4>
+                        <canvas id="color-after-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="reset-color-btn" class="btn btn-secondary">🔄 Reset</button>
+                <button id="cancel-color-btn" class="btn btn-secondary">Cancel</button>
+                <button id="apply-color-btn" class="btn btn-primary">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button id="close-settings-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>🧠 AI Processing</h3>
+                    <div class="setting-item">
+                        <label for="default-model">Default AI Model:</label>
+                        <select id="default-model">
+                            <option value="u2net">⚡ U2Net (Fast - 2-5s)</option>
+                            <option value="birefnet">🌟 BiRefNet (Premium - 10-30s)</option>
+                            <option value="bria">🚀 BRIA RMBG (Ultra - 5-15s)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="processing-quality">Processing Quality:</label>
+                        <select id="processing-quality">
+                            <option value="fast">⚡ Fast (Lower quality, faster)</option>
+                            <option value="balanced">⚖️ Balanced (Good quality)</option>
+                            <option value="high">🌟 High (Best quality, slower)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>💾 Export Settings</h3>
+                    <div class="setting-item">
+                        <label for="auto-export">Auto-export after processing:</label>
+                        <input type="checkbox" id="auto-export">
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="file-naming">File naming pattern:</label>
+                        <select id="file-naming">
+                            <option value="original">original_name.png</option>
+                            <option value="suffix">original_name_rmbg.png</option>
+                            <option value="timestamp">original_name_2024-07-28.png</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>🎨 Appearance Settings</h3>
+                    <div class="setting-item">
+                        <label for="app-theme">Application theme:</label>
+                        <select id="app-theme">
+                            <option value="system">🖥️ System (Auto)</option>
+                            <option value="light">☀️ Light Theme</option>
+                            <option value="dark">🌙 Dark Theme</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="canvas-bg">Canvas background:</label>
+                        <select id="canvas-bg">
+                            <option value="theme">Theme Color (recommended)</option>
+                            <option value="transparent">Transparent (checkered)</option>
+                            <option value="white">White</option>
+                            <option value="black">Black</option>
+                            <option value="gray">Gray</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="show-grid">Show grid:</label>
+                        <input type="checkbox" id="show-grid">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>✂️ Crop Settings</h3>
+                    <div class="setting-item">
+                        <label for="default-crop-ratio">Default crop ratio:</label>
+                        <select id="default-crop-ratio">
+                            <option value="free">Free (No constraint)</option>
+                            <option value="1:1">Square (1:1)</option>
+                            <option value="4:3">Standard (4:3)</option>
+                            <option value="16:9">Landscape (16:9)</option>
+                            <option value="3:4">Portrait (3:4)</option>
+                            <option value="9:16">Vertical (9:16)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="auto-crop-mode">Enable crop mode automatically:</label>
+                        <input type="checkbox" id="auto-crop-mode">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>⚡ Performance</h3>
+                    <div class="setting-item">
+                        <label for="memory-limit">Memory limit for batch processing:</label>
+                        <select id="memory-limit">
+                            <option value="2gb">2 GB (Conservative)</option>
+                            <option value="4gb">4 GB (Balanced)</option>
+                            <option value="8gb">8 GB (High Performance)</option>
+                            <option value="unlimited">Unlimited</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="auto-save">Auto-save projects:</label>
+                        <input type="checkbox" id="auto-save" checked>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="reset-settings-btn" class="btn secondary">🔄 Reset to Defaults</button>
+                <button id="save-settings-btn" class="btn primary">💾 Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+        <div class="status-left">
+            <span id="status-message">Ready</span>
+        </div>
+        <div class="status-center">
+            <span id="image-info">No image selected</span>
+        </div>
+        <div class="status-right">
+            <span id="memory-usage">RAM: 0%</span>
+            <span id="processing-time">Time: 0s</span>
+        </div>
+    </footer>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+
+    <!-- Scripts -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/canvas.js?v=2.0"></script>
+    <script src="scripts/imageProcessor.js?v=2.0"></script>
+    <script src="scripts/main.js?v=2.0"></script>
+</body>
+</html> 

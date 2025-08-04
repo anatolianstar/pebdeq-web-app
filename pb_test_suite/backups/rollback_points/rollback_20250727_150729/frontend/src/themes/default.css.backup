@@ -1,0 +1,329 @@
+/* Default Light Theme */
+/* This theme provides a clean, modern light interface */
+
+[data-theme="default"] {
+  /* ========== PRIMARY COLORS ========== */
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --primary-active: #004085;
+  --primary-light: #cce7ff;
+  --primary-dark: #004085;
+  
+  /* ========== SECONDARY COLORS ========== */
+  --secondary-color: #6c757d;
+  --secondary-hover: #545b62;
+  --secondary-active: #3d4246;
+  --secondary-light: #e9ecef;
+  --secondary-dark: #495057;
+  
+  /* ========== STATUS COLORS ========== */
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --success-active: #1e7e34;
+  --success-light: #d4edda;
+  --success-dark: #155724;
+  
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --danger-active: #bd2130;
+  --danger-light: #f8d7da;
+  --danger-dark: #721c24;
+  
+  --warning-color: #ffc107;
+  --warning-hover: #e0a800;
+  --warning-active: #d39e00;
+  --warning-light: #fff3cd;
+  --warning-dark: #856404;
+  
+  --info-color: #17a2b8;
+  --info-hover: #138496;
+  --info-active: #117a8b;
+  --info-light: #d1ecf1;
+  --info-dark: #0c5460;
+  
+  /* ========== BACKGROUND COLORS ========== */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-dark: #343a40;
+  --bg-light: #ffffff;
+  
+  /* Card Backgrounds */
+  --card-bg: #ffffff;
+  --card-bg-hover: #f8f9fa;
+  --card-bg-active: #e9ecef;
+  
+  /* Modal Backgrounds */
+  --modal-bg: #ffffff;
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
+  
+  /* Header/Footer Backgrounds */
+  --header-bg: #ffffff;
+  --footer-bg: #343a40;
+  
+  /* ========== TEXT COLORS ========== */
+  --text-primary: #222222;
+  --text-secondary: #6c757d;
+  --text-muted: #999999;
+  --text-light: #ffffff;
+  --text-dark: #222222;
+  
+  /* Link Colors */
+  --link-color: #007bff;
+  --link-hover: #0056b3;
+  --link-active: #004085;
+  --link-visited: #6f42c1;
+  
+  /* Placeholder Text */
+  --placeholder-color: #999999;
+  
+  /* ========== BORDER COLORS ========== */
+  --border-color: #dee2e6;
+  --border-color-light: #f8f9fa;
+  --border-color-dark: #adb5bd;
+  --border-color-focus: #007bff;
+  --border-color-error: #dc3545;
+  --border-color-success: #28a745;
+  
+  /* ========== SHADOWS ========== */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  --shadow-xl: 0 2rem 4rem rgba(0, 0, 0, 0.2);
+  
+  /* Component Specific Shadows */
+  --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --card-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --header-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --modal-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+/* ========== THEME SPECIFIC STYLES ========== */
+[data-theme="default"] {
+  /* Body and main backgrounds */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="default"] .hero-modern {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .featured-products {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="default"] .product-card-featured {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="default"] .product-card-featured:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+[data-theme="default"] .blog-posts-section {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="default"] .blog-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="default"] .blog-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* ========== COMPONENT SPECIFIC OVERRIDES ========== */
+[data-theme="default"] .header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--header-shadow);
+}
+
+[data-theme="default"] .footer {
+  background-color: var(--footer-bg);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .nav a {
+  color: var(--text-primary);
+}
+
+[data-theme="default"] .nav a:hover {
+  color: var(--primary-color);
+}
+
+[data-theme="default"] .btn {
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-all);
+}
+
+[data-theme="default"] .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+[data-theme="default"] .btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+[data-theme="default"] .btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+[data-theme="default"] .btn-outline:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .form-group input,
+[data-theme="default"] .form-group textarea,
+[data-theme="default"] .form-group select {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="default"] .form-group input:focus,
+[data-theme="default"] .form-group textarea:focus,
+[data-theme="default"] .form-group select:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+[data-theme="default"] .modal-content {
+  background-color: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--modal-shadow);
+}
+
+[data-theme="default"] .modal-overlay {
+  background-color: var(--modal-backdrop);
+}
+
+[data-theme="default"] .admin-dashboard {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="default"] .admin-nav button {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="default"] .admin-nav button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="default"] .admin-nav button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="default"] .stat-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="default"] .stat-card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+[data-theme="default"] table {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="default"] table th {
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="default"] table td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="default"] table tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 768px) {
+  [data-theme="default"] .hero-modern {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+  
+  [data-theme="default"] .product-card-featured {
+    box-shadow: var(--shadow-sm);
+  }
+  
+  [data-theme="default"] .blog-card {
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+[data-theme="default"] :focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+[data-theme="default"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== ANIMATION ENHANCEMENTS ========== */
+[data-theme="default"] * {
+  transition: var(--theme-transition);
+}
+
+[data-theme="default"] .fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

@@ -1,0 +1,117 @@
+{
+  "class_name": "AuthenticationAPITests",
+  "total_tests": 15,
+  "passed_tests": 0,
+  "failed_tests": 15,
+  "success_rate": 0.0,
+  "duration": "0:01:20.307967",
+  "start_time": "2025-08-03T10:36:48.179477",
+  "end_time": "2025-08-03T10:38:08.487444",
+  "test_details": [
+    {
+      "test_name": "test_authentication_performance",
+      "status": "FAILED",
+      "duration": "0:00:02.064919",
+      "start_time": "2025-08-03T10:36:48.179477",
+      "end_time": "2025-08-03T10:36:50.244396"
+    },
+    {
+      "test_name": "test_brute_force_protection",
+      "status": "FAILED",
+      "duration": "0:00:07.707917",
+      "start_time": "2025-08-03T10:36:50.244396",
+      "end_time": "2025-08-03T10:36:57.952313"
+    },
+    {
+      "test_name": "test_concurrent_login_sessions",
+      "status": "FAILED",
+      "duration": "0:00:04.145356",
+      "start_time": "2025-08-03T10:36:57.952313",
+      "end_time": "2025-08-03T10:37:02.097669"
+    },
+    {
+      "test_name": "test_invalid_jwt_token",
+      "status": "FAILED",
+      "duration": "0:00:12.426579",
+      "start_time": "2025-08-03T10:37:02.098659",
+      "end_time": "2025-08-03T10:37:14.525238"
+    },
+    {
+      "test_name": "test_jwt_token_validation",
+      "status": "FAILED",
+      "duration": "0:00:04.261012",
+      "start_time": "2025-08-03T10:37:14.525238",
+      "end_time": "2025-08-03T10:37:18.786250"
+    },
+    {
+      "test_name": "test_login_with_invalid_credentials",
+      "status": "FAILED",
+      "duration": "0:00:10.318249",
+      "start_time": "2025-08-03T10:37:18.786250",
+      "end_time": "2025-08-03T10:37:29.104499"
+    },
+    {
+      "test_name": "test_login_with_missing_fields",
+      "status": "FAILED",
+      "duration": "0:00:10.354434",
+      "start_time": "2025-08-03T10:37:29.104499",
+      "end_time": "2025-08-03T10:37:39.458933"
+    },
+    {
+      "test_name": "test_login_with_valid_credentials",
+      "status": "FAILED",
+      "duration": "0:00:02.176389",
+      "start_time": "2025-08-03T10:37:39.458933",
+      "end_time": "2025-08-03T10:37:41.635322"
+    },
+    {
+      "test_name": "test_logout_without_authentication",
+      "status": "FAILED",
+      "duration": "0:00:02.054293",
+      "start_time": "2025-08-03T10:37:41.635322",
+      "end_time": "2025-08-03T10:37:43.689615"
+    },
+    {
+      "test_name": "test_successful_logout",
+      "status": "FAILED",
+      "duration": "0:00:02.060022",
+      "start_time": "2025-08-03T10:37:43.690613",
+      "end_time": "2025-08-03T10:37:45.750635"
+    },
+    {
+      "test_name": "test_token_expiration",
+      "status": "FAILED",
+      "duration": "0:00:02.026335",
+      "start_time": "2025-08-03T10:37:45.750635",
+      "end_time": "2025-08-03T10:37:47.776970"
+    },
+    {
+      "test_name": "test_token_refresh",
+      "status": "FAILED",
+      "duration": "0:00:02.043898",
+      "start_time": "2025-08-03T10:37:47.776970",
+      "end_time": "2025-08-03T10:37:49.820868"
+    },
+    {
+      "test_name": "test_user_registration",
+      "status": "FAILED",
+      "duration": "0:00:02.161781",
+      "start_time": "2025-08-03T10:37:49.820868",
+      "end_time": "2025-08-03T10:37:51.982649"
+    },
+    {
+      "test_name": "test_user_registration_validation",
+      "status": "FAILED",
+      "duration": "0:00:10.216905",
+      "start_time": "2025-08-03T10:37:51.983645",
+      "end_time": "2025-08-03T10:38:02.200550"
+    },
+    {
+      "test_name": "test_user_role_access_control",
+      "status": "FAILED",
+      "duration": "0:00:06.286894",
+      "start_time": "2025-08-03T10:38:02.200550",
+      "end_time": "2025-08-03T10:38:08.487444"
+    }
+  ]
+}

@@ -1,0 +1,532 @@
+/* Green Theme */
+/* This theme provides a natural, eco-friendly green-focused interface */
+
+[data-theme="green"] {
+  /* ========== PRIMARY COLORS ========== */
+  --primary-color: #38a169;
+  --primary-hover: #2f855a;
+  --primary-active: #276749;
+  --primary-light: #c6f6d5;
+  --primary-dark: #1a365d;
+  
+  /* ========== SECONDARY COLORS ========== */
+  --secondary-color: #68d391;
+  --secondary-hover: #4fd1c7;
+  --secondary-active: #38b2ac;
+  --secondary-light: #e6fffa;
+  --secondary-dark: #234e52;
+  
+  /* ========== STATUS COLORS ========== */
+  --success-color: #48bb78;
+  --success-hover: #38a169;
+  --success-active: #2f855a;
+  --success-light: #c6f6d5;
+  --success-dark: #1a365d;
+  
+  --danger-color: #f56565;
+  --danger-hover: #e53e3e;
+  --danger-active: #c53030;
+  --danger-light: #fed7d7;
+  --danger-dark: #742a2a;
+  
+  --warning-color: #ed8936;
+  --warning-hover: #dd6b20;
+  --warning-active: #c05621;
+  --warning-light: #feebc8;
+  --warning-dark: #7b341e;
+  
+  --info-color: #4fd1c7;
+  --info-hover: #38b2ac;
+  --info-active: #319795;
+  --info-light: #e6fffa;
+  --info-dark: #234e52;
+  
+  /* ========== BACKGROUND COLORS ========== */
+  --bg-primary: #f7fafc;
+  --bg-secondary: #e6fffa;
+  --bg-tertiary: #c6f6d5;
+  --bg-dark: #1a365d;
+  --bg-light: #ffffff;
+  
+  /* Card Backgrounds */
+  --card-bg: #ffffff;
+  --card-bg-hover: #e6fffa;
+  --card-bg-active: #c6f6d5;
+  
+  /* Modal Backgrounds */
+  --modal-bg: #ffffff;
+  --modal-backdrop: rgba(56, 161, 105, 0.2);
+  
+  /* Header/Footer Backgrounds */
+  --header-bg: #ffffff;
+  --footer-bg: #1a365d;
+  
+  /* ========== TEXT COLORS ========== */
+  --text-primary: #1a202c;
+  --text-secondary: #2d3748;
+  --text-muted: #718096;
+  --text-light: #ffffff;
+  --text-dark: #1a202c;
+  
+  /* Link Colors */
+  --link-color: #38a169;
+  --link-hover: #2f855a;
+  --link-active: #276749;
+  --link-visited: #553c9a;
+  
+  /* Placeholder Text */
+  --placeholder-color: #718096;
+  
+  /* ========== BORDER COLORS ========== */
+  --border-color: #9ae6b4;
+  --border-color-light: #c6f6d5;
+  --border-color-dark: #68d391;
+  --border-color-focus: #38a169;
+  --border-color-error: #f56565;
+  --border-color-success: #48bb78;
+  
+  /* ========== SHADOWS ========== */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(56, 161, 105, 0.1);
+  --shadow-md: 0 0.5rem 1rem rgba(56, 161, 105, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(56, 161, 105, 0.2);
+  --shadow-xl: 0 2rem 4rem rgba(56, 161, 105, 0.25);
+  
+  /* Component Specific Shadows */
+  --card-shadow: 0 0.125rem 0.25rem rgba(56, 161, 105, 0.1);
+  --card-shadow-hover: 0 0.5rem 1rem rgba(56, 161, 105, 0.15);
+  --header-shadow: 0 0.125rem 0.25rem rgba(56, 161, 105, 0.1);
+  --modal-shadow: 0 1rem 3rem rgba(56, 161, 105, 0.2);
+}
+
+/* ========== THEME SPECIFIC STYLES ========== */
+[data-theme="green"] {
+  /* Body and main backgrounds */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] .hero-modern {
+  background: linear-gradient(135deg, #38a169 0%, #4fd1c7 100%);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .featured-products {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="green"] .product-card-featured {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="green"] .product-card-featured:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="green"] .blog-posts-section {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="green"] .blog-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="green"] .blog-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--border-color-focus);
+}
+
+/* ========== COMPONENT SPECIFIC OVERRIDES ========== */
+[data-theme="green"] .header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--header-shadow);
+}
+
+[data-theme="green"] .footer {
+  background-color: var(--footer-bg);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .nav a {
+  color: var(--text-primary);
+}
+
+[data-theme="green"] .nav a:hover {
+  color: var(--primary-color);
+}
+
+[data-theme="green"] .btn {
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-all);
+}
+
+[data-theme="green"] .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 15px rgba(56, 161, 105, 0.3);
+}
+
+[data-theme="green"] .btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-dark);
+}
+
+[data-theme="green"] .btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+[data-theme="green"] .btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+[data-theme="green"] .btn-outline:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .form-group input,
+[data-theme="green"] .form-group textarea,
+[data-theme="green"] .form-group select {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] .form-group input:focus,
+[data-theme="green"] .form-group textarea:focus,
+[data-theme="green"] .form-group select:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25);
+}
+
+[data-theme="green"] .form-group input::placeholder,
+[data-theme="green"] .form-group textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+[data-theme="green"] .modal-content {
+  background-color: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--modal-shadow);
+}
+
+[data-theme="green"] .modal-overlay {
+  background-color: var(--modal-backdrop);
+}
+
+[data-theme="green"] .admin-dashboard {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="green"] .admin-nav button {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] .admin-nav button:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="green"] .admin-nav button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .stat-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="green"] .stat-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="green"] table {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="green"] table th {
+  background-color: var(--bg-tertiary);
+  border-bottom: 2px solid var(--border-color-focus);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] table td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] table tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* ========== GREEN THEME SPECIFIC ENHANCEMENTS ========== */
+[data-theme="green"] .featured-badge {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .status-badge {
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="green"] .status-badge.pending {
+  background-color: var(--warning-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .status-badge.processing {
+  background-color: var(--info-color);
+  color: var(--text-dark);
+}
+
+[data-theme="green"] .status-badge.shipped {
+  background-color: var(--secondary-color);
+  color: var(--text-dark);
+}
+
+[data-theme="green"] .status-badge.delivered {
+  background-color: var(--success-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .status-badge.cancelled {
+  background-color: var(--danger-color);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .marquee-banner {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+[data-theme="green"] .logo {
+  filter: hue-rotate(90deg) saturate(1.2);
+}
+
+[data-theme="green"] .product-image img {
+  border-radius: var(--border-radius);
+}
+
+[data-theme="green"] .product-image img:hover {
+  transform: scale(1.02);
+}
+
+/* ========== GREEN THEME GRADIENTS ========== */
+[data-theme="green"] .btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+}
+
+[data-theme="green"] .btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-active) 100%);
+}
+
+[data-theme="green"] .hero-modern {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+  position: relative;
+}
+
+[data-theme="green"] .hero-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmerGreen 3s infinite;
+}
+
+@keyframes shimmerGreen {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ========== NATURAL ACCENTS ========== */
+[data-theme="green"] .product-card-featured {
+  border-left: 4px solid var(--primary-color);
+}
+
+[data-theme="green"] .blog-card {
+  border-left: 4px solid var(--info-color);
+}
+
+[data-theme="green"] .stat-card {
+  border-top: 3px solid var(--primary-color);
+}
+
+[data-theme="green"] .admin-nav button.active {
+  border-left: 4px solid var(--primary-color);
+}
+
+/* ========== ORGANIC PATTERNS ========== */
+[data-theme="green"] .product-card-featured:hover {
+  background: radial-gradient(circle at 50% 50%, rgba(56, 161, 105, 0.05) 0%, transparent 70%);
+}
+
+[data-theme="green"] .blog-card:hover {
+  background: radial-gradient(circle at 50% 50%, rgba(79, 209, 199, 0.05) 0%, transparent 70%);
+}
+
+[data-theme="green"] .btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-active) 100%);
+  box-shadow: 0 0 20px rgba(56, 161, 105, 0.3);
+}
+
+/* ========== LEAF INSPIRED ANIMATIONS ========== */
+[data-theme="green"] .product-card-featured:hover {
+  animation: gentleFloat 2s ease-in-out infinite;
+}
+
+[data-theme="green"] .blog-card:hover {
+  animation: gentleFloat 2s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 768px) {
+  [data-theme="green"] .hero-modern {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+  }
+  
+  [data-theme="green"] .product-card-featured {
+    box-shadow: var(--shadow-sm);
+  }
+  
+  [data-theme="green"] .blog-card {
+    box-shadow: var(--shadow-sm);
+  }
+  
+  [data-theme="green"] .product-card-featured:hover,
+  [data-theme="green"] .blog-card:hover {
+    animation: none;
+  }
+}
+
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+[data-theme="green"] :focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+[data-theme="green"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== ANIMATION ENHANCEMENTS ========== */
+[data-theme="green"] * {
+  transition: var(--theme-transition);
+}
+
+[data-theme="green"] .fade-in {
+  animation: fadeInGreen 0.5s ease-in-out;
+}
+
+@keyframes fadeInGreen {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== GREEN THEME GLOW EFFECTS ========== */
+[data-theme="green"] .product-card-featured:hover {
+  box-shadow: var(--card-shadow-hover), 0 0 20px rgba(56, 161, 105, 0.2);
+}
+
+[data-theme="green"] .blog-card:hover {
+  box-shadow: var(--card-shadow-hover), 0 0 20px rgba(79, 209, 199, 0.2);
+}
+
+[data-theme="green"] .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+[data-theme="green"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="green"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="green"] ::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+[data-theme="green"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* ========== ECO-FRIENDLY VISUAL ENHANCEMENTS ========== */
+[data-theme="green"] .btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+[data-theme="green"] .btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--secondary-hover) 100%);
+}
+
+[data-theme="green"] .featured-products {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+/* ========== NATURE-INSPIRED TEXTURES ========== */
+[data-theme="green"] .stat-card {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-secondary) 100%);
+}
+
+[data-theme="green"] .modal-content {
+  background: linear-gradient(135deg, var(--modal-bg) 0%, var(--bg-secondary) 100%);
+} 

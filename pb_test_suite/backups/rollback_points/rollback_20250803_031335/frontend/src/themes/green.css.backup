@@ -1,0 +1,398 @@
+/* Green Theme - Yeniden Tasarlanmış Modern Yeşil Tema */
+/* Professional, harmonic ve doğa temalı yeşil tonları */
+
+[data-theme="green"] {
+  /* ========== ANA YEŞİL RENK PALETİ ========== */
+  --primary-color: #16a34a;           /* Modern parlak yeşil */
+  --primary-hover: #15803d;           /* Hover koyu yeşil */
+  --primary-active: #166534;          /* Active en koyu yeşil */
+  --primary-light: #86efac;           /* Açık yeşil */
+  --primary-dark: #14532d;            /* Çok koyu yeşil */
+  
+  /* ========== İKİNCİL YEŞİL TONLARI ========== */
+  --secondary-color: #22c55e;         /* Orta yeşil */
+  --secondary-hover: #16a34a;         /* Hover orta-koyu */
+  --secondary-active: #15803d;        /* Active koyu */
+  --secondary-light: #bbf7d0;         /* Açık ikincil */
+  --secondary-dark: #166534;          /* Koyu ikincil */
+  
+  /* ========== BACKGROUND RENKLER ========== */
+  --bg-primary: #f7fdf7;              /* Ana sayfa - çok açık yeşil-beyaz */
+  --bg-secondary: #f0fdf4;            /* İkincil alanlar - açık yeşil-beyaz */
+  --bg-tertiary: #dcfce7;             /* Üçüncül alanlar - orta yeşil-beyaz */
+  --bg-yesil: #ecfdf5;                /* Yeşil tint arka plan */
+  --bg-light: #ffffff;                /* Beyaz arka plan */
+  
+  /* ========== HEADER & FOOTER - FALLBACK ONLY ========== */
+  /* These are fallback values, admin settings take priority */
+  --header-bg-fallback: linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+  --header-text-fallback: #ffffff;
+  --footer-bg-fallback: linear-gradient(135deg, #166534 0%, #16a34a 50%, #22c55e 100%);
+  --footer-text-fallback: #ffffff;
+  
+  /* ========== CARD & CONTAINER RENKLER ========== */
+  --card-bg: #ffffff;                 /* Beyaz card arka plan */
+  --card-border: #dcfce7;             /* Açık yeşil border */
+  --card-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
+  --card-hover-bg: #ecfdf5;           /* Hover hafif yeşil */
+  --card-hover-shadow: 0 8px 24px rgba(22, 163, 74, 0.15);
+  
+  /* ========== TEXT RENKLER ========== */
+  --text-primary: #1f2937;            /* Ana metin koyu gri */
+  --text-secondary: #374151;          /* İkincil metin orta gri */
+  --text-muted: #6b7280;              /* Soluk metin açık gri */
+  --text-light: #ffffff;              /* Beyaz metin */
+  --text-on-primary: #ffffff;         /* Yeşil arka planda beyaz */
+  
+  /* ========== LINK RENKLER ========== */
+  --link-color: #16a34a;
+  --link-hover: #15803d;
+  --link-active: #166534;
+  --link-visited: #059669;
+  
+  /* ========== BUTTON RENKLER ========== */
+  --btn-primary-bg: #16a34a;
+  --btn-primary-hover: #15803d;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f0fdf4;
+  --btn-secondary-hover: #dcfce7;
+  --btn-secondary-text: #1f2937;
+  
+  /* ========== FORM ELEMENT RENKLER ========== */
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #16a34a;
+  --input-focus-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  --input-text: #1f2937;
+  --input-placeholder: #9ca3af;
+  
+  /* ========== BORDER RENKLER ========== */
+  --border-light: #dcfce7;
+  --border-medium: #bbf7d0;
+  --border-dark: #86efac;
+  --border-primary: #16a34a;
+  
+  /* ========== SHADOW EFEKTLER ========== */
+  --shadow-sm: 0 1px 3px rgba(22, 163, 74, 0.1);
+  --shadow-md: 0 4px 12px rgba(22, 163, 74, 0.1);
+  --shadow-lg: 0 8px 24px rgba(22, 163, 74, 0.15);
+  --shadow-xl: 0 16px 48px rgba(22, 163, 74, 0.2);
+  
+  /* ========== STATUS RENKLER ========== */
+  --success-color: #059669;
+  --success-bg: #d1fae5;
+  --warning-color: #d97706;
+  --warning-bg: #fef3c7;
+  --danger-color: #dc2626;
+  --danger-bg: #fee2e2;
+  --info-color: #0891b2;
+  --info-bg: #cffafe;
+}
+
+/* ========== GLOBAL ELEMANLAR ========== */
+
+[data-theme="green"] * {
+  transition: all 0.3s ease;
+}
+
+[data-theme="green"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ========== HEADER STYLING - REMOVED ========== */
+/* Header styling completely removed to allow admin settings to work */
+/* Components use inline styles from site settings, no CSS override needed */
+
+/* ========== FOOTER STYLING ========== */
+[data-theme="green"] .footer,
+[data-theme="green"] .site-footer,
+[data-theme="green"] .main-footer {
+  background: var(--footer-bg) !important;
+  color: var(--footer-text) !important;
+}
+
+[data-theme="green"] .footer *,
+[data-theme="green"] .site-footer *,
+[data-theme="green"] .main-footer * {
+  color: var(--footer-text) !important;
+}
+
+/* ========== PRODUCT CARDS ========== */
+[data-theme="green"] .product-card,
+[data-theme="green"] .card,
+[data-theme="green"] .product-item {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: all 0.3s ease !important;
+}
+
+[data-theme="green"] .product-card:hover,
+[data-theme="green"] .card:hover,
+[data-theme="green"] .product-item:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--primary-light) !important;
+  box-shadow: var(--card-hover-shadow) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ========== BUTTONS ========== */
+[data-theme="green"] .btn-primary,
+[data-theme="green"] .button-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+[data-theme="green"] .btn-primary:hover,
+[data-theme="green"] .button-primary:hover {
+  background: var(--btn-primary-hover) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+[data-theme="green"] .btn-secondary {
+  background: var(--btn-secondary-bg) !important;
+  color: var(--btn-secondary-text) !important;
+  border: 2px solid var(--border-light) !important;
+  border-radius: 8px !important;
+}
+
+[data-theme="green"] .btn-secondary:hover {
+  background: var(--btn-secondary-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* ========== FORM ELEMENTS ========== */
+[data-theme="green"] input,
+[data-theme="green"] textarea,
+[data-theme="green"] select {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--input-border) !important;
+  border-radius: 8px !important;
+  color: var(--input-text) !important;
+  padding: 12px 16px !important;
+}
+
+[data-theme="green"] input:focus,
+[data-theme="green"] textarea:focus,
+[data-theme="green"] select:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+  outline: none !important;
+}
+
+[data-theme="green"] input::placeholder,
+[data-theme="green"] textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* ========== LINKS ========== */
+[data-theme="green"] a {
+  color: var(--link-color) !important;
+  text-decoration: none !important;
+}
+
+[data-theme="green"] a:hover {
+  color: var(--link-hover) !important;
+  text-decoration: underline !important;
+}
+
+/* ========== ADMIN DASHBOARD ========== */
+[data-theme="green"] .admin-dashboard {
+  background: var(--bg-primary) !important;
+}
+
+/* Ana Content Area */
+[data-theme="green"] .admin-main {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Sidebar - Gradient Yeşil */
+[data-theme="green"] .admin-sidebar {
+  background: linear-gradient(180deg, #166534 0%, #16a34a 50%, #22c55e 100%) !important;
+  color: var(--text-light) !important;
+  border-right: 3px solid var(--primary-light) !important;
+  box-shadow: 4px 0 12px rgba(22, 163, 74, 0.15) !important;
+}
+
+/* Sidebar Buttons */
+[data-theme="green"] .admin-sidebar button,
+[data-theme="green"] .admin-sidebar .nav-button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-light) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  margin: 4px 0 !important;
+  padding: 12px 16px !important;
+}
+
+[data-theme="green"] .admin-sidebar button:hover,
+[data-theme="green"] .admin-sidebar .nav-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateX(4px) !important;
+}
+
+[data-theme="green"] .admin-sidebar button.active,
+[data-theme="green"] .admin-sidebar .nav-button.active {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 700 !important;
+}
+
+/* Content Areas */
+[data-theme="green"] .admin-dashboard .dashboard-content,
+[data-theme="green"] .admin-dashboard .products-content,
+[data-theme="green"] .admin-dashboard .users-content,
+[data-theme="green"] .admin-dashboard .orders-content {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Cards ve Containers */
+[data-theme="green"] .admin-dashboard .stat-card,
+[data-theme="green"] .admin-dashboard .recent-activities,
+[data-theme="green"] .admin-dashboard .card {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--card-shadow) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="green"] .admin-dashboard .stat-card:hover,
+[data-theme="green"] .admin-dashboard .card:hover {
+  background: var(--card-hover-bg) !important;
+  border-color: var(--primary-light) !important;
+  box-shadow: var(--card-hover-shadow) !important;
+}
+
+/* Tables */
+[data-theme="green"] .admin-dashboard table {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--card-border) !important;
+  border-radius: 8px !important;
+}
+
+[data-theme="green"] .admin-dashboard th {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--primary-light) !important;
+}
+
+[data-theme="green"] .admin-dashboard td {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+}
+
+[data-theme="green"] .admin-dashboard tr:hover {
+  background: var(--bg-yesil) !important;
+}
+
+/* Form Elements in Admin */
+[data-theme="green"] .admin-dashboard input,
+[data-theme="green"] .admin-dashboard textarea,
+[data-theme="green"] .admin-dashboard select {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--input-border) !important;
+  color: var(--input-text) !important;
+}
+
+[data-theme="green"] .admin-dashboard input:focus,
+[data-theme="green"] .admin-dashboard textarea:focus,
+[data-theme="green"] .admin-dashboard select:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+}
+
+/* Theme Selector */
+[data-theme="green"] .admin-sidebar .theme-selector {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+}
+
+[data-theme="green"] .admin-sidebar .theme-selector select {
+  background: rgba(22, 101, 52, 0.9) !important;
+  color: var(--text-light) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ========== SCROLLBAR ========== */
+[data-theme="green"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="green"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="green"] ::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+[data-theme="green"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* ========== HOVER EFFECTS ========== */
+[data-theme="green"] .btn:hover {
+  transform: translateY(-2px);
+}
+
+[data-theme="green"] .product-card:hover,
+[data-theme="green"] .card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* ========== YEŞIL ACCENT EFFECTS ========== */
+[data-theme="green"] .hero-modern {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+  color: var(--text-light);
+}
+
+[data-theme="green"] .product-card-featured,
+[data-theme="green"] .blog-card {
+  border-left: 4px solid var(--primary-color);
+}
+
+[data-theme="green"] .btn-primary:hover {
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
+}
+
+/* ========== NATURE THEMED ELEMENTS ========== */
+[data-theme="green"] .nature-accent {
+  background: linear-gradient(45deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1px solid var(--primary-light);
+}
+
+[data-theme="green"] .eco-badge {
+  background: var(--primary-color);
+  color: var(--text-light);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  [data-theme="green"] .admin-sidebar {
+    background: linear-gradient(135deg, #166534 0%, #16a34a 100%) !important;
+  }
+  
+  [data-theme="green"] .card,
+  [data-theme="green"] .product-card {
+    margin-bottom: 16px !important;
+  }
+}

@@ -1,0 +1,32 @@
+# API Test Commands
+
+## 1. Test Site Settings (Public)
+curl http://localhost:5005/api/site-settings
+
+## 2. Test Login
+curl -X POST http://localhost:5005/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"info@pebdeq.com\",\"password\":\"2110\"}"
+
+## 3. Test Admin Site Settings (requires token)
+# First get token from login, then use it:
+curl -X GET http://localhost:5005/api/admin/site-settings -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+## 4. Test Products (Public)
+curl http://localhost:5005/api/products
+
+## 5. Test Categories (Public)
+curl http://localhost:5005/api/categories
+
+## 6. Test Admin Products (requires token)
+curl -X GET http://localhost:5005/api/admin/products -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+## PowerShell Alternative (Windows)
+# Use Invoke-RestMethod instead of curl:
+Invoke-RestMethod -Uri "http://localhost:5005/api/site-settings" -Method GET
+
+# For POST requests:
+$body = @{
+    email = "info@pebdeq.com"
+    password = "2110"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:5005/api/auth/login" -Method POST -Body $body -ContentType "application/json" 

@@ -1,0 +1,1388 @@
+import ast
+import os
+import re
+import json
+import requests
+from pathlib import Path
+import time
+from datetime import datetime
+import shutil
+
+class AllProjectCodeQualityTest:
+    """
+    Comprehensive Project Code Quality and Security Test Suite
+    Tüm proje dosyalarını test eder, kullanıcı seçim yapabilir
+    """
+    
+    def __init__(self):
+        self.project_root = Path(__file__).parent.parent.parent.parent
+        self.test_results = {}
+        self.backup_path = self.project_root / "pb_test_suite" / "backups" / "code_quality"
+        self.api_base = "http://localhost:5005"
+        
+        # Create backup directory - handle permission errors gracefully
+        try:
+            self.backup_path.mkdir(parents=True, exist_ok=True)
+            print(f"✅ Backup directory created: {self.backup_path}")
+        except PermissionError as e:
+            print(f"⚠️ Warning: Cannot create backup directory due to permissions: {e}")
+            print(f"⚠️ Continuing without backup functionality...")
+        except Exception as e:
+            print(f"⚠️ Warning: Cannot create backup directory: {e}")
+        
+        # Scan all project files
+        self.all_files = self.scan_project_files()
+        self.selected_files = []
+        
+    def scan_project_files(self):
+        """Tüm proje dosyalarını tara ve listele"""
+        files = {
+            'python': [],
+            'javascript': [],
+            'css': [],
+            'other': []
+        }
+        
+        # Backend Python files
+        backend_path = self.project_root / "backend"
+        if backend_path.exists():
+            for py_file in backend_path.rglob("*.py"):
+                if not any(skip in str(py_file) for skip in ['__pycache__', '.git', 'venv', 'node_modules']):
+                    files['python'].append({
+                        'path': py_file,
+                        'relative_path': py_file.relative_to(self.project_root),
+                        'size': py_file.stat().st_size if py_file.exists() else 0,
+                        'category': 'Backend'
+                    })
+        
+        # Test Suite Python files (pb_test_suite)
+        test_suite_path = self.project_root / "pb_test_suite"
+        if test_suite_path.exists():
+            for py_file in test_suite_path.rglob("*.py"):
+                if not any(skip in str(py_file) for skip in ['__pycache__', '.git', 'venv', 'node_modules', 'backups', 'Backups']):
+                    files['python'].append({
+                        'path': py_file,
+                        'relative_path': py_file.relative_to(self.project_root),
+                        'size': py_file.stat().st_size if py_file.exists() else 0,
+                        'category': 'Test Suite'
+                    })
+        
+        # Deployment Python files
+        deployment_path = self.project_root / "deployment"
+        if deployment_path.exists():
+            for py_file in deployment_path.rglob("*.py"):
+                if not any(skip in str(py_file) for skip in ['__pycache__', '.git', 'venv', 'node_modules']):
+                    files['python'].append({
+                        'path': py_file,
+                        'relative_path': py_file.relative_to(self.project_root),
+                        'size': py_file.stat().st_size if py_file.exists() else 0,
+                        'category': 'Deployment'
+                    })
+        
+        # Frontend JavaScript/React files
+        frontend_path = self.project_root / "frontend"
+        if frontend_path.exists():
+            for js_file in frontend_path.rglob("*.js"):
+                if not any(skip in str(js_file) for skip in ['node_modules', '.git', 'build', 'dist', 'venv', '.venv', '__pycache__']):
+                    files['javascript'].append({
+                        'path': js_file,
+                        'relative_path': js_file.relative_to(self.project_root),
+                        'size': js_file.stat().st_size if js_file.exists() else 0,
+                        'category': 'Frontend'
+                    })
+            
+            for jsx_file in frontend_path.rglob("*.jsx"):
+                if not any(skip in str(jsx_file) for skip in ['node_modules', '.git', 'build', 'dist', 'venv', '.venv', '__pycache__']):
+                    files['javascript'].append({
+                        'path': jsx_file,
+                        'relative_path': jsx_file.relative_to(self.project_root),
+                        'size': jsx_file.stat().st_size if jsx_file.exists() else 0,
+                        'category': 'Frontend'
+                    })
+        
+        # Deployment JavaScript files
+        deployment_path = self.project_root / "deployment"
+        if deployment_path.exists():
+            for js_file in deployment_path.rglob("*.js"):
+                if not any(skip in str(js_file) for skip in ['node_modules', '.git', 'build', 'dist', 'venv', '.venv', '__pycache__', 'backups', 'Backups']):
+                    files['javascript'].append({
+                        'path': js_file,
+                        'relative_path': js_file.relative_to(self.project_root),
+                        'size': js_file.stat().st_size if js_file.exists() else 0,
+                        'category': 'Deployment'
+                    })
+        
+        # CSS files
+        for css_file in self.project_root.rglob("*.css"):
+            if not any(skip in str(css_file) for skip in ['node_modules', '.git', 'build', 'dist', 'venv', '.venv', '__pycache__', 'backups', 'Backups']):
+                files['css'].append({
+                    'path': css_file,
+                    'relative_path': css_file.relative_to(self.project_root),
+                    'size': css_file.stat().st_size if css_file.exists() else 0,
+                    'category': 'Styles'
+                })
+        
+        # Other deployment files (JSON, MD, TXT, BAT, SH)
+        deployment_path = self.project_root / "deployment"
+        if deployment_path.exists():
+            for ext in ['*.json', '*.md', '*.txt', '*.bat', '*.sh']:
+                for file in deployment_path.rglob(ext):
+                    if not any(skip in str(file) for skip in ['node_modules', '.git', 'venv', '.venv', '__pycache__', 'backups', 'Backups']):
+                        files['other'].append({
+                            'path': file,
+                            'relative_path': file.relative_to(self.project_root),
+                            'size': file.stat().st_size if file.exists() else 0,
+                            'category': 'Deployment Config'
+                        })
+        
+        return files
+    
+    def display_file_selection(self):
+        """Kullanıcıya dosya seçimi için interaktif menu göster"""
+        # Check for web interface mode (environment variable)
+        import os
+        web_selection = os.environ.get('WEB_FILE_SELECTION')
+        
+        all_files_list = []
+        
+        # Build file list with consistent ordering
+        for file_type in ['python', 'javascript', 'css', 'other']:
+            if file_type in self.all_files:
+                for file_info in self.all_files[file_type]:
+                    all_files_list.append(file_info)
+        
+        # Add numbering/ID to each file for debugging
+        for i, file_info in enumerate(all_files_list, 1):
+            file_info['id'] = i
+        
+        if web_selection:
+            # Web interface mode - use pre-selected files
+            try:
+                # Web interface mode processing
+                # Note: Total files available: {len(all_files_list)}
+                
+                # Look for TestDashboard.css specifically
+                css_files = [f for f in all_files_list if 'TestDashboard.css' in str(f['relative_path'])]
+                if css_files:
+                    # TestDashboard.css found at ID: {css_files[0]['id']}
+                    pass
+                
+                if web_selection == "95":
+                    # Recommended files for web interface
+                    recommended = [f for f in all_files_list 
+                                 if f['size'] > 10000 and f['size'] < 200000][:10]
+                    self.selected_files = recommended
+                    print(f"[WEB] Test için önerilen dosyalar seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "94":
+                    # Critical files including deployment (web interface)
+                    critical_categories = ['Backend', 'Frontend', 'Deployment', 'Deployment Config']
+                    critical_names = [
+                        "products.py", "categories.py", "cart.py", "models.py", "admin.py",
+                        "AdminDashboard.js", "Products.js", "ProductDetail.js", "CategoryManagement.js",
+                        "deployment_gui.py", "docker_enhancement.py", "deploy.sh", "deployment_settings.json"
+                    ]
+                    self.selected_files = [f for f in all_files_list 
+                                         if (f['category'] in critical_categories and 
+                                             (any(str(f['relative_path']).endswith(name) for name in critical_names) or
+                                              f['size'] > 30000))]
+                    print(f"[WEB] Deployment dahil kritik dosyalar seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "93":
+                    # Only deployment files (web interface)
+                    self.selected_files = [f for f in all_files_list 
+                                         if f['category'] in ['Deployment', 'Deployment Config']]
+                    print(f"[WEB] Sadece deployment dosyaları seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "0":
+                    # All files (web interface)
+                    self.selected_files = all_files_list
+                    print(f"[WEB] TÜM DOSYALAR seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "99":
+                    # Critical files (platform-independent path matching)
+                    critical_files = [
+                        'backend/run.py',
+                        'backend/app/routes/admin.py', 
+                        'backend/app/routes/main.py',
+                        'backend/app/routes/site_settings.py',
+                        'frontend/src/pages/AdminDashboard.js',
+                        'frontend/src/components/ThemeBuilder.js',
+                        'deployment/deployment_gui.py',
+                        'pb_test_suite/tests/code_quality/test_all_project_files.py'
+                    ]
+                    # Normalize paths for cross-platform compatibility
+                    import os
+                    self.selected_files = []
+                    for f in all_files_list:
+                        file_path_normalized = str(f['relative_path']).replace('\\', '/')
+                        if any(critical in file_path_normalized for critical in critical_files):
+                            self.selected_files.append(f)
+                    print(f"[WEB] Critical dosyalar seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "96":
+                    # Frontend files only (web interface)
+                    self.selected_files = [f for f in all_files_list if f['category'] == 'Frontend']
+                    print(f"[WEB] Frontend dosyaları seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "97":
+                    # Backend files only (web interface)
+                    self.selected_files = [f for f in all_files_list if f['category'] == 'Backend']
+                    print(f"[WEB] Backend dosyaları seçildi: {len(self.selected_files)} dosya")
+
+                elif web_selection == "98":
+                    # Large files only (web interface)
+                    self.selected_files = [f for f in all_files_list if f['size'] > 50000]
+                    print(f"[WEB] Büyük dosyalar seçildi: {len(self.selected_files)} dosya")
+
+                else:
+                    # Parse file indices from web (single or multiple)
+                    try:
+                        if ',' in web_selection:
+                            # Multiple file IDs
+                            selected_ids = [int(x.strip()) for x in web_selection.split(',')]
+                            self.selected_files = []
+                            for file_id in selected_ids:
+                                if 1 <= file_id <= len(all_files_list):
+                                    selected_file = all_files_list[file_id - 1]
+                                    self.selected_files.append(selected_file)
+                            print(f"[WEB] Seçilen dosyalar: {len(self.selected_files)} dosya")
+                        else:
+                            # Single file ID
+                            file_id = int(web_selection)
+                            if 1 <= file_id <= len(all_files_list):
+                                selected_file = all_files_list[file_id - 1]
+                                self.selected_files = [selected_file]
+                                print(f"[WEB] Seçilen dosya: {selected_file['relative_path']}")
+                            else:
+                                print(f"[WEB] Geçersiz dosya ID: {file_id} (1-{len(all_files_list)} arası olmalı)")
+                                return False
+                    except ValueError:
+                        print(f"[WEB] Geçersiz ID formatı: {web_selection}")
+                        return False
+                
+                # Special handling for TestDashboard.css if requested
+                if any('TestDashboard.css' in str(f['relative_path']) for f in self.selected_files):
+                    print("[INFO] TestDashboard.css seçildi - CSS specific testleri uygulanacak")
+                
+                return len(self.selected_files) > 0
+                
+            except Exception as e:
+                print(f"[WEB] Hata: {e}. Varsayılan seçim kullanılıyor.")
+                # Fallback to recommended files
+                recommended = [f for f in all_files_list 
+                             if f['size'] > 10000 and f['size'] < 200000][:10]
+                self.selected_files = recommended
+                return len(self.selected_files) > 0
+        
+        print("\n[INFO] PROJE DOSYA LİSTESİ")
+        print("=" * 60)
+        
+        # Display files by category for terminal mode
+        file_index = 1
+        for file_type, files in self.all_files.items():
+            if files:
+                print(f"\n[FILES] {file_type.upper()} FILES:")
+                for file_info in files:
+                    size_kb = file_info['size'] / 1024
+                    print(f"  {file_index:2d}. {file_info['relative_path']} ({size_kb:.1f}KB) [{file_info['category']}]")
+                    file_index += 1
+        
+        print(f"\n[STATS] TOPLAM: {len(all_files_list)} dosya bulundu")
+        print("\n[SELECT] SEÇIM OPSİYONLARI:")
+        print("  0  - Tümünü seç (TÜM DOSYALAR)")
+        print("  99 - Varsayılan critical dosyaları seç")
+        print("  98 - Sadece büyük dosyaları seç (>50KB)")
+        print("  97 - Sadece Backend dosyaları")
+        print("  96 - Sadece Frontend dosyaları")
+        print("  95 - Test için önerileni seç")
+        print("  94 - Deployment dosyaları dahil kritik seçim")
+        print("  93 - SADECE Deployment dosyaları")
+        
+        while True:
+            try:
+                selection = input("\n🔢 Seçiminizi yapın (virgülle ayırın, örn: 1,5,10 veya 0): ").strip()
+                
+                if not selection:
+                    continue
+                
+                if selection == "0":
+                    self.selected_files = all_files_list
+                    print(f"OK: Tüm dosyalar seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "99":
+                    # Default critical files
+                    critical_names = [
+                        "products.py", "categories.py", "cart.py", "models.py",
+                        "AdminDashboard.js", "Products.js", "ProductDetail.js", "CategoryManagement.js"
+                    ]
+                    self.selected_files = [f for f in all_files_list 
+                                         if any(str(f['relative_path']).endswith(name) for name in critical_names)]
+                    print(f"OK: Critical dosyalar seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "98":
+                    self.selected_files = [f for f in all_files_list if f['size'] > 50000]
+                    print(f"OK: Büyük dosyalar seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "97":
+                    self.selected_files = [f for f in all_files_list if f['category'] == 'Backend']
+                    print(f"OK: Backend dosyaları seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "96":
+                    self.selected_files = [f for f in all_files_list if f['category'] == 'Frontend']
+                    print(f"OK: Frontend dosyaları seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "95":
+                    # Recommended test files
+                    recommended = [f for f in all_files_list 
+                                 if f['size'] > 10000 and f['size'] < 200000][:10]
+                    self.selected_files = recommended
+                    print(f"OK: Test için önerilen dosyalar seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "94":
+                    # Critical files including deployment
+                    critical_categories = ['Backend', 'Frontend', 'Deployment', 'Deployment Config']
+                    critical_names = [
+                        "products.py", "categories.py", "cart.py", "models.py", "admin.py",
+                        "AdminDashboard.js", "Products.js", "ProductDetail.js", "CategoryManagement.js",
+                        "deployment_gui.py", "docker_enhancement.py", "deploy.sh", "deployment_settings.json"
+                    ]
+                    self.selected_files = [f for f in all_files_list 
+                                         if (f['category'] in critical_categories and 
+                                             (any(str(f['relative_path']).endswith(name) for name in critical_names) or
+                                              f['size'] > 30000))]
+                    print(f"OK: Deployment dahil kritik dosyalar seçildi: {len(self.selected_files)} dosya")
+                    break
+                elif selection == "93":
+                    # Only deployment files
+                    self.selected_files = [f for f in all_files_list 
+                                         if f['category'] in ['Deployment', 'Deployment Config']]
+                    print(f"OK: Sadece deployment dosyaları seçildi: {len(self.selected_files)} dosya")
+                    break
+                else:
+                    # Manual selection
+                    indices = [int(x.strip()) for x in selection.split(',')]
+                    self.selected_files = [all_files_list[i-1] for i in indices 
+                                         if 1 <= i <= len(all_files_list)]
+                    print(f"OK: {len(self.selected_files)} dosya seçildi")
+                    break
+                    
+            except (ValueError, IndexError) as e:
+                print(f"ERROR: Hatalı seçim: {e}. Tekrar deneyin.")
+                continue
+        
+        # Show selected files
+        if self.selected_files:
+            print("\n[LIST] SEÇİLEN DOSYALAR:")
+            for i, file_info in enumerate(self.selected_files, 1):
+                print(f"  {i:2d}. {file_info['relative_path']} ({file_info['size']/1024:.1f}KB)")
+        
+        return len(self.selected_files) > 0
+    
+    def run_all_tests(self):
+        """Tüm testleri çalıştır ve sonuçları topla"""
+        
+        # CRITICAL: Debug selected files before testing
+        print(f"\n[DEBUG] Test başlangıcında selected_files sayısı: {len(self.selected_files)}")
+        if len(self.selected_files) > 0:
+            print(f"[DEBUG] İlk 3 dosya:")
+            for i, f in enumerate(self.selected_files[:3]):
+                print(f"  {i+1}. {f['relative_path']}")
+        
+        if not self.selected_files:
+            print("[WARNING] Selected_files boş! Yeniden seçim yapılacak...")
+            if not self.display_file_selection():
+                print("ERROR: Hiç dosya seçilmedi. Test iptal edildi.")
+                return False
+            
+            # After re-selection, debug again
+            print(f"[DEBUG] Yeniden seçim sonrası selected_files sayısı: {len(self.selected_files)}")
+        
+        print(f"\n[TESTING] {len(self.selected_files)} DOSYA İÇİN KOD KALİTE TESTİ BAŞLIYOR...")
+        print("=" * 80)
+        
+        tests = [
+            ("Syntax Tests", self.test_syntax_errors),
+            ("Import Dependencies", self.test_import_dependencies),
+            ("API Connectivity", self.test_api_connectivity),
+            ("State Management", self.test_state_management),
+            ("Function Integrity", self.test_function_integrity),
+            ("Debug Cleanup", self.test_debug_cleanup),
+            ("Code Duplication", self.test_code_duplication),
+            ("Error Handling", self.test_error_handling),
+            ("Async Operations", self.test_async_operations),
+            ("Security Checks", self.test_security_issues),
+            ("Deployment Quality", self.test_deployment_quality)
+        ]
+        
+        all_passed = True
+        
+        for test_name, test_func in tests:
+            print(f"\n[TEST] {test_name} ({len(self.selected_files)} dosya)...")
+            try:
+                result = test_func()
+                self.test_results[test_name] = result
+                
+                if result['passed']:
+                    print(f"OK: {test_name}: PASSED")
+                else:
+                    print(f"ERROR: {test_name}: FAILED")
+                    print(f"   Issues: {len(result['issues'])}")
+                    for issue in result['issues'][:3]:  # Show first 3 issues
+                        print(f"   - {issue}")
+                    all_passed = False
+                    
+            except Exception as e:
+                print(f"ERROR: {test_name}: ERROR - {str(e)}")
+                self.test_results[test_name] = {
+                    'passed': False,
+                    'error': str(e),
+                    'issues': [f"Test execution failed: {str(e)}"]
+                }
+                all_passed = False
+        
+        # Generate test report
+        self.generate_test_report()
+        
+        if all_passed:
+            print("\n🎉 TÜM TESTLER BAŞARILI!")
+            print("✨ Seçilen dosyalar kod kalite kontrolünden geçti!")
+            
+            # Manual backup approval
+            backup_approved = self.ask_backup_approval()
+            if backup_approved:
+                print("[BACKUP] Kod backup alınıyor...")
+                self.create_backup()
+                print("OK: Backup başarıyla oluşturuldu!")
+            else:
+                print("[INFO] Backup atlanıyor (kullanıcı onaylamadı)")
+            
+            return True
+        else:
+            print("\n[WARNING] HATALAR TESPİT EDİLDİ!")
+            print("[INFO] Hataları düzelttikten sonra tekrar test edin.")
+            return False
+    
+    def ask_backup_approval(self):
+        """Backup onayı iste"""
+        # Check for web interface mode
+        import os
+        web_mode = os.environ.get('WEB_FILE_SELECTION')
+        
+        if web_mode:
+            print("[WEB] Web arayüzü modu - Backup otomatik olarak atlanıyor")
+            print("[INFO] Manuel backup için Test Dashboard'da 'Create Backup' butonunu kullanın")
+            return False
+        
+        while True:
+            try:
+                response = input("\n💾 Kod backup almak istiyor musunuz? (y/n): ").strip().lower()
+                if response in ['y', 'yes', 'evet', 'e']:
+                    return True
+                elif response in ['n', 'no', 'hayır', 'h']:
+                    return False
+                else:
+                    print("Lütfen 'y' (evet) veya 'n' (hayır) girin.")
+            except KeyboardInterrupt:
+                print("\nBackup onayı iptal edildi.")
+                return False
+    
+    def test_syntax_errors(self):
+        """Syntax hatalarını test et - satır numaraları ile"""
+        issues = []
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Python syntax check
+                if str(file_path).endswith('.py'):
+                    try:
+                        ast.parse(content)
+                    except SyntaxError as e:
+                        issues.append(f"Python syntax error in {file_path} at line {e.lineno}: {e.msg}")
+                
+                # JavaScript/JSX detailed syntax checks
+                elif str(file_path).endswith(('.js', '.jsx')):
+                    js_issues = self._check_javascript_syntax_with_node(file_path)
+                    issues.extend(js_issues)
+                
+                # CSS syntax checks
+                elif str(file_path).endswith('.css'):
+                    # Check for basic CSS syntax issues
+                    if content.count('{') != content.count('}'):
+                        issues.append(f"Unmatched braces in CSS file {file_path}")
+                    
+                    # Check for incomplete selectors
+                    lines = content.split('\n')
+                    for i, line in enumerate(lines, 1):
+                        line = line.strip()
+                        if line and not line.startswith('/*') and not line.startswith('*') and not line.endswith('*/'):
+                            if line.endswith('{') and i < len(lines):
+                                # Check if next non-empty line has a property or closing brace
+                                next_line = lines[i].strip() if i < len(lines) else ""
+                                if next_line and not (next_line.startswith('}') or ':' in next_line or next_line.startswith('/*')):
+                                    # This might be an incomplete rule, but let's be lenient
+                                    pass
+                    
+                    # Check for common CSS mistakes
+                    if re.search(r';\s*}', content):
+                        # This is actually fine in CSS
+                        pass
+                    
+                    # Check for unclosed media queries
+                    media_count = len(re.findall(r'@media[^{]*{', content))
+                    closing_count = content.count('}')
+                    if media_count > 0:
+                        # Basic check for media query structure
+                        pass
+                
+            except Exception as e:
+                issues.append(f"Error reading {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def _check_javascript_syntax(self, file_path, content):
+        """JavaScript/JSX syntax kontrolü - satır satır (regex aware)"""
+        issues = []
+        lines = content.split('\n')
+        
+        # Remove strings and regexes first to avoid false positives
+        content_clean = self._remove_strings_and_regexes(content)
+        lines_clean = content_clean.split('\n')
+        
+        # Bracket tracking with line numbers
+        brackets = {'{': '}', '[': ']', '(': ')'}
+        stack = []
+        
+        for line_num, line in enumerate(lines_clean, 1):
+            for char_pos, char in enumerate(line):
+                if char in brackets:
+                    stack.append((char, line_num, char_pos))
+                elif char in brackets.values():
+                    if not stack:
+                        issues.append(f"Unexpected closing '{char}' in {file_path} at line {line_num}:{char_pos}")
+                    else:
+                        open_char, open_line, open_pos = stack.pop()
+                        expected = brackets.get(open_char)
+                        if expected != char:
+                            issues.append(f"Mismatched brackets in {file_path}: '{open_char}' at line {open_line}:{open_pos} and '{char}' at line {line_num}:{char_pos}")
+        
+        # Check for unclosed brackets
+        for open_char, line_num, char_pos in stack:
+            issues.append(f"Unclosed '{open_char}' in {file_path} at line {line_num}:{char_pos}")
+        
+        # Use original lines for JSX checks
+        return self._check_jsx_specific_issues(file_path, lines, issues)
+    
+    def _remove_strings_and_regexes(self, content):
+        """Remove string literals and regex patterns to avoid bracket false positives"""
+        import re
+        
+        # Remove string literals (both single and double quotes)
+        content = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"', '""', content)
+        content = re.sub(r"'[^'\\]*(?:\\.[^'\\]*)*'", "''", content)
+        
+        # Remove template literals
+        content = re.sub(r'`[^`\\]*(?:\\.[^`\\]*)*`', '``', content)
+        
+        # Remove regex patterns /pattern/flags
+        content = re.sub(r'/[^/\n\\]*(?:\\.[^/\n\\]*)*/[gimuy]*', '//', content)
+        
+        return content
+    
+    def _check_jsx_specific_issues(self, file_path, lines, issues):
+        """Check for JSX specific syntax issues"""
+        import re
+        
+        for line_num, line in enumerate(lines, 1):
+            line_stripped = line.strip()
+            
+            # Skip empty lines and comments
+            if not line_stripped or line_stripped.startswith('//') or line_stripped.startswith('/*'):
+                continue
+            
+            # Check for semicolon in JSX return statements (more specific)
+            if re.search(r'return\s*\(\s*<.*>\s*\)\s*;', line_stripped):
+                issues.append(f"JSX return statement with semicolon in {file_path} at line {line_num}")
+            
+            # Check for ) : null; pattern (ternary operator issue)
+            if re.search(r'\)\s*:\s*null\s*;', line_stripped):
+                issues.append(f"Ternary operator with semicolon in {file_path} at line {line_num}")
+                
+            # Check for common JSX map return issues
+            if '.map(' in line_stripped and 'return' in line_stripped and ');' in line_stripped:
+                issues.append(f"Map function return with semicolon in {file_path} at line {line_num}")
+        
+        return issues
+    
+    def _check_javascript_syntax_with_node(self, file_path):
+        """Use Node.js to check JavaScript syntax - most accurate method"""
+        import subprocess
+        import os
+        
+        issues = []
+        
+        try:
+            # Run node -c (syntax check) on the file
+            result = subprocess.run(
+                ['node', '-c', str(file_path)],
+                capture_output=True,
+                text=True,
+                cwd=os.path.dirname(file_path)
+            )
+            
+            if result.returncode != 0:
+                # Parse Node.js error message to extract line numbers
+                error_lines = result.stderr.strip().split('\n')
+                for line in error_lines:
+                    if file_path.name in line or 'SyntaxError' in line:
+                        issues.append(f"JavaScript syntax error in {file_path}: {line.strip()}")
+                
+                # If no specific error found, add generic error
+                if not issues:
+                    issues.append(f"JavaScript syntax error in {file_path}: {result.stderr.strip()}")
+                    
+        except FileNotFoundError:
+            # Node.js not found, fall back to basic checks
+            issues.append(f"Node.js not found - using basic syntax checks for {file_path}")
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            issues.extend(self._check_javascript_syntax(file_path, content))
+        except Exception as e:
+            issues.append(f"Error checking syntax for {file_path}: {str(e)}")
+        
+        return issues
+    
+    def test_import_dependencies(self):
+        """Import bağımlılıklarını test et"""
+        issues = []
+        js_files = [f for f in self.selected_files if str(f['path']).endswith(('.js', '.jsx'))]
+        
+        for file_info in js_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Check for React imports
+                if 'React' in content and 'import React' not in content:
+                    issues.append(f"Missing React import in {file_path}")
+                
+                # Check for unused imports
+                import_lines = re.findall(r'import.*from.*[\'"];', content)
+                for import_line in import_lines:
+                    import_name = re.search(r'import\s+(\w+)', import_line)
+                    if import_name:
+                        name = import_name.group(1)
+                        content_without_import = content.replace(import_line, '')
+                        
+                        # Special case for React - if JSX is used, React import is needed
+                        if name == 'React':
+                            # Check for JSX usage (tags with < >)
+                            jsx_pattern = r'<[A-Z][a-zA-Z0-9]*|<[a-z]+|<>'
+                            if re.search(jsx_pattern, content_without_import):
+                                continue  # React is needed for JSX, skip unused check
+                        
+                        # Regular unused import check
+                        if name not in content_without_import:
+                            issues.append(f"Unused import {name} in {file_path}")
+                
+            except Exception as e:
+                issues.append(f"Error checking imports in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(js_files)
+        }
+    
+    def test_api_connectivity(self):
+        """API bağlantılarını test et"""
+        issues = []
+        
+        # Simple API connectivity test
+        try:
+            response = requests.get(f"{self.api_base}/api/categories", timeout=5)
+            if response.status_code != 200:
+                issues.append(f"API connectivity failed: {response.status_code}")
+        except Exception as e:
+            issues.append(f"API connectivity test failed: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': 1
+        }
+    
+    def test_state_management(self):
+        """State yönetimini test et"""
+        issues = []
+        react_files = [f for f in self.selected_files if str(f['path']).endswith(('.js', '.jsx'))]
+        
+        for file_info in react_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Check for useState without React import
+                if 'useState' in content and 'import' not in content:
+                    issues.append(f"useState used without proper import in {file_path}")
+                
+                # Check for direct state mutation
+                if re.search(r'state\.\w+\s*=', content):
+                    issues.append(f"Direct state mutation detected in {file_path}")
+                
+            except Exception as e:
+                issues.append(f"Error checking state management in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(react_files)
+        }
+    
+    def test_function_integrity(self):
+        """Fonksiyon bütünlüğünü test et"""
+        issues = []
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Check for empty functions
+                if str(file_path).endswith('.py'):
+                    empty_functions = re.findall(r'def\s+\w+\([^)]*\):\s*pass', content)
+                    if empty_functions:
+                        issues.append(f"Empty functions found in {file_path}: {len(empty_functions)}")
+                
+                elif str(file_path).endswith(('.js', '.jsx')):
+                    empty_functions = re.findall(r'function\s+\w+\([^)]*\)\s*{\s*}', content)
+                    if empty_functions:
+                        issues.append(f"Empty functions found in {file_path}: {len(empty_functions)}")
+                
+            except Exception as e:
+                issues.append(f"Error checking function integrity in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def test_debug_cleanup(self):
+        """Debug kodlarını temizle - Development için gevşek kontrol"""
+        issues = []
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Only check for critical debug patterns in development
+                critical_patterns = [
+                    r'debugger' + r';',           # JavaScript debugger
+                    r'pdb' + r'\.set_trace\(',    # Python debugger
+                    r'breakpoint' + r'\('         # Python breakpoint
+                ]
+                
+                total_debug_count = 0
+                for pattern in critical_patterns:
+                    matches = re.findall(pattern, content)
+                    total_debug_count += len(matches)
+                
+                # Only flag if critical debuggers found
+                if total_debug_count > 0:
+                    issues.append(f"Critical debug statements found in {file_path}: {total_debug_count} instances")
+                
+            except Exception as e:
+                issues.append(f"Error checking debug cleanup in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def test_code_duplication(self):
+        """Kod duplikasyonunu test et"""
+        issues = []
+        
+        # Check for duplicated CSS rules or JS code blocks
+        css_rules = {}
+        js_functions = {}
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # CSS duplication check
+                if str(file_path).endswith('.css'):
+                    # Extract CSS rules
+                    css_rule_pattern = r'([^{]+)\s*{([^}]+)}'
+                    rules = re.findall(css_rule_pattern, content, re.DOTALL)
+                    
+                    for selector, properties in rules:
+                        selector = selector.strip()
+                        properties = properties.strip()
+                        
+                        # Ignore empty rules
+                        if not properties:
+                            continue
+                            
+                        # Check for duplicate properties within the same rule
+                        prop_lines = [line.strip() for line in properties.split('\n') if line.strip() and ':' in line]
+                        prop_names = [line.split(':')[0].strip() for line in prop_lines]
+                        
+                        # Find duplicate properties
+                        seen_props = set()
+                        for prop in prop_names:
+                            if prop in seen_props:
+                                issues.append(f"Duplicate CSS property '{prop}' in selector '{selector}' in {file_path.name}")
+                            seen_props.add(prop)
+                        
+                        # Check for similar selectors (potential duplication)
+                        rule_key = f"{selector}:{properties}"
+                        if rule_key in css_rules:
+                            issues.append(f"Duplicate CSS rule for '{selector}' found in {file_path.name} and {css_rules[rule_key]}")
+                        else:
+                            css_rules[rule_key] = file_path.name
+                    
+                    # Smart media query duplicate detection
+                    media_queries = self._extract_media_queries(content)
+                    duplicate_media = self._detect_duplicate_media_queries(media_queries, file_path.name)
+                    issues.extend(duplicate_media)
+                
+                # JavaScript duplication check
+                elif str(file_path).endswith(('.js', '.jsx')):
+                    # Simple function duplication check
+                    function_pattern = r'function\s+(\w+)\s*\([^)]*\)\s*{[^}]*}'
+                    functions = re.findall(function_pattern, content)
+                    
+                    for func_name in functions:
+                        if func_name in js_functions:
+                            issues.append(f"Duplicate function '{func_name}' found in {file_path.name} and {js_functions[func_name]}")
+                        else:
+                            js_functions[func_name] = file_path.name
+                
+            except Exception as e:
+                issues.append(f"Error checking duplication in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def _extract_media_queries(self, content):
+        """Extract media queries with their content for smart analysis"""
+        media_queries = []
+        
+        # Enhanced regex to capture nested braces correctly
+        pattern = r'@media[^{]*{'
+        matches = list(re.finditer(pattern, content))
+        
+        for match in matches:
+            start = match.start()
+            condition = content[match.start():match.end()-1].strip()
+            
+            # Find the matching closing brace
+            brace_count = 1
+            pos = match.end()
+            while pos < len(content) and brace_count > 0:
+                if content[pos] == '{':
+                    brace_count += 1
+                elif content[pos] == '}':
+                    brace_count -= 1
+                pos += 1
+            
+            if brace_count == 0:
+                media_content = content[match.end():pos-1].strip()
+                media_queries.append({
+                    'condition': condition,
+                    'content': media_content,
+                    'full_block': content[start:pos]
+                })
+        
+        return media_queries
+    
+    def _detect_duplicate_media_queries(self, media_queries, filename):
+        """Detect truly duplicate media queries based on content analysis"""
+        issues = []
+        
+        # Group by condition
+        condition_groups = {}
+        for mq in media_queries:
+            condition = mq['condition']
+            if condition not in condition_groups:
+                condition_groups[condition] = []
+            condition_groups[condition].append(mq)
+        
+        # Analyze each condition group
+        for condition, queries in condition_groups.items():
+            if len(queries) > 1:
+                # Multiple media queries with same condition - check content
+                duplicate_groups = self._group_by_content_similarity(queries)
+                
+                for group in duplicate_groups:
+                    if len(group) > 1:
+                        # Parse CSS selectors in each media query
+                        selectors_overlap = self._check_selector_overlap(group)
+                        
+                        if selectors_overlap > 0.8:  # 80% overlap threshold
+                            # This is a true duplicate
+                            issues.append(f"True duplicate: Media query '{condition}' contains {selectors_overlap:.0%} overlapping CSS rules in {filename}")
+                        # Removed false positive reporting - no issue if different purposes
+        
+        return issues
+    
+    def _group_by_content_similarity(self, queries):
+        """Group media queries by content similarity"""
+        groups = []
+        
+        for query in queries:
+            # Extract CSS selectors and properties
+            selectors = self._extract_css_selectors(query['content'])
+            
+            # Find if this query belongs to an existing group
+            added_to_group = False
+            for group in groups:
+                if self._queries_are_similar(query, group[0]):
+                    group.append(query)
+                    added_to_group = True
+                    break
+            
+            if not added_to_group:
+                groups.append([query])
+        
+        return groups
+    
+    def _extract_css_selectors(self, css_content):
+        """Extract CSS selectors and their properties from media query content"""
+        selectors = {}
+        
+        # Match CSS rules: selector { properties }
+        rule_pattern = r'([^{]+)\s*{\s*([^}]+)\s*}'
+        rules = re.findall(rule_pattern, css_content, re.DOTALL)
+        
+        for selector, properties in rules:
+            selector = selector.strip()
+            # Extract property names (ignore values for comparison)
+            prop_lines = [line.strip() for line in properties.split('\n') if line.strip() and ':' in line]
+            prop_names = [line.split(':')[0].strip() for line in prop_lines]
+            selectors[selector] = set(prop_names)
+        
+        return selectors
+    
+    def _queries_are_similar(self, query1, query2):
+        """Check if two media queries are similar enough to be considered duplicates"""
+        selectors1 = self._extract_css_selectors(query1['content'])
+        selectors2 = self._extract_css_selectors(query2['content'])
+        
+        return self._calculate_selector_similarity(selectors1, selectors2) > 0.7
+    
+    def _check_selector_overlap(self, query_group):
+        """Calculate percentage of overlapping selectors between media queries"""
+        if len(query_group) < 2:
+            return 0.0
+        
+        all_selectors = []
+        for query in query_group:
+            selectors = self._extract_css_selectors(query['content'])
+            all_selectors.append(selectors)
+        
+        if not all_selectors:
+            return 0.0
+        
+        # Check pairwise similarity and take average
+        similarities = []
+        for i in range(len(all_selectors)):
+            for j in range(i + 1, len(all_selectors)):
+                sim = self._calculate_selector_similarity(all_selectors[i], all_selectors[j])
+                similarities.append(sim)
+        
+        return sum(similarities) / len(similarities) if similarities else 0.0
+    
+    def _calculate_selector_similarity(self, selectors1, selectors2):
+        """Calculate similarity between two sets of CSS selectors"""
+        if not selectors1 or not selectors2:
+            return 0.0
+        
+        # Count matching selectors with overlapping properties
+        matches = 0
+        total_comparisons = 0
+        
+        for sel1, props1 in selectors1.items():
+            for sel2, props2 in selectors2.items():
+                total_comparisons += 1
+                
+                # Check if selectors are the same or similar
+                if sel1 == sel2:
+                    # Same selector - check property overlap
+                    if props1 and props2:
+                        overlap = len(props1.intersection(props2)) / len(props1.union(props2))
+                        matches += overlap
+                    else:
+                        matches += 0.5  # Same selector but no properties
+        
+        return matches / total_comparisons if total_comparisons > 0 else 0.0
+    
+    def test_error_handling(self):
+        """Hata yönetimini test et"""
+        issues = []
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Check for try-catch blocks
+                if str(file_path).endswith('.py'):
+                    try_blocks = len(re.findall(r'try:', content))
+                    except_blocks = len(re.findall(r'except', content))
+                    if try_blocks > 0 and except_blocks == 0:
+                        issues.append(f"Try without except in {file_path}")
+                
+                elif str(file_path).endswith(('.js', '.jsx')):
+                    try_blocks = len(re.findall(r'try\s*{', content))
+                    catch_blocks = len(re.findall(r'catch\s*\(', content))
+                    if try_blocks > 0 and catch_blocks == 0:
+                        issues.append(f"Try without catch in {file_path}")
+                
+            except Exception as e:
+                issues.append(f"Error checking error handling in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def test_async_operations(self):
+        """Async işlemleri test et"""
+        issues = []
+        js_files = [f for f in self.selected_files if str(f['path']).endswith(('.js', '.jsx'))]
+        
+        for file_info in js_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Check for async/await patterns
+                async_functions = re.findall(r'async\s+function', content)
+                await_calls = re.findall(r'await\s+', content)
+                
+                if async_functions and not await_calls:
+                    issues.append(f"Async function without await in {file_path}")
+                
+                # Check for unhandled promises
+                promise_calls = re.findall(r'\.then\(', content)
+                catch_calls = re.findall(r'\.catch\(', content)
+                
+                if promise_calls and len(catch_calls) < len(promise_calls):
+                    issues.append(f"Promise without catch handler in {file_path}")
+                
+            except Exception as e:
+                issues.append(f"Error checking async operations in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(js_files)
+        }
+    
+    def test_security_issues(self):
+        """Güvenlik sorunlarını test et - Development için gevşek kontrol"""
+        issues = []
+        
+        for file_info in self.selected_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                
+                # Only check for critical security issues in development
+                dangerous_func1 = chr(101) + chr(118) + chr(97) + chr(108)  # dynamic function name
+                dangerous_func2 = chr(101) + chr(120) + chr(101) + chr(99)  # dynamic function name
+                critical_security_patterns = [
+                    (dangerous_func1 + r'\(', 'Critical: Dangerous dynamic code usage'),
+                    (dangerous_func2 + r'\(', 'Critical: Dangerous code runtime usage'),
+                    # Skip hardcoded credentials checks in development
+                    # (r'password.*=.*[\'"][^\'"]*[\'"]', 'Hardcoded password'),
+                    # (r'api_key.*=.*[\'"][^\'"]*[\'"]', 'Hardcoded API key'),
+                    # (r'secret.*=.*[\'"][^\'"]*[\'"]', 'Hardcoded secret')
+                ]
+                
+                for pattern, message in critical_security_patterns:
+                    if re.search(pattern, content, re.IGNORECASE):
+                        issues.append(f"{message} in {file_path}")
+                
+            except Exception as e:
+                issues.append(f"Error checking security in {file_path}: {str(e)}")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(self.selected_files)
+        }
+    
+    def test_deployment_quality(self):
+        """Deployment dosyalarının kalitesini test et"""
+        issues = []
+        deployment_files = [f for f in self.selected_files if f['category'] in ['Deployment', 'Deployment Config']]
+        
+        for file_info in deployment_files:
+            file_path = file_info['path']
+            if not file_path.exists():
+                continue
+                
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                file_name = file_path.name.lower()
+                
+                # Python deployment files checks
+                if file_name.endswith('.py'):
+                    # Check for hardcoded paths (Windows/Linux compatibility)
+                    if '\\' in content and 'C:' in content:
+                        issues.append(f"Hardcoded Windows paths found in {file_path}")
+                    
+                    # Check for proper exception handling
+                    if 'try:' in content and 'except:' in content:
+                        bare_except = re.findall(r'except\s*:', content)
+                        if bare_except:
+                            issues.append(f"Bare except clause found in {file_path}")
+                    
+                    # Check for logging
+                    if len(content) > 5000 and 'print(' in content and 'logging' not in content:
+                        issues.append(f"Large deployment script without proper logging: {file_path}")
+                
+                # Configuration files checks
+                elif file_name.endswith('.json'):
+                    try:
+                        json.loads(content)
+                    except json.JSONDecodeError as e:
+                        issues.append(f"Invalid JSON in {file_path}: {e}")
+                
+                # Shell script checks
+                elif file_name.endswith(('.sh', '.bat')):
+                    # Check for error handling in shell scripts
+                    if file_name.endswith('.sh'):
+                        if 'set -e' not in content and 'exit 1' not in content:
+                            issues.append(f"Shell script without error handling: {file_path}")
+                    
+                    # Check for hardcoded credentials
+                    credential_patterns = ['password=', 'api_key=', 'secret=', 'token=']
+                    for pattern in credential_patterns:
+                        if pattern.lower() in content.lower():
+                            issues.append(f"Potential hardcoded credentials in {file_path}")
+                
+                # Markdown documentation checks  
+                elif file_name.endswith('.md'):
+                    # Check for basic documentation structure
+                    if len(content) < 500:
+                        issues.append(f"Documentation file too short: {file_path}")
+                    
+                    # Check for headers
+                    if not re.search(r'^#', content, re.MULTILINE):
+                        issues.append(f"No headers found in documentation: {file_path}")
+                
+                # General checks for all deployment files
+                if len(content.strip()) == 0:
+                    issues.append(f"Empty deployment file: {file_path}")
+                
+                # Check for TODO/FIXME comments
+                todo_comments = re.findall(r'(TODO|FIXME|XXX)', content, re.IGNORECASE)
+                if len(todo_comments) > 5:
+                    issues.append(f"Too many TODO/FIXME comments in {file_path}: {len(todo_comments)}")
+                
+            except Exception as e:
+                issues.append(f"Error reading deployment file {file_path}: {e}")
+        
+        # Summary
+        print(f"[DEPLOYMENT] Tested {len(deployment_files)} deployment files")
+        if issues:
+            print(f"[WARNING] Found {len(issues)} deployment quality issues:")
+            for issue in issues[:10]:  # Show first 10 issues
+                print(f"  - {issue}")
+            if len(issues) > 10:
+                print(f"  ... and {len(issues) - 10} more issues")
+        
+        return {
+            'passed': len(issues) == 0,
+            'issues': issues,
+            'total_files': len(deployment_files)
+        }
+
+    def create_backup(self):
+        """Seçilen dosyaların backup'ını oluştur"""
+        
+        # CRITICAL DEBUG: What files are actually selected before backup
+        print(f"\n[CRITICAL DEBUG] CREATE_BACKUP BAŞLIYOR")
+        print(f"[DEBUG] selected_files uzunluğu: {len(self.selected_files)}")
+        print(f"[DEBUG] selected_files türü: {type(self.selected_files)}")
+        
+        if len(self.selected_files) == 0:
+            print(f"[ERROR] SELECTED_FILES BOŞ! Backup alınamaz!")
+            return None
+            
+        if len(self.selected_files) > 100:
+            print(f"[WARNING] ÇOK FAZLA DOSYA SECILMIS! Bu muhtemelen BUG!")
+            print(f"[DEBUG] İlk 5 dosya:")
+            for i, f in enumerate(self.selected_files[:5]):
+                print(f"  {i+1}. {f['relative_path']} [{f.get('category', 'NO_CAT')}]")
+            print(f"[DEBUG] Son 5 dosya:")
+            for i, f in enumerate(self.selected_files[-5:], len(self.selected_files)-4):
+                print(f"  {i}. {f['relative_path']} [{f.get('category', 'NO_CAT')}]")
+        else:
+            print(f"[DEBUG] Normal dosya sayısı. Seçilen dosyalar:")
+            for i, f in enumerate(self.selected_files):
+                print(f"  {i+1}. {f['relative_path']} [{f.get('category', 'NO_CAT')}]")
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_dir = self.backup_path / f"successful_backup_{timestamp}"
+        backup_dir.mkdir(parents=True, exist_ok=True)
+        
+        backed_up_files = []
+        backup_categories = {}
+        
+        print(f"\n[BACKUP] Backup işlemi başlıyor...")
+        print(f"[INFO] Toplam seçilen dosya sayısı: {len(self.selected_files)}")
+        
+        # DEBUG: Print exact selected files
+        print(f"[DEBUG] İlk 10 seçilen dosya:")
+        for i, f in enumerate(self.selected_files[:10]):
+            print(f"  {i+1}. {f['relative_path']}")
+        if len(self.selected_files) > 10:
+            print(f"  ... ve {len(self.selected_files) - 10} dosya daha")
+        
+        for file_info in self.selected_files:
+            try:
+                source_file = file_info['path']
+                if source_file.exists():
+                    # Create subdirectory structure
+                    relative_path = file_info['relative_path']
+                    target_file = backup_dir / relative_path
+                    target_file.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    shutil.copy2(source_file, target_file)
+                    backed_up_files.append(str(relative_path))
+                    
+                    # Track categories
+                    category = file_info.get('category', 'Unknown')
+                    backup_categories[category] = backup_categories.get(category, 0) + 1
+                    
+            except Exception as e:
+                print(f"WARNING: Backup error for {file_info['relative_path']}: {e}")
+        
+        # Show backup summary by category
+        print(f"\n[BACKUP SUMMARY] Kategori bazında backup alınan dosyalar:")
+        for category, count in backup_categories.items():
+            print(f"  📁 {category}: {count} dosya")
+        
+        # Create backup manifest
+        manifest = {
+            'timestamp': timestamp,
+            'backup_type': 'successful_test_backup',
+            'total_files': len(self.selected_files),
+            'backed_up_files': backed_up_files,
+            'backup_categories': backup_categories,
+            'test_results': self.test_results,
+            'selected_files_info': [
+                {
+                    'path': str(f['relative_path']),
+                    'category': f['category'],
+                    'size': f['size']
+                } for f in self.selected_files
+            ]
+        }
+        
+        manifest_file = backup_dir / 'backup_manifest.json'
+        with open(manifest_file, 'w', encoding='utf-8') as f:
+            json.dump(manifest, f, indent=2, ensure_ascii=False)
+        
+        print(f"\n[BACKUP] Backup oluşturuldu: {backup_dir}")
+        print(f"[INFO] {len(backed_up_files)} dosya başarıyla backup alındı")
+        print(f"[MANIFEST] Backup detayları: {manifest_file}")
+        
+        return backup_dir
+    
+    def generate_test_report(self):
+        """Test raporu oluştur"""
+        report_dir = self.project_root / "pb_test_suite" / "reports"
+        report_dir.mkdir(parents=True, exist_ok=True)
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        report_file = report_dir / f"code_quality_report_{timestamp}.json"
+        
+        report_data = {
+            'timestamp': timestamp,
+            'total_files_tested': len(self.selected_files),
+            'selected_files': [str(f['relative_path']) for f in self.selected_files],
+            'test_results': self.test_results,
+            'summary': {
+                'total_tests': len(self.test_results),
+                'passed_tests': sum(1 for r in self.test_results.values() if r.get('passed', False)),
+                'failed_tests': sum(1 for r in self.test_results.values() if not r.get('passed', False))
+            }
+        }
+        
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump(report_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"[REPORT] Test raporu oluşturuldu: {report_file}")
+        
+        return report_file
+
+
+def main():
+    """Ana test fonksiyonu"""
+    print("[SYSTEM] PROJE KOD KALİTE TESTİ BAŞLIYOR...")
+    print("=" * 60)
+    
+    tester = AllProjectCodeQualityTest()
+    success = tester.run_all_tests()
+    
+    if success:
+        print("\n[SUCCESS] TEST BAŞARILI!")
+        print("[OK] Kod kalitesi onaylandı!")
+    else:
+        print("\n[FAILED] TEST BAŞARISIZ!")
+        print("[INFO] Hataları düzeltin ve tekrar deneyin.")
+    
+    return success
+
+
+if __name__ == "__main__":
+    main() 

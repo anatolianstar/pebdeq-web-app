@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""
+Debug script to diagnose file scanning issues on server vs local
+"""
+
+import os
+import sys
+from pathlib import Path
+
+def debug_file_scanning():
+    print("=" * 50)
+    print("🔍 DEBUG FILE SCANNING")
+    print("=" * 50)
+    
+    # 1. Current working directory
+    cwd = os.getcwd()
+    print(f"📂 Current working directory: {cwd}")
+    
+    # 2. Script location
+    script_dir = Path(__file__).parent.absolute()
+    print(f"📂 Script directory: {script_dir}")
+    
+    # 3. Try to find project root
+    potential_roots = [
+        Path.cwd(),
+        script_dir,
+        script_dir.parent,
+        script_dir.parent.parent,
+        Path('/opt/pebdeq'),
+        Path('/opt/pebdeq/pebdeq-home'),
+    ]
+    
+    print(f"\n🔍 Checking potential project roots:")
+    for root in potential_roots:
+        exists = root.exists()
+        is_dir = root.is_dir() if exists else False
+        backend_exists = (root / 'backend').exists() if exists else False
+        frontend_exists = (root / 'frontend').exists() if exists else False
+        pb_test_suite_exists = (root / 'pb_test_suite').exists() if exists else False
+        
+        print(f"  📁 {root}")
+        print(f"     Exists: {exists}, Is Dir: {is_dir}")
+        print(f"     Has backend/: {backend_exists}")
+        print(f"     Has frontend/: {frontend_exists}")
+        print(f"     Has pb_test_suite/: {pb_test_suite_exists}")
+        
+        if exists and backend_exists:
+            print(f"     ✅ POTENTIAL PROJECT ROOT FOUND!")
+            
+            # Check pb_test_suite structure
+            pb_dir = root / 'pb_test_suite'
+            if pb_dir.exists():
+                tests_dir = pb_dir / 'tests' / 'code_quality'
+                print(f"     📁 pb_test_suite/tests/code_quality exists: {tests_dir.exists()}")
+                
+                if tests_dir.exists():
+                    test_file = tests_dir / 'test_all_project_files.py'
+                    print(f"     📄 test_all_project_files.py exists: {test_file.exists()}")
+        print()
+    
+    # 4. Try to import and run file scanning
+    print("🔍 Testing module imports and file scanning:")
+    
+    try:
+        sys.path.insert(0, str(Path.cwd()))
+        sys.path.insert(0, str(Path.cwd() / 'pb_test_suite'))
+        sys.path.insert(0, str(Path.cwd() / 'pb_test_suite' / 'tests' / 'code_quality'))
+        
+        print(f"📦 Python path: {sys.path[:5]}...")
+        
+        # Try to import the test module
+        try:
+            from pb_test_suite.tests.code_quality.test_all_project_files import AllProjectCodeQualityTest
+            print("✅ Successfully imported AllProjectCodeQualityTest")
+            
+            # Try to create instance and scan files
+            tester = AllProjectCodeQualityTest()
+            print("✅ Successfully created tester instance")
+            
+            # Try to scan files
+            all_files = tester.scan_project_files()
+            total_files = len(all_files)
+            print(f"✅ Successfully scanned files: {total_files} files found")
+            
+            if total_files > 0:
+                print("📄 File structure debug:")
+                print(f"📊 Type of all_files: {type(all_files)}")
+                if isinstance(all_files, dict):
+                    print("📄 First 5 file categories:")
+                    for i, (category, files_list) in enumerate(list(all_files.items())[:5]):
+                        print(f"  {i+1}. Category: {category} -> {len(files_list)} files")
+                        if files_list and len(files_list) > 0:
+                            print(f"      First file: {files_list[0]}")
+                else:
+                    print("📄 First 5 files:")
+                    for i, file_item in enumerate(list(all_files)[:5]):
+                        print(f"  {i+1}. {file_item}")
+            else:
+                print("❌ No files found!")
+            
+        except ImportError as e:
+            print(f"❌ Import error: {e}")
+            
+            # Try alternative import paths
+            alternative_paths = [
+                Path.cwd() / 'pb_test_suite' / 'tests' / 'code_quality' / 'test_all_project_files.py'
+            ]
+            
+            for alt_path in alternative_paths:
+                print(f"🔍 Checking alternative path: {alt_path}")
+                print(f"   Exists: {alt_path.exists()}")
+                
+        except Exception as e:
+            print(f"❌ Other error during testing: {e}")
+            import traceback
+            traceback.print_exc()
+            
+    except Exception as e:
+        print(f"❌ Error setting up paths: {e}")
+    
+    # 5. Environment info
+    print("\n🔍 Environment Info:")
+    print(f"🐍 Python version: {sys.version}")
+    print(f"🐍 Python executable: {sys.executable}")
+    print(f"💻 Platform: {sys.platform}")
+    
+    # Check for specific environment variables
+    env_vars = ['SERVER', 'DEPLOYMENT', 'PYTHONPATH', 'PWD', 'HOME']
+    for var in env_vars:
+        value = os.environ.get(var, 'Not set')
+        print(f"🌍 {var}: {value}")
+    
+    print("\n" + "=" * 50)
+    print("🔍 DEBUG COMPLETE")
+    print("=" * 50)
+
+if __name__ == "__main__":
+    debug_file_scanning() 

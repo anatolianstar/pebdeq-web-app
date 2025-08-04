@@ -1,0 +1,19 @@
+{
+  "server_ip": "5.161.245.15",
+  "server_port": "22",
+  "server_user": "root",
+  "server_password": "HJjbhgNFhPu4",
+  "domain_name": "pebdeq.com",
+  "additional_domains": "www.pebdeq.com",
+  "ssl_email": "kosavalix42@gmail.com",
+  "project_path": "C:/Users/Djkya/PycharmProjects/pebdeq-git/pebdeq-home",
+  "auto_mode": true,
+  "upload_files": true,
+  "incremental_upload": false,
+  "ssl_enable": true,
+  "force_https": true,
+  "enable_hsts": false,
+  "clean_install": true,
+  "setup_firewall": true,
+  "install_updates": true
+}

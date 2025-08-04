@@ -1,0 +1,68 @@
+# 🧪 TEST SUITE DEPENDENCIES
+
+# Core Testing Framework
+pytest==7.4.3
+pytest-html==4.1.1
+pytest-cov==4.1.0
+pytest-xdist==3.5.0
+pytest-json-report==1.5.0
+
+# HTTP Testing
+requests==2.31.0
+responses==0.24.1
+
+# JWT for authentication testing
+PyJWT==2.8.0
+
+# Web UI Testing
+selenium==4.15.2
+webdriver-manager==4.0.1
+
+# Database Testing
+# sqlite3  # Built-in Python module - no need to install
+sqlalchemy==2.0.23
+
+# Code Analysis
+flake8==6.1.0
+black==23.11.0
+pylint==3.0.3
+radon==6.0.1  # Complexity analysis
+vulture==2.10  # Dead code detection
+# duplicate-lines==0.4.0  # Duplicate code detection - package not found
+
+# Test Data Generation
+faker==20.1.0
+factory-boy==3.3.0
+
+# Performance Testing
+locust==2.17.0
+memory-profiler==0.61.0
+
+# Security Testing
+bandit==1.7.5
+
+# Backup & File Operations
+checksumdir==1.2.0
+# shutil  # Built-in Python module - no need to install
+# hashlib  # Built-in Python module - no need to install
+
+# Reporting
+jinja2==3.1.2
+matplotlib==3.8.2
+pandas==2.1.4
+
+# Configuration Management
+pyyaml==6.0.1
+configparser  # Built-in Python module
+
+# Utility Libraries
+click==8.1.7
+colorama==0.4.6
+tqdm==4.66.1
+tabulate==0.9.0
+
+# Date/Time Utilities
+python-dateutil==2.8.2
+
+# JSON Processing
+jsonschema==4.20.0

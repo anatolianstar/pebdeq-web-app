@@ -1,0 +1,84 @@
+{
+  "timestamp": "20250803_031246",
+  "total_files_tested": 16,
+  "selected_files": [
+    "deployment\\deployment_gui.py",
+    "deployment\\docker_enhancement.py",
+    "deployment\\add_imports_batch.js",
+    "deployment\\fix_imports.js",
+    "deployment\\update_api_urls.js",
+    "deployment\\deployment_settings.json",
+    "deployment\\AUTO_DEPLOY_GUIDE.md",
+    "deployment\\DEPLOYMENT_GUI_README.md",
+    "deployment\\MANUEL_DEPLOYMENT_GUIDE.md",
+    "deployment\\README.md",
+    "deployment\\SERVER_TEST_SUITE_SETUP.md",
+    "deployment\\deployment_requirements.txt",
+    "deployment\\start_deployment.bat",
+    "deployment\\deploy.sh",
+    "deployment\\fix_server_permissions.sh",
+    "deployment\\setup_test_suite_server.sh"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 3
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 3
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 3
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0
+  }
+}

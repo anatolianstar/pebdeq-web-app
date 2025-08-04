@@ -1,0 +1,1863 @@
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import { useTheme } from '../contexts/ThemeContext';
+import ShareButtons from '../components/ShareButtons';
+import LikeButton from '../components/LikeButton';
+
+const ProductDetail = () => {
+  const { slug } = useParams();
+  const { user } = useAuth();
+  const { addToCart } = useCart();
+  const { siteSettings: themeSiteSettings, isInitialized: themeInitialized } = useTheme();
+  const navigate = useNavigate();
+  
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariation, setSelectedVariation] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('description');
+  
+  // Use siteSettings from ThemeContext with fallback defaults
+  const siteSettings = themeSiteSettings || {
+    site_currency: 'USD',
+    site_currency_symbol: '$'
+  };
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [productReviews, setProductReviews] = useState([]);
+  const [userReview, setUserReview] = useState({ rating: 5, comment: '' });
+  
+  // Listen for theme settings updates and force re-render
+  useEffect(() => {
+    const handleThemeSettingsUpdate = (event) => {
+      console.log('📄 ProductDetail - Theme settings updated:', event.detail);
+      // Force component re-render by updating some state
+      setSelectedImage(prev => prev);
+    };
+
+    const handleForceSiteSettingsRefresh = (event) => {
+      console.log('📄 ProductDetail - Force site settings refresh:', event.detail);
+      // Force another re-render after a delay
+      setTimeout(() => {
+        setSelectedImage(prev => prev);
+      }, 100);
+    };
+
+    document.addEventListener('themeSettingsUpdated', handleThemeSettingsUpdate);
+    document.addEventListener('forceSiteSettingsRefresh', handleForceSiteSettingsRefresh);
+
+    return () => {
+      document.removeEventListener('themeSettingsUpdated', handleThemeSettingsUpdate);
+      document.removeEventListener('forceSiteSettingsRefresh', handleForceSiteSettingsRefresh);
+    };
+  }, []);
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  useEffect(() => {
+    fetchProduct();
+    window.scrollTo(0, 0);
+  }, [slug]);
+
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch(`/api/products/${slug}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProduct(data.product);
+        // Set default variation if product has variations
+        if (data.product.has_variations && data.product.variation_options && data.product.variation_options.length > 0) {
+          setSelectedVariation(data.product.variation_options[0]);
+        }
+        
+        // Fetch related products and reviews
+        await fetchRelatedProducts(data.product.category_id);
+        await fetchProductReviews(data.product.id);
+        
+      } else if (response.status === 404) {
+        setError('Product not found');
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to load product');
+      }
+    } catch (err) {
+      console.error('Error fetching product:', err);
+      setError('Failed to load product');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRelatedProducts = async (categoryId) => {
+    try {
+      const response = await fetch(`/api/products?category_id=${categoryId}&limit=4`);
+      if (response.ok) {
+        const data = await response.json();
+        // Filter out current product from related products
+        const related = data.products.filter(p => p.slug !== slug);
+        setRelatedProducts(related.slice(0, 4));
+      }
+    } catch (error) {
+      console.error('Error fetching related products:', error);
+    }
+  };
+
+  const fetchProductReviews = async (productId) => {
+    try {
+      const response = await fetch(`/api/products/${productId}/reviews`);
+      if (response.ok) {
+        const data = await response.json();
+        setProductReviews(data.reviews || []);
+      }
+    } catch (error) {
+      console.error('Error fetching product reviews:', error);
+    }
+  };
+
+  const submitReview = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      alert('Please login to submit a review');
+      return;
+    }
+    
+    setSubmittingReview(true);
+    try {
+      const response = await fetch(`/api/products/${product.id}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          rating: userReview.rating,
+          comment: userReview.comment
+        })
+      });
+
+      if (response.ok) {
+        setUserReview({ rating: 5, comment: '' });
+        await fetchProductReviews(product.id);
+        alert('Review submitted successfully!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to submit review');
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!product || !product.id) {
+      console.error('❌ Product or product ID is missing');
+      alert('Product information is not available');
+      return;
+    }
+    
+    setAddingToCart(true);
+    try {
+      // CartContext addToCart expects product and quantity parameters
+      const success = await addToCart(product, quantity);
+      if (success) {
+        alert('Product added to cart!');
+      }
+    } catch (err) {
+      alert('Error adding to cart: ' + err.message);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!product || !product.id) {
+      console.error('❌ Product or product ID is missing');
+      alert('Product information is not available');
+      return;
+    }
+    
+    // Check if user is authenticated
+    if (!user) {
+      alert('Please log in to purchase');
+      navigate('/login');
+      return;
+    }
+    
+    try {
+      console.log('🛒 Buy Now - Adding to cart...');
+      // First add to cart
+      const success = await addToCart(product, quantity);
+      if (success) {
+        console.log('🛒 Buy Now - Successfully added to cart, redirecting...');
+        // Then redirect to checkout page
+        navigate('/checkout');
+      } else {
+        console.error('🛒 Buy Now - Failed to add to cart');
+      }
+    } catch (err) {
+      console.error('🛒 Buy Now - Error:', err);
+      alert('Error with buy now: ' + err.message);
+    }
+  };
+
+  const getCurrentPrice = () => {
+    if (!product) return 0;
+    let price = product.price;
+    if (selectedVariation && selectedVariation.price_modifier) {
+      price += selectedVariation.price_modifier;
+    }
+    return price;
+  };
+
+  const getCurrentStock = () => {
+    if (!product) return 0;
+    if (selectedVariation && selectedVariation.stock !== undefined) {
+      return selectedVariation.stock;
+    }
+    return product.stock_quantity;
+  };
+
+  const getCurrentImages = () => {
+    if (!product) return [];
+    if (selectedVariation && selectedVariation.images && selectedVariation.images.length > 0) {
+      return selectedVariation.images;
+    }
+    return product.images || [];
+  };
+
+  const openLightbox = (imageIndex) => {
+    if (!siteSettings.product_detail_show_image_lightbox) return;
+    setLightboxImageIndex(imageIndex);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
+
+  const nextImage = () => {
+    const images = getCurrentImages();
+    setLightboxImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    const images = getCurrentImages();
+    setLightboxImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  // Keyboard controls for lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!lightboxOpen) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowRight':
+          nextImage();
+          break;
+        case 'ArrowLeft':
+          prevImage();
+          break;
+        default:
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen]);
+
+  if (loading) {
+    return (
+      <div className="product-detail fade-in">
+        <div className="container">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Loading product details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="product-detail fade-in">
+        <div className="container">
+          <div className="breadcrumbs">
+            <Link to="/">Home</Link>
+            <span>→</span>
+            <Link to="/products">Products</Link>
+            <span>→</span>
+            <span>Product Not Found</span>
+          </div>
+          
+          <div className="error-state">
+            <h2>Product Not Found</h2>
+            <p>{error}</p>
+            <div className="error-actions">
+              <Link to="/products" className="btn btn-primary">
+                Browse All Products
+              </Link>
+              <button onClick={() => window.history.back()} className="btn btn-outline">
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return null;
+  }
+
+  const images = getCurrentImages();
+  const currentPrice = getCurrentPrice();
+  const currentStock = getCurrentStock();
+  
+  return (
+    <div className="product-detail fade-in">
+      <div className="container">
+        {/* Breadcrumbs */}
+        <div className="breadcrumbs">
+          <Link to="/">Home</Link>
+          <span>→</span>
+          <Link to="/products">Products</Link>
+          <span>→</span>
+          <Link to={`/category/${product.category_slug || product.category.toLowerCase().replace(/\s+/g, '-')}`}>
+            {product.category}
+          </Link>
+          <span>→</span>
+          <span>{product.name}</span>
+        </div>
+        
+        <div className="product-detail-content">
+          {/* Product Images */}
+          <div className="product-images">
+            <div className="main-image" onClick={() => images.length > 0 && siteSettings.product_detail_show_image_lightbox && openLightbox(selectedImage)}>
+              {images.length > 0 ? (
+                <img 
+                  src={images[selectedImage]} 
+                  alt={product.name}
+                  onError={(e) => {
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                  style={{ cursor: siteSettings.product_detail_show_image_lightbox ? 'pointer' : 'default' }}
+                  title={siteSettings.product_detail_show_image_lightbox ? "Click for large image" : ""}
+                />
+              ) : (
+                <div className="no-image">
+                  <span>📦</span>
+                  <p>No image</p>
+                </div>
+              )}
+            </div>
+            
+            {images.length > 1 && siteSettings.product_detail_show_thumbnails && (
+              <div className="image-thumbnails">
+                {images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`${product.name} ${index + 1}`}
+                    className={selectedImage === index ? 'active' : ''}
+                    onClick={() => setSelectedImage(index)}
+                    onDoubleClick={() => siteSettings.product_detail_show_image_lightbox && openLightbox(index)}
+                    onError={(e) => {
+                      e.target.src = '/images/placeholder.jpg';
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    title={siteSettings.product_detail_show_image_lightbox ? "Double click for large image" : ""}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div className="product-info">
+            <div className="product-header">
+              <h1 style={{ 
+                color: siteSettings.product_detail_product_name_color,
+                fontFamily: siteSettings.product_detail_product_name_font_family,
+                fontSize: `${siteSettings.product_detail_product_name_font_size}px`,
+                fontWeight: siteSettings.product_detail_product_name_font_weight,
+                fontStyle: siteSettings.product_detail_product_name_font_style
+              }}>{product.name}</h1>
+              <div className="product-meta">
+                {siteSettings.product_detail_show_category_badge && (
+                  <span className="category">{product.category}</span>
+                )}
+                {siteSettings.product_detail_show_featured_badge && product.is_featured && (
+                  <span className="featured-badge">Öne Çıkan</span>
+                )}
+              </div>
+            </div>
+
+            <div className="product-price">
+              <span className="current-price" style={{ 
+                color: siteSettings.product_detail_product_price_color,
+                fontFamily: siteSettings.product_detail_product_price_font_family,
+                fontSize: `${siteSettings.product_detail_product_price_font_size}px`,
+                fontWeight: siteSettings.product_detail_product_price_font_weight,
+                fontStyle: siteSettings.product_detail_product_price_font_style
+              }}>${currentPrice.toFixed(2)}</span>
+              {product.original_price && product.original_price > currentPrice && (
+                <span className="original-price">${product.original_price.toFixed(2)}</span>
+              )}
+            </div>
+
+            {siteSettings.product_detail_show_stock_info && (
+              <div className="product-stock">
+                                  {currentStock > 0 ? (
+                    <span className="in-stock">
+                     ✅ In stock ({currentStock} units)
+                    </span>
+                  ) : (
+                   <span className="out-of-stock">❌ Out of stock</span>
+                  )}
+              </div>
+            )}
+
+            {/* Variations */}
+            {siteSettings.product_detail_show_variations && product.has_variations && product.variation_options && product.variation_options.length > 0 && (
+              <div className="product-variations">
+                                  <h3>
+                    {product.variation_type === 'custom' ? product.variation_name : 
+                    product.variation_type === 'color' ? 'Color' :
+                    product.variation_type === 'size' ? 'Size' :
+                    product.variation_type === 'weight' ? 'Weight' : 'Options'}
+                  </h3>
+                <div className="variation-options">
+                  {product.variation_options.map((option, index) => (
+                    <button
+                      key={index}
+                      className={`variation-option ${selectedVariation === option ? 'selected' : ''}`}
+                      onClick={() => setSelectedVariation(option)}
+                      disabled={option.stock === 0}
+                    >
+                      <span className="option-name">{option.name}</span>
+                      <span className="option-price">
+                        ${(product.price + (option.price_modifier || 0)).toFixed(2)}
+                      </span>
+                                              {option.stock === 0 && (
+                         <span className="out-of-stock-badge">Out of stock</span>
+                        )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity and Add to Cart */}
+            <div className="purchase-section">
+              {siteSettings.product_detail_show_quantity_selector && (
+                <div className="quantity-selector">
+                  <label>Miktar:</label>
+                  <div className="quantity-controls">
+                    <button 
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="quantity">{quantity}</span>
+                    <button 
+                      onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
+                      disabled={quantity >= currentStock}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="purchase-buttons">
+                <button 
+                  className="btn btn-primary add-to-cart"
+                  onClick={handleAddToCart}
+                  disabled={currentStock === 0 || addingToCart}
+                  style={{
+                    backgroundColor: siteSettings.product_detail_add_to_cart_button_color || '#f57c00',
+                    color: siteSettings.product_detail_add_to_cart_button_text_color || '#ffffff',
+                    borderColor: siteSettings.product_detail_add_to_cart_button_color || '#f57c00',
+                    padding: '12px 24px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    marginRight: '10px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    minWidth: '150px'
+                  }}
+                                  >
+                   {addingToCart ? 'Adding...' : '🛒 Add to Cart'}
+                  </button>
+                 
+                  <button 
+                    className="btn btn-secondary buy-now"
+                    onClick={handleBuyNow}
+                    disabled={currentStock === 0}
+                    style={{
+                     backgroundColor: siteSettings.product_detail_buy_now_button_color || '#388e3c',
+                     color: siteSettings.product_detail_buy_now_button_text_color || '#ffffff',
+                     borderColor: siteSettings.product_detail_buy_now_button_color || '#388e3c',
+                     padding: '12px 24px',
+                     fontSize: '16px',
+                     fontWeight: 'bold',
+                     marginRight: '10px',
+                     border: 'none',
+                     borderRadius: '8px',
+                     cursor: 'pointer',
+                     transition: 'all 0.3s ease',
+                     minWidth: '150px'
+                    }}
+                  >
+                   💳 Buy Now
+                  </button>
+              </div>
+              
+              {/* Continue Shopping Button */}
+              {siteSettings.product_detail_show_continue_shopping_button && (
+                <div className="continue-shopping">
+                  <Link 
+                    to="/products" 
+                    className="btn btn-outline continue-shopping-btn"
+                    style={{
+                      borderColor: siteSettings.product_detail_continue_shopping_button_color,
+                      color: siteSettings.product_detail_continue_shopping_button_text_color
+                    }}
+                  >
+                    ← Alışverişe Devam Et
+                  </Link>
+                </div>
+              )}
+              
+              {/* Share Buttons */}
+              <ShareButtons
+                url={window.location.href}
+                title={product.name}
+                description={product.description || `Check out ${product.name} from PEBDEQ!`}
+                image={getCurrentImages()[0]}
+              />
+              
+              {/* Like Button */}
+              <div className="product-like-section">
+                <LikeButton type="product" itemId={product.id} />
+              </div>
+            </div>
+
+            {/* Product Tabs System */}
+            <div className="product-tabs-section">
+              <div className="tabs-header">
+                <button 
+                  className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('description')}
+                >
+                  Açıklama
+                </button>
+                <button 
+                  className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('specifications')}
+                >
+                  Özellikler
+                </button>
+                <button 
+                  className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('reviews')}
+                >
+                  Yorumlar ({productReviews.length})
+                </button>
+                <button 
+                  className={`tab-btn ${activeTab === 'shipping' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('shipping')}
+                >
+                  Kargo & İade
+                </button>
+                <button 
+                  className={`tab-btn ${activeTab === 'related' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('related')}
+                >
+                  İlgili Ürünler
+                </button>
+              </div>
+
+              <div className="tabs-content">
+                {/* Description Tab */}
+                {activeTab === 'description' && (
+                  <div className="tab-content description-tab">
+                    <h3>Ürün Açıklaması</h3>
+                    <p style={{ 
+                      color: siteSettings.product_detail_product_description_color,
+                      fontFamily: siteSettings.product_detail_product_description_font_family,
+                      fontSize: `${siteSettings.product_detail_product_description_font_size}px`,
+                      fontWeight: siteSettings.product_detail_product_description_font_weight,
+                      fontStyle: siteSettings.product_detail_product_description_font_style
+                    }}>{product.description}</p>
+                    
+                    {product.long_description && (
+                      <div className="long-description">
+                        <h4>Detaylı Açıklama</h4>
+                        <p>{product.long_description}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Specifications Tab */}
+                {activeTab === 'specifications' && (
+                  <div className="tab-content specifications-tab">
+                    <h3>Ürün Özellikleri</h3>
+                    <div className="details-grid">
+                      <div className="detail-item">
+                        <span className="label">Kategori:</span>
+                        <span className="value">{product.category}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="label">Ürün Kodu:</span>
+                        <span className="value">{product.id}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="label">Stok Kodu:</span>
+                        <span className="value">{product.stock_code || product.id}</span>
+                      </div>
+                      {product.weight && (
+                        <div className="detail-item">
+                          <span className="label">Ağırlık:</span>
+                          <span className="value">{product.weight}</span>
+                        </div>
+                      )}
+                      {product.dimensions && (
+                        <div className="detail-item">
+                          <span className="label">Boyutlar:</span>
+                          <span className="value">{product.dimensions}</span>
+                        </div>
+                      )}
+                      {product.material && (
+                        <div className="detail-item">
+                          <span className="label">Malzeme:</span>
+                          <span className="value">{product.material}</span>
+                        </div>
+                      )}
+                      {product.brand && (
+                        <div className="detail-item">
+                          <span className="label">Marka:</span>
+                          <span className="value">{product.brand}</span>
+                        </div>
+                      )}
+                      <div className="detail-item">
+                        <span className="label">Stok Durumu:</span>
+                        <span className="value">{currentStock > 0 ? 'Stokta' : 'Stokta Yok'}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Reviews Tab */}
+                {activeTab === 'reviews' && (
+                  <div className="tab-content reviews-tab">
+                    <h3>Müşteri Yorumları</h3>
+                    
+                    {/* Add Review Form */}
+                    {user && (
+                      <div className="add-review-form">
+                        <h4>Yorum Yaz</h4>
+                        <form onSubmit={submitReview}>
+                          <div className="rating-input">
+                            <label>Puan:</label>
+                            <select 
+                              value={userReview.rating} 
+                              onChange={(e) => setUserReview({...userReview, rating: parseInt(e.target.value)})}
+                            >
+                              <option value={5}>5 Yıldız - Harika</option>
+                              <option value={4}>4 Yıldız - İyi</option>
+                              <option value={3}>3 Yıldız - Orta</option>
+                              <option value={2}>2 Yıldız - Kötü</option>
+                              <option value={1}>1 Yıldız - Çok Kötü</option>
+                            </select>
+                          </div>
+                          <div className="comment-input">
+                            <label>Yorum:</label>
+                            <textarea 
+                              value={userReview.comment}
+                              onChange={(e) => setUserReview({...userReview, comment: e.target.value})}
+                              placeholder="Bu ürün hakkında düşüncelerinizi paylaşın..."
+                              rows={4}
+                              required
+                            />
+                          </div>
+                          <button 
+                            type="submit" 
+                            disabled={submittingReview}
+                            className="btn btn-primary"
+                          >
+                            {submittingReview ? 'Gönderiliyor...' : 'Yorumu Gönder'}
+                          </button>
+                        </form>
+                      </div>
+                    )}
+
+                    {/* Reviews List */}
+                    <div className="reviews-list">
+                      {productReviews.length > 0 ? (
+                        productReviews.map((review) => (
+                          <div key={review.id} className="review-item">
+                            <div className="review-header">
+                              <div className="reviewer-info">
+                                <strong>{review.user_name}</strong>
+                                <span className="review-date">{new Date(review.created_at).toLocaleDateString()}</span>
+                              </div>
+                              <div className="rating">
+                                {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                              </div>
+                            </div>
+                            <p className="review-comment">{review.comment}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p>Henüz yorum yok. Bu ürüne ilk yorum yapan siz olun!</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Shipping & Returns Tab */}
+                {activeTab === 'shipping' && (
+                  <div className="tab-content shipping-tab">
+                    <h3>Kargo & İade</h3>
+                    
+                    <div className="shipping-info">
+                      <h4>Kargo Bilgisi</h4>
+                      <ul>
+                        <li>Siparişler üzeri 50 TL üzeri ücretsiz kargo</li>
+                        <li>Standart kargo: 3-5 iş günü</li>
+                        <li>Express kargo: 1-2 iş günü</li>
+                        <li>Uluslararası kargo mevcut</li>
+                      </ul>
+                    </div>
+
+                    <div className="returns-info">
+                      <h4>İade Politikası</h4>
+                      <ul>
+                        <li>30 günlük iade politikası</li>
+                        <li>Ürünler orijinal ambalajında olmalı</li>
+                        <li>Hatalı ürünler için ücretsiz iade</li>
+                        <li>İade gönderim maliyetleri uygulanabilir</li>
+                      </ul>
+                    </div>
+
+                    <div className="warranty-info">
+                      <h4>Garanti</h4>
+                      <ul>
+                        <li>1 yıl üretici garantisi</li>
+                        <li>Üretim hatalarını kapsar</li>
+                        <li>Normal kullanım ve aşınma kapsamı dışındadır</li>
+                        <li>Garanti talepleri için müşteri hizmetlerine başvurun</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Products Tab */}
+                {activeTab === 'related' && (
+                  <div className="tab-content related-tab">
+                    <h3>İlgili Ürünler</h3>
+                    {relatedProducts.length > 0 ? (
+                      <div className="related-products-grid">
+                        {relatedProducts.map((relatedProduct) => (
+                          <div key={relatedProduct.id} className="related-product-card">
+                            <Link to={`/product/${relatedProduct.slug}`}>
+                              <div className="related-product-image">
+                                {relatedProduct.images && relatedProduct.images.length > 0 ? (
+                                  <img 
+                                    src={`http://localhost:5005${relatedProduct.images[0]}`}
+                                    alt={relatedProduct.name}
+                                  />
+                                ) : (
+                                  <div className="no-image">📦</div>
+                                )}
+                              </div>
+                              <div className="related-product-info">
+                                <h4>{relatedProduct.name}</h4>
+                                <p className="price">${relatedProduct.price}</p>
+                                <p className="category">{relatedProduct.category}</p>
+                              </div>
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>İlgili ürün bulunamadı.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Lightbox Modal */}
+        {siteSettings.product_detail_show_image_lightbox && lightboxOpen && (
+          <div className="lightbox-overlay" onClick={closeLightbox}>
+            <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+              <button className="lightbox-close" onClick={closeLightbox}>
+                ✕
+              </button>
+              
+              {images.length > 1 && (
+                <button className="lightbox-prev" onClick={prevImage}>
+                  ‹
+                </button>
+              )}
+              
+              <div className="lightbox-image-container">
+                <img 
+                  src={images[lightboxImageIndex]} 
+                  alt={`${product.name} ${lightboxImageIndex + 1}`}
+                  className="lightbox-image"
+                  onError={(e) => {
+                    e.target.src = '/images/placeholder.jpg';
+                  }}
+                />
+                
+                <div className="lightbox-info">
+                  <h3>{product.name}</h3>
+                  <p>{lightboxImageIndex + 1} / {images.length}</p>
+                </div>
+              </div>
+              
+              {images.length > 1 && (
+                <button className="lightbox-next" onClick={nextImage}>
+                  ›
+                </button>
+              )}
+              
+              {/* Thumbnail Navigation */}
+              {images.length > 1 && (
+                <div className="lightbox-thumbnails">
+                  {images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`lightbox-thumbnail ${lightboxImageIndex === index ? 'active' : ''}`}
+                      onClick={() => setLightboxImageIndex(index)}
+                      onError={(e) => {
+                        e.target.src = '/images/placeholder.jpg';
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <style jsx="true">{`
+          .product-detail {
+            padding: 2rem 0;
+            min-height: 70vh;
+            background: #f8f9fa;
+          }
+
+          .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+          }
+
+          .breadcrumbs a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+
+          .breadcrumbs a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+          }
+
+          .loading-spinner {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+
+          .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+
+          .error-state h2 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+          }
+
+          .error-state p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+          }
+
+          .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+          }
+
+          .product-detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+          }
+
+          .product-images .main-image {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+          }
+
+          .product-images .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .product-images .no-image {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: #f5f5f5;
+            color: #666;
+          }
+
+          .product-images .no-image span {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+          }
+
+          .image-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+          }
+
+          .image-thumbnails img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+          }
+
+          .image-thumbnails img.active {
+            border-color: #007bff;
+          }
+
+          .product-info {
+            padding: 1rem 0;
+          }
+
+          .product-header h1 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+          }
+
+          .product-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+          }
+
+          .product-meta .category {
+            background: #e9ecef;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: #666;
+          }
+
+          .featured-badge {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+          }
+
+          .product-price {
+            margin: 1rem 0;
+          }
+
+          .current-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+          }
+
+          .original-price {
+            font-size: 1.1rem;
+            color: #666;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+          }
+
+          .product-stock {
+            margin: 1rem 0;
+            font-weight: 500;
+          }
+
+          .in-stock {
+            color: #28a745;
+          }
+
+          .out-of-stock {
+            color: #dc3545;
+          }
+
+          .product-variations {
+            margin: 2rem 0;
+          }
+
+          .product-variations h3 {
+            margin-bottom: 1rem;
+            color: #333;
+          }
+
+          .variation-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+          }
+
+          .variation-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 80px;
+          }
+
+          .variation-option:hover {
+            border-color: #007bff;
+          }
+
+          .variation-option.selected {
+            border-color: #007bff;
+            background: #f0f8ff;
+          }
+
+          .variation-option:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          .option-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+          }
+
+          .option-price {
+            font-size: 0.875rem;
+            color: #007bff;
+            font-weight: 500;
+          }
+
+          .out-of-stock-badge {
+            font-size: 0.75rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+          }
+
+          .purchase-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f8f9fa;
+          }
+
+          .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+          }
+
+          .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+
+          .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+          }
+
+          .quantity-controls .quantity {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 40px;
+            text-align: center;
+          }
+
+          .purchase-buttons {
+            display: flex;
+            gap: 1rem;
+          }
+
+          .purchase-buttons .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+          }
+
+          .btn-primary {
+            background: #007bff;
+            color: white;
+          }
+
+          .btn-primary:hover {
+            background: #0056b3;
+          }
+
+          .btn-secondary {
+            background: #28a745;
+            color: white;
+          }
+
+          .btn-secondary:hover {
+            background: #1e7e34;
+          }
+
+          .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          .continue-shopping {
+            margin-top: 1.5rem;
+            text-align: center;
+          }
+
+          .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            transition: all 0.3s ease;
+          }
+
+          .btn-outline:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+          }
+
+          .product-description, .product-details {
+            margin: 2rem 0;
+          }
+
+          .product-description h3, .product-details h3 {
+            margin-bottom: 1rem;
+            color: #333;
+          }
+
+          .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+          }
+
+          .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+          }
+
+          .detail-item .label {
+            font-weight: 500;
+            color: #666;
+          }
+
+          .detail-item .value {
+            color: #333;
+          }
+
+          .product-video {
+            margin: 2rem 0;
+          }
+
+          .product-video h3 {
+            margin-bottom: 1rem;
+            color: #333;
+          }
+
+          .loading, .error {
+            text-align: center;
+            padding: 3rem;
+          }
+
+          .error .btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+          }
+
+          /* Image Lightbox Styles */
+          .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+          }
+
+          .lightbox-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+          }
+
+          .lightbox-close:hover {
+            background: white;
+            transform: scale(1.1);
+          }
+
+          .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+          }
+
+          .lightbox-prev {
+            left: -60px;
+          }
+
+          .lightbox-next {
+            right: -60px;
+          }
+
+          .lightbox-prev:hover, .lightbox-next:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+          }
+
+          .lightbox-image-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          }
+
+          .lightbox-image {
+            max-width: 90vw;
+            max-height: 85vh;
+            min-width: 600px;
+            min-height: 600px;
+            object-fit: contain;
+            display: block;
+            width: auto;
+            height: auto;
+          }
+
+          .lightbox-info {
+            padding: 15px 20px;
+            background: white;
+            text-align: center;
+            border-top: 1px solid #eee;
+            width: 100%;
+          }
+
+          .lightbox-info h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 18px;
+          }
+
+          .lightbox-info p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+          }
+
+          .lightbox-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            max-width: 90vw;
+            overflow-x: auto;
+          }
+
+          .lightbox-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+          }
+
+          .lightbox-thumbnail:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+          }
+
+          .lightbox-thumbnail.active {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+
+          /* New styles for tabs */
+          .product-tabs-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f8f9fa;
+          }
+
+          .tabs-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+          }
+
+          .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            background: #e9ecef;
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+          }
+
+          .tab-btn.active {
+            background: white;
+            border-bottom: 2px solid #007bff;
+            color: #007bff;
+          }
+
+          .tab-btn:hover {
+            background: #e0e0e0;
+          }
+
+          .tabs-content {
+            padding: 1.5rem;
+          }
+
+          .tab-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+          }
+
+          .tab-content.active {
+            display: block;
+          }
+
+          .add-review-form {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #fdfdfd;
+          }
+
+          .add-review-form h4 {
+            margin-bottom: 1rem;
+            color: #333;
+          }
+
+          .rating-input {
+            margin-bottom: 1rem;
+          }
+
+          .rating-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+          }
+
+          .rating-input select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #333;
+          }
+
+          .comment-input {
+            margin-bottom: 1.5rem;
+          }
+
+          .comment-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+          }
+
+          .comment-input textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #333;
+            resize: vertical;
+          }
+
+          .reviews-list {
+            margin-top: 1.5rem;
+          }
+
+          .review-item {
+            padding: 1rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            background: #fdfdfd;
+          }
+
+          .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+          }
+
+          .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+          }
+
+          .reviewer-info .review-date {
+            font-size: 0.875rem;
+            color: #666;
+          }
+
+          .rating {
+            font-size: 1.1rem;
+            color: #ffd700; /* Gold color for stars */
+          }
+
+          .review-comment {
+            font-size: 1rem;
+            color: #444;
+            line-height: 1.6;
+            margin-top: 0.5rem;
+          }
+
+          .long-description {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+          }
+
+          .long-description h4 {
+            margin-bottom: 0.75rem;
+            color: #333;
+          }
+
+          .long-description p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.7;
+          }
+
+          .shipping-info, .returns-info, .warranty-info {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+          }
+
+          .shipping-info h4, .returns-info h4, .warranty-info h4 {
+            margin-bottom: 0.75rem;
+            color: #333;
+          }
+
+          .shipping-info ul, .returns-info ul, .warranty-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          .shipping-info li, .returns-info li, .warranty-info li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #555;
+          }
+
+          .related-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+          }
+
+          .related-product-card {
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            transition: all 0.3s ease;
+          }
+
+          .related-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          }
+
+          .related-product-image {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+          }
+
+          .related-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .related-product-image .no-image {
+            font-size: 3rem;
+            color: #666;
+          }
+
+          .related-product-info h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1.1rem;
+            text-decoration: none;
+          }
+
+          .related-product-info .price {
+            font-size: 1rem;
+            color: #007bff;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+          }
+
+          .related-product-info .category {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+          }
+
+          @media (max-width: 768px) {
+            .product-detail-content {
+              grid-template-columns: 1fr;
+              gap: 2rem;
+              padding: 1.5rem;
+            }
+
+            .breadcrumbs {
+              flex-wrap: wrap;
+              gap: 0.25rem;
+            }
+
+            .error-actions {
+              flex-direction: column;
+              align-items: center;
+            }
+
+            .details-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .purchase-buttons {
+              flex-direction: column;
+            }
+
+            .continue-shopping {
+              margin-top: 1rem;
+            }
+
+            .btn-outline {
+              padding: 0.625rem 1.5rem;
+              font-size: 0.9rem;
+            }
+
+            .variation-options {
+              justify-content: center;
+            }
+
+            .lightbox-close {
+              top: 10px;
+              right: 10px;
+            }
+
+            .lightbox-prev {
+              left: 10px;
+            }
+
+            .lightbox-next {
+              right: 10px;
+            }
+
+            .lightbox-image {
+              max-width: 95vw;
+              max-height: 80vh;
+              min-width: 400px;
+              min-height: 400px;
+            }
+
+            .lightbox-thumbnails {
+              max-width: 95vw;
+            }
+
+            .product-tabs-section {
+              padding: 1rem;
+            }
+
+            .tabs-header {
+              flex-wrap: wrap;
+              gap: 0.5rem;
+            }
+
+            .tab-btn {
+              flex: 1;
+              padding: 0.625rem 1rem;
+              font-size: 0.9rem;
+            }
+
+            .tab-content {
+              padding: 0.75rem 0;
+            }
+
+            .add-review-form {
+              padding: 1rem;
+            }
+
+            .add-review-form h4 {
+              font-size: 1rem;
+            }
+
+            .rating-input select {
+              font-size: 0.9rem;
+            }
+
+            .comment-input textarea {
+              font-size: 0.9rem;
+            }
+
+            .review-item {
+              padding: 0.75rem;
+            }
+
+            .review-header {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.3rem;
+            }
+
+            .reviewer-info {
+              flex-direction: column;
+              align-items: flex-start;
+            }
+
+            .reviewer-info .review-date {
+              font-size: 0.75rem;
+            }
+
+            .rating {
+              font-size: 1rem;
+            }
+
+            .review-comment {
+              font-size: 0.9rem;
+            }
+
+            .long-description {
+              padding-top: 0.75rem;
+            }
+
+            .long-description h4 {
+              font-size: 1rem;
+            }
+
+            .long-description p {
+              font-size: 0.85rem;
+            }
+
+            .shipping-info, .returns-info, .warranty-info {
+              padding-top: 0.75rem;
+            }
+
+            .shipping-info h4, .returns-info h4, .warranty-info h4 {
+              font-size: 1rem;
+            }
+
+            .related-products-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .related-product-card {
+              padding: 0.75rem;
+            }
+
+            .related-product-image {
+              height: 150px;
+            }
+
+            .related-product-info h4 {
+              font-size: 1rem;
+            }
+
+            .related-product-info .price {
+              font-size: 0.9rem;
+            }
+
+            .related-product-info .category {
+              font-size: 0.8rem;
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail; 

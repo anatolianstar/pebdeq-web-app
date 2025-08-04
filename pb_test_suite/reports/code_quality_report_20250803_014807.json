@@ -1,0 +1,78 @@
+{
+  "timestamp": "20250803_014807",
+  "total_files_tested": 10,
+  "selected_files": [
+    "backend\\backup_current_settings.py",
+    "backend\\init_email_templates.py",
+    "backend\\reset_db.py",
+    "backend\\run.py",
+    "backend\\app\\models\\models.py",
+    "backend\\app\\routes\\admin.py",
+    "backend\\app\\routes\\auth.py",
+    "backend\\app\\routes\\cart.py",
+    "backend\\app\\routes\\categories.py",
+    "backend\\app\\routes\\emails.py"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 10
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0
+  }
+}

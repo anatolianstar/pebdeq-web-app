@@ -1,0 +1,102 @@
+{
+  "timestamp": "20250803_014758",
+  "total_files_tested": 32,
+  "selected_files": [
+    "backend\\debug_models.py",
+    "backend\\test_3_models.py",
+    "backend\\test_real_models.py",
+    "backend\\app\\models\\models.py",
+    "backend\\app\\routes\\admin.py",
+    "backend\\app\\routes\\cart.py",
+    "backend\\app\\routes\\categories.py",
+    "backend\\app\\routes\\main.py",
+    "backend\\app\\routes\\products.py",
+    "backend\\app\\routes\\site_settings.py",
+    "backend\\app\\routes\\test_runner.py",
+    "backend\\app\\routes\\themes.py",
+    "deployment\\deployment_gui.py",
+    "deployment\\docker_enhancement.py",
+    "frontend\\src\\components\\BackgroundRemovalModal.js",
+    "frontend\\src\\components\\CategoryManagement.js",
+    "frontend\\src\\components\\ThemeBuilder.js",
+    "frontend\\src\\contexts\\ThemeContext.js",
+    "frontend\\src\\pages\\AdminDashboard.js",
+    "frontend\\src\\pages\\EmailManagement.js",
+    "frontend\\src\\pages\\GeneralSettings.js",
+    "frontend\\src\\pages\\InformationSettings.js",
+    "frontend\\src\\pages\\MenuSettings.js",
+    "frontend\\src\\pages\\ProductDetail.js",
+    "frontend\\src\\pages\\Products.js",
+    "frontend\\src\\pages\\SiteSettings2.js",
+    "frontend\\src\\pages\\TestDashboard.js",
+    "frontend\\src\\pages\\TestDashboard_clean.js",
+    "frontend\\src\\pages\\UserDashboard.js",
+    "frontend\\src\\pages\\UserSettings.js",
+    "deployment\\deployment_settings.json",
+    "deployment\\deploy.sh"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 16
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 32
+    },
+    "Deployment Quality": {
+      "passed": false,
+      "issues": [
+        "Bare except clause found in C:\\Users\\Djkya\\PycharmProjects\\pebdeq-git-rembg\\pebdeq-git\\pebdeq-home\\deployment\\docker_enhancement.py"
+      ],
+      "total_files": 4
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 10,
+    "failed_tests": 1
+  }
+}

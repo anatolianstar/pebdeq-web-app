@@ -1,0 +1,71 @@
+{
+  "timestamp": "20250803_005131",
+  "total_files_tested": 1,
+  "selected_files": [
+    "PEBDEQ_desktopapp\\renderer\\styles\\main.css"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Code Duplication": {
+      "passed": false,
+      "issues": [
+        "Duplicate CSS rule for '.canvas-container.hidden' found in main.css and main.css"
+      ],
+      "total_files": 1
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 10,
+    "failed_tests": 1
+  }
+}

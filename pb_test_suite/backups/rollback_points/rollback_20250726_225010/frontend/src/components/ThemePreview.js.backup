@@ -1,0 +1,90 @@
+import { THEMES } from '../themes/index';
+
+const ThemePreviewModal = ({ themeId, onClose, onApply }) => {
+  
+  const theme = THEMES[themeId];
+  
+  if (!theme) {
+    return null;
+  }
+
+  const previewStyles = {
+    '--primary-color': theme.colors.primary,
+    '--primary-hover': theme.colors.primaryHover,
+    '--text-primary': theme.colors.textPrimary,
+    '--text-secondary': theme.colors.textSecondary,
+    '--bg-primary': theme.colors.bgPrimary,
+    '--bg-secondary': theme.colors.bgSecondary,
+    '--border-color': theme.colors.borderColor,
+    '--card-bg': theme.colors.cardBg,
+    '--shadow-color': theme.colors.shadowColor,
+  };
+
+  return (
+    <div className="theme-preview-overlay" onClick={onClose}>
+      <div className="theme-preview-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="theme-preview-header">
+          <h3>Theme Preview: {theme.name}</h3>
+          <button className="close-button" onClick={onClose}>×</button>
+        </div>
+        
+        <div className="theme-preview-content" style={previewStyles}>
+          <div className="preview-section">
+            <h4>Colors & Typography</h4>
+            <div className="preview-colors">
+              <div className="color-sample primary">Primary</div>
+              <div className="color-sample secondary">Secondary</div>
+              <div className="color-sample success">Success</div>
+              <div className="color-sample warning">Warning</div>
+              <div className="color-sample error">Error</div>
+            </div>
+          </div>
+          
+          <div className="preview-section">
+            <h4>Components</h4>
+            <div className="preview-components">
+              <button className="btn btn-primary">Primary Button</button>
+              <button className="btn btn-secondary">Secondary Button</button>
+              
+              <div className="preview-card">
+                <h5>Sample Card</h5>
+                <p>This is how cards will look with this theme.</p>
+                <div className="card-actions">
+                  <button className="btn btn-outline">Learn More</button>
+                </div>
+              </div>
+              
+              <div className="preview-form">
+                <input type="text" placeholder="Sample input field" />
+                <textarea placeholder="Sample textarea"></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div className="preview-section">
+            <h4>Navigation</h4>
+            <div className="preview-nav">
+              <ul>
+                <li><button className="nav-link active">Home</button></li>
+                <li><button className="nav-link">Products</button></li>
+                <li><button className="nav-link">Categories</button></li>
+                <li><button className="nav-link">About</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div className="theme-preview-actions">
+          <button className="btn btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={() => onApply(themeId)}>
+            Apply Theme
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ThemePreviewModal; 

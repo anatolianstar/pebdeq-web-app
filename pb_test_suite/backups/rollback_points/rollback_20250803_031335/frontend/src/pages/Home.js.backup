@@ -1,0 +1,540 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import ProductCard from '../components/ProductCard';
+import ImagePreviewModal from '../components/ImagePreviewModal';
+import './Home.css';
+
+const Home = () => {
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { siteSettings, isInitialized: themeInitialized, currentTheme, changeTheme } = useTheme();
+  
+  // Debug: Add theme testing section
+  const [debugMode, setDebugMode] = useState(false);
+  
+  // Listen for theme settings updates and force re-render
+  useEffect(() => {
+    const handleThemeSettingsUpdate = (event) => {
+      console.log('🏠 Home - Theme settings updated:', event.detail);
+      // Force component re-render by updating state
+      setDebugMode(prev => !prev);
+    };
+
+    const handleForceSiteSettingsRefresh = (event) => {
+      console.log('🏠 Home - Force site settings refresh:', event.detail);
+      // Force another re-render after a delay
+      setTimeout(() => {
+        setDebugMode(prev => !prev);
+      }, 100);
+    };
+
+    document.addEventListener('themeSettingsUpdated', handleThemeSettingsUpdate);
+    document.addEventListener('forceSiteSettingsRefresh', handleForceSiteSettingsRefresh);
+
+    return () => {
+      document.removeEventListener('themeSettingsUpdated', handleThemeSettingsUpdate);
+      document.removeEventListener('forceSiteSettingsRefresh', handleForceSiteSettingsRefresh);
+    };
+  }, []);
+  
+  // Test theme change function
+  const testThemeChange = async (themeId) => {
+    console.log(`🧪 Testing theme change to: ${themeId}`);
+    try {
+      await changeTheme(themeId);
+      console.log(`✅ Theme changed successfully to: ${themeId}`);
+    } catch (error) {
+      console.error(`❌ Theme change failed:`, error);
+    }
+  };
+
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, images: [], currentIndex: 0, altText: '' });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [categoriesResponse, productsResponse] = await Promise.all([
+          fetch('/api/categories'),
+          fetch('/api/products')
+        ]);
+        
+        const categoriesData = await categoriesResponse.json();
+        const productsData = await productsResponse.json();
+        
+        // Use siteSettings from ThemeContext instead of local fetch
+        if (siteSettings) {
+      
+
+        }
+        
+        if (categoriesResponse.ok) {
+          setCategories(categoriesData.categories);
+        }
+        
+        if (productsResponse.ok) {
+          setProducts(productsData.products);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [siteSettings]); // Add siteSettings as dependency to re-render when theme changes
+
+  // Get categories to display based on settings
+  const getDisplayCategories = () => {
+    if (!siteSettings?.collections_show_section) {
+      return [];
+    }
+
+    let categoriesToShow = categories.filter(cat => cat.is_active);
+    
+    // If specific categories are selected, filter by them
+    if (siteSettings?.collections_show_categories?.length > 0) {
+      categoriesToShow = categoriesToShow.filter(cat => 
+        siteSettings.collections_show_categories.includes(cat.id)
+      );
+    }
+    
+    // Limit by max categories (per_row * max_rows)
+    const maxCategories = siteSettings?.collections_categories_per_row * siteSettings?.collections_max_rows;
+    return categoriesToShow.slice(0, maxCategories);
+  };
+
+  const displayCategories = getDisplayCategories();
+
+  // Get products to display based on settings
+  const getDisplayProducts = () => {
+    if (!siteSettings?.homepage_products_show_section) {
+      return [];
+    }
+
+    let productsToShow = products.filter(product => product.is_active);
+    
+    // Filter by categories if specified
+    if (siteSettings?.homepage_products_filter_categories?.length > 0) {
+      productsToShow = productsToShow.filter(product => 
+        siteSettings.homepage_products_filter_categories.includes(product.category_id)
+      );
+    }
+    
+    // Sort products
+    switch (siteSettings?.homepage_products_sort_by) {
+      case 'featured':
+        productsToShow = productsToShow.filter(product => product.is_featured);
+        break;
+      case 'newest':
+        productsToShow.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        break;
+      case 'price_low':
+        productsToShow.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_high':
+        productsToShow.sort((a, b) => b.price - a.price);
+        break;
+      case 'name':
+        productsToShow.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        // Default: featured first, then by name
+        productsToShow.sort((a, b) => {
+          if (a.is_featured && !b.is_featured) return -1;
+          if (!a.is_featured && b.is_featured) return 1;
+          return a.name.localeCompare(b.name);
+        });
+    }
+    
+    // Limit by max rows and per row
+    const maxItems = siteSettings?.homepage_products_max_rows * siteSettings?.homepage_products_per_row;
+    return productsToShow.slice(0, maxItems);
+  };
+
+  const displayProducts = getDisplayProducts();
+
+  // Get products for second section
+  const getDisplayProducts2 = () => {
+    if (!siteSettings?.homepage_products2_show_section) {
+      return [];
+    }
+
+    let productsToShow = products.filter(product => product.is_active);
+    
+    // Filter by categories if specified
+    if (siteSettings?.homepage_products2_filter_categories?.length > 0) {
+      productsToShow = productsToShow.filter(product => 
+        siteSettings.homepage_products2_filter_categories.includes(product.category_id)
+      );
+    }
+    
+    // Sort products
+    switch (siteSettings?.homepage_products2_sort_by) {
+      case 'featured':
+        productsToShow = productsToShow.filter(product => product.is_featured);
+        break;
+      case 'newest':
+        productsToShow.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        break;
+      case 'price_low':
+        productsToShow.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_high':
+        productsToShow.sort((a, b) => b.price - a.price);
+        break;
+      case 'name':
+        productsToShow.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        // Default: newest first
+        productsToShow.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    
+    // Limit by max rows and per row
+    const maxItems = siteSettings?.homepage_products2_max_rows * siteSettings?.homepage_products2_per_row;
+    return productsToShow.slice(0, maxItems);
+  };
+
+  const displayProducts2 = getDisplayProducts2();
+
+  // Get category name by ID
+  const getCategoryName = (categoryId) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : '';
+  };
+
+
+
+  // Handle buy now
+  const handleBuyNow = async (product) => {
+    if (product.stock_quantity === 0) {
+      console.error('Sorry, this product is out of stock');
+      return;
+    }
+    
+    try {
+      await addToCart(product, 1);
+      console.log('Product added to cart successfully:', product.name);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  };
+
+  const openPreviewModal = (images, currentIndex, altText) => {
+    setPreviewModal({ isOpen: true, images, currentIndex, altText });
+  };
+
+  const closePreviewModal = () => {
+    setPreviewModal({ isOpen: false, images: [], currentIndex: 0, altText: '' });
+  };
+
+  return (
+    <div 
+      className="home-container"
+      style={{
+        backgroundColor: siteSettings?.homepage_background_color || '#ffffff'
+      }}
+    >
+      {/* Debug Panel - Remove this after testing */}
+      {debugMode && (
+        <div style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          background: 'rgba(0,0,0,0.8)',
+          color: 'white',
+          padding: '15px',
+          borderRadius: '8px',
+          zIndex: 9999,
+          fontSize: '12px',
+          maxWidth: '300px'
+        }}>
+          <h4 style={{ margin: '0 0 10px 0', color: '#00ff00' }}>🧪 Theme Debug Panel</h4>
+          <p><strong>Theme Initialized:</strong> {themeInitialized ? '✅' : '❌'}</p>
+          <p><strong>Current Theme:</strong> {currentTheme || 'None'}</p>
+          <p><strong>Site Settings:</strong> {siteSettings ? '✅' : '❌'}</p>
+          <p><strong>data-theme:</strong> {document.documentElement.getAttribute('data-theme') || 'None'}</p>
+          
+          <div style={{ marginTop: '10px' }}>
+            <button onClick={() => testThemeChange('default')} style={{ margin: '2px', padding: '4px 8px', fontSize: '10px' }}>Default</button>
+            <button onClick={() => testThemeChange('dark')} style={{ margin: '2px', padding: '4px 8px', fontSize: '10px' }}>Dark</button>
+            <button onClick={() => testThemeChange('blue')} style={{ margin: '2px', padding: '4px 8px', fontSize: '10px' }}>Blue</button>
+            <button onClick={() => testThemeChange('green')} style={{ margin: '2px', padding: '4px 8px', fontSize: '10px' }}>Green</button>
+          </div>
+          
+          <button 
+            onClick={() => setDebugMode(false)} 
+            style={{ 
+              marginTop: '10px', 
+              padding: '4px 8px', 
+              fontSize: '10px',
+              background: 'red',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Close Debug
+          </button>
+        </div>
+      )}
+      
+      {/* Debug Toggle Button */}
+      <button 
+        onClick={() => setDebugMode(!debugMode)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          background: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          fontSize: '20px',
+          cursor: 'pointer',
+          zIndex: 9998,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+        }}
+        title="Toggle Theme Debug"
+      >
+        🧪
+      </button>
+
+      {/* Hero */}
+      <section 
+        className="hero-section"
+        style={{
+          background: siteSettings?.welcome_background_image 
+            ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(http://localhost:5005${siteSettings.welcome_background_image}) center/cover`
+            : `linear-gradient(135deg, ${siteSettings?.welcome_background_color ? siteSettings.welcome_background_color : 'var(--primary-color)'} 0%, #764ba2 100%)`
+        }}
+      >
+        <div className="hero-overlay">
+          <h1 className="hero-title" style={{ color: siteSettings?.welcome_text_color ? siteSettings.welcome_text_color : 'var(--text-light)' }}>
+            {siteSettings?.welcome_title || 'Welcome to Pebdeq'}
+          </h1>
+          <p className="hero-subtitle" style={{ color: siteSettings?.welcome_text_color ? siteSettings.welcome_text_color : 'var(--text-light)' }}>
+            {siteSettings?.welcome_subtitle || 'Crafted. Vintage. Smart.'}
+          </p>
+          <a 
+            href={siteSettings?.welcome_button_link || '/products'} 
+            className="hero-button"
+            style={{ backgroundColor: siteSettings?.welcome_button_color ? siteSettings.welcome_button_color : 'var(--primary-color)' }}
+          >
+            {siteSettings?.welcome_button_text || 'Explore Products'}
+          </a>
+        </div>
+      </section>
+
+      {/* Categories */}
+      {siteSettings?.collections_show_section && displayCategories.length > 0 && (
+        <section 
+          className="category-section"
+          style={{
+            backgroundColor: siteSettings?.homepage_background_color || '#ffffff'
+          }}
+        >
+          <h2 className="section-title">{siteSettings?.collections_title || 'Collections'}</h2>
+          <div 
+            className="category-grid"
+            style={{
+              gridTemplateColumns: `repeat(${siteSettings?.collections_categories_per_row || 4}, 1fr)`
+            }}
+          >
+            {displayCategories.map((category) => (
+              <a 
+                href={`/products?category=${category.slug}`} 
+                key={category.id} 
+                className="category-card"
+                style={{
+                  background: category.background_image_url 
+                    ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(http://localhost:5005${category.background_image_url}) center/cover`
+                    : category.background_color || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: category.background_image_url || category.background_color ? '#fff' : '#333'
+                }}
+              >
+                <div className="category-content">
+                  {category.image_url && (
+                    <div className="category-icon">
+                      <img 
+                        src={`http://localhost:5005${category.image_url}`} 
+                        alt={category.name}
+                        style={{ 
+                          width: '60px', 
+                          height: '60px', 
+                          objectFit: 'cover', 
+                          borderRadius: '50%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+                  )}
+                  <h3>{category.name}</h3>
+                  <p>{category.description || 'Discover our collection'}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Homepage Products */}
+      {siteSettings?.homepage_products_show_section && displayProducts.length > 0 && (
+        <section 
+          className="homepage-products-section"
+          style={{
+            backgroundColor: siteSettings?.homepage_background_color || '#f8f9fa'
+          }}
+        >
+          <div className="section-header">
+            <h2 className="section-title">{siteSettings?.homepage_products_title || 'Featured Products'}</h2>
+            {siteSettings?.homepage_products_subtitle && siteSettings.homepage_products_subtitle.trim() !== '' && (
+              <p className="section-subtitle">{siteSettings.homepage_products_subtitle}</p>
+            )}
+          </div>
+          
+          <div 
+            className={`products-grid ${siteSettings?.homepage_products_card_style}`}
+            style={{
+              '--products-per-row': siteSettings?.homepage_products_per_row || 4,
+              '--products-per-row-tablet': Math.min(siteSettings?.homepage_products_per_row || 4, 4),
+              '--products-per-row-mobile': Math.min(siteSettings?.homepage_products_per_row || 4, 3),
+              '--products-per-row-small': Math.min(siteSettings?.homepage_products_per_row || 4, 2),
+              '--image-size': `${Math.max(180, Math.min(600, 1368 / (siteSettings?.homepage_products_per_row || 4) - 50))}px`,
+              '--image-size-tablet': `${Math.max(180, Math.min(500, 1200 / Math.min(siteSettings?.homepage_products_per_row || 4, 4) - 50))}px`,
+              '--image-size-mobile': `${Math.max(180, Math.min(400, 900 / Math.min(siteSettings?.homepage_products_per_row || 4, 3) - 50))}px`,
+              '--image-size-small': `${Math.max(200, Math.min(350, 700 / Math.min(siteSettings?.homepage_products_per_row || 4, 2) - 50))}px`
+            }}
+          >
+            {displayProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                categories={categories}
+                siteSettings={siteSettings}
+                openPreview={openPreviewModal}
+              />
+            ))}
+          </div>
+          
+          {/* View All Button */}
+          {siteSettings?.homepage_products_show_view_all && (
+            <div className="view-all-container">
+              <a href={siteSettings?.homepage_products_view_all_link || '/products'} className="btn btn-view-all">
+                {siteSettings?.homepage_products_view_all_text || 'View All Products'}
+              </a>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Homepage Products 2 */}
+      {siteSettings?.homepage_products2_show_section && displayProducts2.length > 0 && (
+        <section 
+          className="homepage-products-section homepage-products2-section"
+          style={{
+            backgroundColor: siteSettings?.homepage_background_color || '#ffffff'
+          }}
+        >
+          <div className="section-header">
+            <h2 className="section-title">{siteSettings?.homepage_products2_title || 'New Arrivals'}</h2>
+            {siteSettings?.homepage_products2_subtitle && siteSettings.homepage_products2_subtitle.trim() !== '' && (
+              <p className="section-subtitle">{siteSettings.homepage_products2_subtitle}</p>
+            )}
+          </div>
+          
+          <div 
+            className={`products-grid ${siteSettings?.homepage_products2_card_style}`}
+            style={{
+              '--products-per-row': siteSettings?.homepage_products2_per_row || 4,
+              '--products-per-row-tablet': Math.min(siteSettings?.homepage_products2_per_row || 4, 4),
+              '--products-per-row-mobile': Math.min(siteSettings?.homepage_products2_per_row || 4, 3),
+              '--products-per-row-small': Math.min(siteSettings?.homepage_products2_per_row || 4, 2),
+              '--image-size': `${Math.max(180, Math.min(600, 1368 / (siteSettings?.homepage_products2_per_row || 4) - 50))}px`,
+              '--image-size-tablet': `${Math.max(180, Math.min(500, 1200 / Math.min(siteSettings?.homepage_products2_per_row || 4, 4) - 50))}px`,
+              '--image-size-mobile': `${Math.max(180, Math.min(400, 900 / Math.min(siteSettings?.homepage_products2_per_row || 4, 3) - 50))}px`,
+              '--image-size-small': `${Math.max(200, Math.min(350, 700 / Math.min(siteSettings?.homepage_products2_per_row || 4, 2) - 50))}px`
+            }}
+          >
+            {displayProducts2.map((product) => (
+              <ProductCard 
+                key={`product2-${product.id}`} 
+                product={product} 
+                categories={categories}
+                siteSettings={{
+                  ...siteSettings,
+                  // Map products2 settings to main settings for compatibility
+                  homepage_products_card_shadow: siteSettings?.homepage_products2_card_shadow,
+                  homepage_products_card_hover_effect: siteSettings?.homepage_products2_card_hover_effect,
+                  homepage_products_show_images: siteSettings?.homepage_products2_show_images,
+                  homepage_products_show_badges: siteSettings?.homepage_products2_show_badges,
+                  homepage_products_show_favorite: siteSettings?.homepage_products2_show_favorite,
+                  homepage_products_enable_image_preview: siteSettings?.homepage_products2_enable_image_preview,
+                  homepage_products_show_category: siteSettings?.homepage_products2_show_category,
+                  homepage_products_show_price: siteSettings?.homepage_products2_show_price,
+                  homepage_products_show_original_price: siteSettings?.homepage_products2_show_original_price,
+                  homepage_products_show_stock: siteSettings?.homepage_products2_show_stock,
+                  homepage_products_show_details: siteSettings?.homepage_products2_show_details,
+                  homepage_products_show_buy_now: siteSettings?.homepage_products2_show_buy_now,
+                  homepage_products_product_name_color: siteSettings?.homepage_products2_product_name_color,
+                  homepage_products_product_name_font_family: siteSettings?.homepage_products2_product_name_font_family,
+                  homepage_products_product_name_font_size: siteSettings?.homepage_products2_product_name_font_size,
+                  homepage_products_product_name_font_weight: siteSettings?.homepage_products2_product_name_font_weight,
+                  homepage_products_product_name_font_style: siteSettings?.homepage_products2_product_name_font_style,
+                  homepage_products_product_price_color: siteSettings?.homepage_products2_product_price_color,
+                  homepage_products_product_price_font_family: siteSettings?.homepage_products2_product_price_font_family,
+                  homepage_products_product_price_font_size: siteSettings?.homepage_products2_product_price_font_size,
+                  homepage_products_product_price_font_weight: siteSettings?.homepage_products2_product_price_font_weight,
+                  homepage_products_product_price_font_style: siteSettings?.homepage_products2_product_price_font_style,
+                  homepage_products_view_details_button_color: siteSettings?.homepage_products2_view_details_button_color,
+                  homepage_products_view_details_button_text_color: siteSettings?.homepage_products2_view_details_button_text_color,
+                  homepage_products_add_to_cart_button_color: siteSettings?.homepage_products2_add_to_cart_button_color,
+                  homepage_products_add_to_cart_button_text_color: siteSettings?.homepage_products2_add_to_cart_button_text_color
+                }}
+                openPreview={openPreviewModal}
+              />
+            ))}
+          </div>
+          
+          {/* View All Button */}
+          {siteSettings?.homepage_products2_show_view_all && (
+            <div className="view-all-container">
+              <a href={siteSettings?.homepage_products2_view_all_link || '/products'} className="btn btn-view-all">
+                {siteSettings?.homepage_products2_view_all_text || 'View All New Arrivals'}
+              </a>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Highlights */}
+      <section className="features-section">
+        <div className="feature-card">🚚 Fast Shipping</div>
+        <div className="feature-card">🔒 Secure Checkout</div>
+        <div className="feature-card">📦 Quality Guarantee</div>
+      </section>
+      
+      {/* Image Preview Modal */}
+      <ImagePreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={closePreviewModal}
+        images={previewModal.images}
+        currentIndex={previewModal.currentIndex}
+        altText={previewModal.altText}
+      />
+    </div>
+  );
+};
+
+export default Home;

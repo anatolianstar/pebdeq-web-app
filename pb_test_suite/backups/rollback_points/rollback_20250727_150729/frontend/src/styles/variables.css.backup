@@ -1,0 +1,243 @@
+/* CSS Variables for Dynamic Theming */
+
+:root {
+  /* === COLORS === */
+  
+  /* Primary Colors */
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --primary-active: #004085;
+  --primary-light: #b8daff;
+  --primary-dark: #004085;
+  
+  /* Secondary Colors */
+  --secondary-color: #6c757d;
+  --secondary-hover: #5a6268;
+  --secondary-active: #494f54;
+  --secondary-light: #f8f9fa;
+  --secondary-dark: #343a40;
+  
+  /* Success Colors */
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --success-active: #1e7e34;
+  --success-light: #d4edda;
+  --success-dark: #155724;
+  
+  /* Danger Colors */
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --danger-active: #bd2130;
+  --danger-light: #f8d7da;
+  --danger-dark: #721c24;
+  
+  /* Warning Colors */
+  --warning-color: #ffc107;
+  --warning-hover: #e0a800;
+  --warning-active: #d39e00;
+  --warning-light: #fff3cd;
+  --warning-dark: #856404;
+  
+  /* Info Colors */
+  --info-color: #17a2b8;
+  --info-hover: #138496;
+  --info-active: #117a8b;
+  --info-light: #d1ecf1;
+  --info-dark: #0c5460;
+  
+  /* === BACKGROUNDS === */
+  --background-primary: #ffffff;
+  --background-secondary: #f8f9fa;
+  --background-tertiary: #e9ecef;
+  --background-dark: #343a40;
+  --background-light: #ffffff;
+  --background-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* === TEXT COLORS === */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --text-light: #ffffff;
+  --text-dark: #212529;
+  --text-heading: #212529;
+  --text-body: #495057;
+  
+  /* === BORDERS === */
+  --border-color: #dee2e6;
+  --border-light: #e9ecef;
+  --border-dark: #495057;
+  --border-radius: 4px;
+  --border-radius-sm: 2px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-width: 1px;
+  
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* === SPACING === */
+  --spacing-xs: 0.25rem;    /* 4px */
+  --spacing-sm: 0.5rem;     /* 8px */
+  --spacing-md: 1rem;       /* 16px */
+  --spacing-lg: 1.5rem;     /* 24px */
+  --spacing-xl: 2rem;       /* 32px */
+  --spacing-2xl: 2.5rem;    /* 40px */
+  --spacing-3xl: 3rem;      /* 48px */
+  --spacing-4xl: 4rem;      /* 64px */
+  --spacing-5xl: 5rem;      /* 80px */
+  
+  /* === TYPOGRAPHY === */
+  
+  /* Font Families */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-heading: inherit;
+  --font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-6xl: 3.75rem;   /* 60px */
+  
+  /* Heading Sizes */
+  --font-size-h1: 2.5rem;     /* 40px */
+  --font-size-h2: 2rem;       /* 32px */
+  --font-size-h3: 1.75rem;    /* 28px */
+  --font-size-h4: 1.5rem;     /* 24px */
+  --font-size-h5: 1.25rem;    /* 20px */
+  --font-size-h6: 1rem;       /* 16px */
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  --font-weight-heading: 600;
+  
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  --line-height-base: 1.6;
+  --line-height-heading: 1.2;
+  
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+  
+  /* === BREAKPOINTS === */
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+  
+  /* === Z-INDEX === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  
+  /* === TRANSITIONS === */
+  --transition-base: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+  --transition-slow: all 0.5s ease;
+  --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* === COMPONENT SPECIFIC === */
+  
+  /* Buttons */
+  --button-padding-x: 1rem;
+  --button-padding-y: 0.5rem;
+  --button-font-size: 1rem;
+  --button-border-radius: 4px;
+  --button-font-weight: 500;
+  
+  /* Cards */
+  --card-padding: 1.5rem;
+  --card-border-radius: 8px;
+  --card-shadow: var(--shadow-md);
+  --card-border: 1px solid var(--border-color);
+  
+  /* Forms */
+  --form-input-padding-x: 0.75rem;
+  --form-input-padding-y: 0.5rem;
+  --form-input-font-size: 1rem;
+  --form-input-border-radius: 4px;
+  --form-input-border: 1px solid var(--border-color);
+  
+  /* Navigation */
+  --nav-height: 60px;
+  --nav-padding-x: 1rem;
+  --nav-link-padding-x: 1rem;
+  --nav-link-padding-y: 0.5rem;
+  
+  /* Header */
+  --header-height: 80px;
+  --header-background: var(--background-primary);
+  --header-shadow: var(--shadow-sm);
+  
+  /* Footer */
+  --footer-background: var(--background-dark);
+  --footer-text: var(--text-light);
+  --footer-padding: 3rem 0;
+  
+  /* Sidebar */
+  --sidebar-width: 250px;
+  --sidebar-background: var(--background-secondary);
+  --sidebar-border: 1px solid var(--border-color);
+  
+  /* === LINK COLORS === */
+  --link-color: var(--primary-color);
+  --link-hover-color: var(--primary-hover);
+  --link-visited-color: var(--primary-color);
+  --link-active-color: var(--primary-active);
+  
+  /* === FOCUS COLORS === */
+  --focus-color: var(--primary-color);
+  --focus-ring: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  
+  /* === SCROLLBAR === */
+  --scrollbar-width: 8px;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a8a8a8;
+  
+  /* === SELECTION === */
+  --selection-bg: rgba(0, 123, 255, 0.3);
+  --selection-color: inherit;
+  
+  /* === CUSTOM THEME VARIABLES === */
+  /* These will be dynamically overridden by custom themes */
+  --theme-primary: var(--primary-color);
+  --theme-secondary: var(--secondary-color);
+  --theme-background: var(--background-primary);
+  --theme-text: var(--text-primary);
+  --theme-accent: var(--info-color);
+} 

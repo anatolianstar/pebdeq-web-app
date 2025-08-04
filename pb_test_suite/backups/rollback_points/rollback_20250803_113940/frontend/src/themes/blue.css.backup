@@ -1,0 +1,563 @@
+/* Blue Theme */
+/* This theme provides a professional, corporate blue-focused interface */
+
+[data-theme="blue"] {
+  /* ========== PRIMARY COLORS ========== */
+  --primary-color: #0066cc;
+  --primary-hover: #0052a3;
+  --primary-active: #004080;
+  --primary-light: #cce6ff;
+  --primary-dark: #003d7a;
+  
+  /* ========== SECONDARY COLORS ========== */
+  --secondary-color: #4d79a4;
+  --secondary-hover: #3e6289;
+  --secondary-active: #2f4c6e;
+  --secondary-light: #b3c7db;
+  --secondary-dark: #1f3552;
+  
+  /* ========== STATUS COLORS ========== */
+  --success-color: #2e7d32;
+  --success-hover: #1b5e20;
+  --success-active: #1e7e34;
+  --success-light: #c8e6c9;
+  --success-dark: #1b5e20;
+  
+  --danger-color: #d32f2f;
+  --danger-hover: #b71c1c;
+  --danger-active: #c62828;
+  --danger-light: #ffcdd2;
+  --danger-dark: #b71c1c;
+  
+  --warning-color: #f57c00;
+  --warning-hover: #e65100;
+  --warning-active: #ef6c00;
+  --warning-light: #ffe0b2;
+  --warning-dark: #e65100;
+  
+  --info-color: #3182ce;
+  --info-hover: #2c5282;
+  --info-active: #2a4365;
+  --info-light: #bee3f8;
+  --info-dark: #2a4365;
+  
+  /* ========== BACKGROUND COLORS - HAFIF PASTEL MAVİ ========== */
+  --bg-primary: #f0f8ff;          /* Çok hafif pastel mavi */
+  --bg-secondary: #e6f3ff;        /* Hafif pastel mavi */
+  --bg-tertiary: #d6edff;         /* Orta pastel mavi */
+  --bg-dark: #1565c0;
+  --bg-light: #fafcff;            /* Çok açık mavi beyaz */
+  
+  /* Card Backgrounds - Pastel Mavi Tonları */
+  --card-bg: #f8fcff;             /* Kartlar için çok hafif mavi */
+  --card-bg-hover: #e8f4ff;       /* Hover için biraz daha koyu */
+  --card-bg-active: #ddeeff;      /* Active için daha belirgin */
+  
+  /* Modal Backgrounds */
+  --modal-bg: #f8fcff;            /* Modal için hafif mavi */
+  --modal-backdrop: rgba(0, 102, 204, 0.2);
+  
+  /* Header/Footer Backgrounds */
+  --header-bg: #f5faff;           /* Header için çok hafif mavi */
+  --footer-bg: #1565c0;
+  
+  /* ========== TEXT COLORS ========== */
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --text-light: #ffffff;
+  --text-dark: #1a202c;
+  
+  /* Link Colors */
+  --link-color: #0066cc;
+  --link-hover: #0052a3;
+  --link-active: #004080;
+  --link-visited: #553c9a;
+  
+  /* Placeholder Text */
+  --placeholder-color: #718096;
+  
+  /* ========== BORDER COLORS ========== */
+  --border-color: #90cdf4;
+  --border-color-light: #bee3f8;
+  --border-color-dark: #4299e1;
+  --border-color-focus: #0066cc;
+  --border-color-error: #d32f2f;
+  --border-color-success: #2e7d32;
+
+  /* ========== SHADOWS ========== */
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 102, 204, 0.1);
+  --shadow-md: 0 0.5rem 1rem rgba(0, 102, 204, 0.15);
+  --shadow-lg: 0 1rem 3rem rgba(0, 102, 204, 0.2);
+  --shadow-xl: 0 2rem 4rem rgba(0, 102, 204, 0.25);
+
+  /* Component Specific Shadows */
+  --card-shadow: 0 0.125rem 0.25rem rgba(0, 102, 204, 0.1);
+  --card-shadow-hover: 0 0.5rem 1rem rgba(0, 102, 204, 0.15);
+  --header-shadow: 0 0.125rem 0.25rem rgba(0, 102, 204, 0.1);
+  --modal-shadow: 0 1rem 3rem rgba(0, 102, 204, 0.2);
+}
+
+/* ========== THEME SPECIFIC STYLES ========== */
+[data-theme="blue"] {
+  /* Body and main backgrounds */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] .hero-modern {
+  background: linear-gradient(135deg, #0066cc 0%, #3182ce 100%);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .featured-products {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="blue"] .product-card-featured {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="blue"] .product-card-featured:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="blue"] .blog-posts-section {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="blue"] .blog-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="blue"] .blog-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--border-color-focus);
+}
+
+/* ========== COMPONENT SPECIFIC OVERRIDES ========== */
+[data-theme="blue"] .header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--header-shadow);
+}
+
+[data-theme="blue"] .footer {
+  background-color: var(--footer-bg);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .nav a {
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] .nav a:hover {
+  color: var(--primary-color);
+}
+
+[data-theme="blue"] .btn {
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-all);
+}
+
+[data-theme="blue"] .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
+}
+
+[data-theme="blue"] .btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+[data-theme="blue"] .btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+[data-theme="blue"] .btn-outline:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .form-group input,
+[data-theme="blue"] .form-group textarea,
+[data-theme="blue"] .form-group select {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] .form-group input:focus,
+[data-theme="blue"] .form-group textarea:focus,
+[data-theme="blue"] .form-group select:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+[data-theme="blue"] .form-group input::placeholder,
+[data-theme="blue"] .form-group textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+[data-theme="blue"] .modal-content {
+  background-color: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--modal-shadow);
+}
+
+[data-theme="blue"] .modal-overlay {
+  background-color: var(--modal-backdrop);
+}
+
+[data-theme="blue"] .admin-dashboard {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="blue"] .admin-nav button {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] .admin-nav button:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="blue"] .admin-nav button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .stat-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+[data-theme="blue"] .stat-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--border-color-focus);
+}
+
+[data-theme="blue"] table {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="blue"] table th {
+  background-color: var(--bg-tertiary);
+  border-bottom: 2px solid var(--border-color-focus);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] table td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] table tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* ========== BLUE THEME SPECIFIC ENHANCEMENTS ========== */
+[data-theme="blue"] .featured-badge {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .status-badge {
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="blue"] .status-badge.pending {
+  background-color: var(--warning-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .status-badge.processing {
+  background-color: var(--info-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .status-badge.shipped {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .status-badge.delivered {
+  background-color: var(--success-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .status-badge.cancelled {
+  background-color: var(--danger-color);
+  color: var(--text-light);
+}
+
+[data-theme="blue"] .marquee-banner {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+[data-theme="blue"] .logo {
+  filter: hue-rotate(10deg) saturate(1.1);
+}
+
+[data-theme="blue"] .product-image img {
+  border-radius: var(--border-radius);
+}
+
+[data-theme="blue"] .product-image img:hover {
+  transform: scale(1.02);
+}
+
+/* ========== BLUE THEME GRADIENTS ========== */
+[data-theme="blue"] .btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+}
+
+[data-theme="blue"] .btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-active) 100%);
+}
+
+[data-theme="blue"] .hero-modern {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+  position: relative;
+}
+
+[data-theme="blue"] .hero-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ========== PROFESSIONAL ACCENTS ========== */
+[data-theme="blue"] .product-card-featured {
+  border-left: 4px solid var(--primary-color);
+}
+
+[data-theme="blue"] .blog-card {
+  border-left: 4px solid var(--info-color);
+}
+
+[data-theme="blue"] .stat-card {
+  border-top: 3px solid var(--primary-color);
+}
+
+[data-theme="blue"] .admin-nav button.active {
+  border-left: 4px solid var(--primary-color);
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 768px) {
+  [data-theme="blue"] .hero-modern {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--info-color) 100%);
+  }
+  
+  [data-theme="blue"] .product-card-featured {
+    box-shadow: var(--shadow-sm);
+  }
+
+  [data-theme="blue"] .blog-card {
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+[data-theme="blue"] :focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+[data-theme="blue"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== ANIMATION ENHANCEMENTS ========== */
+[data-theme="blue"] * {
+  transition: var(--theme-transition);
+}
+
+[data-theme="blue"] .fade-in {
+  animation: fadeInBlue 0.5s ease-in-out;
+}
+
+@keyframes fadeInBlue {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== BLUE THEME HOVER EFFECTS ========== */
+[data-theme="blue"] .product-card-featured:hover {
+  box-shadow: var(--card-shadow-hover), 0 0 20px rgba(0, 102, 204, 0.2);
+}
+
+[data-theme="blue"] .blog-card:hover {
+  box-shadow: var(--card-shadow-hover), 0 0 20px rgba(49, 130, 206, 0.2);
+}
+
+[data-theme="blue"] .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+[data-theme="blue"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+[data-theme="blue"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* ========== ADMIN DASHBOARD PASTEL MAVİ BACKGROUNDS ========== */
+
+/* Ana Container ve Main Area */
+[data-theme="blue"] .admin-dashboard {
+  background-color: var(--bg-primary) !important;
+}
+
+[data-theme="blue"] .admin-main {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Sidebar Hafif Pastel Mavi */
+[data-theme="blue"] .admin-sidebar {
+  background-color: #f5faff !important;          /* Çok hafif mavi sidebar */
+  border-right: 1px solid #e0f0ff !important;
+}
+
+/* Admin Dashboard Content Areas */
+[data-theme="blue"] .admin-dashboard .dashboard-content,
+[data-theme="blue"] .admin-dashboard .dashboard-stats,
+[data-theme="blue"] .admin-dashboard .products-content,
+[data-theme="blue"] .admin-dashboard .users-content,
+[data-theme="blue"] .admin-dashboard .orders-content,
+[data-theme="blue"] .admin-dashboard .returns-content,
+[data-theme="blue"] .admin-dashboard .messages-content,
+[data-theme="blue"] .admin-dashboard .variations-content,
+[data-theme="blue"] .admin-dashboard .invoices-content {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Card ve Container Elemanları Pastel Mavi */
+[data-theme="blue"] .admin-dashboard .stat-card,
+[data-theme="blue"] .admin-dashboard .recent-activities,
+[data-theme="blue"] .admin-dashboard .card,
+[data-theme="blue"] .admin-dashboard .modal-content {
+  background-color: var(--card-bg) !important;
+  border: 1px solid #e0f0ff !important;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.08) !important;
+}
+
+/* Form Container ve Table Container */
+[data-theme="blue"] .admin-dashboard .form-container,
+[data-theme="blue"] .admin-dashboard .table-container,
+[data-theme="blue"] .admin-dashboard .content-wrapper,
+[data-theme="blue"] .admin-dashboard .settings-form,
+[data-theme="blue"] .admin-dashboard .site-settings-form {
+  background-color: var(--card-bg) !important;
+  border: 1px solid #e0f0ff !important;
+  border-radius: 8px !important;
+}
+
+/* Section Header Pastel Mavi */
+[data-theme="blue"] .admin-dashboard .section-header,
+[data-theme="blue"] .admin-dashboard .settings-header {
+  background-color: #f0f8ff !important;          /* Çok hafif pastel mavi */
+  border: 1px solid #e0f0ff !important;
+  border-radius: 6px !important;
+}
+
+/* Tablo Pastel Mavi Temaları */
+[data-theme="blue"] .admin-dashboard table {
+  background-color: var(--card-bg) !important;
+  border: 1px solid #e0f0ff !important;
+}
+
+[data-theme="blue"] .admin-dashboard th {
+  background-color: #e8f4ff !important;          /* Tablo header hafif mavi */
+  border-bottom: 1px solid #d0e8ff !important;
+}
+
+[data-theme="blue"] .admin-dashboard tr:hover {
+  background-color: #f0f8ff !important;          /* Satır hover çok hafif mavi */
+}
+
+/* Form Elemanları Pastel Mavi */
+[data-theme="blue"] .admin-dashboard input,
+[data-theme="blue"] .admin-dashboard textarea,
+[data-theme="blue"] .admin-dashboard select {
+  background-color: #fafcff !important;          /* Input alanları çok hafif mavi */
+  border: 1px solid #d6edff !important;
+}
+
+[data-theme="blue"] .admin-dashboard input:focus,
+[data-theme="blue"] .admin-dashboard textarea:focus,
+[data-theme="blue"] .admin-dashboard select:focus {
+  background-color: #f5faff !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1) !important;
+}

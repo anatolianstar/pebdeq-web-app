@@ -1,0 +1,1 @@
+// Bu dosya backup olarak oluşturuldu

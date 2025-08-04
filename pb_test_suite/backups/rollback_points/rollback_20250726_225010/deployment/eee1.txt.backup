@@ -1,0 +1,1855 @@
+[15:54:55] INFO: [DEBUG] Found 45 items in C:\Users\Djkya
+[15:54:55] INFO: [DEBUG] 34 directories, 11 files
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .cache
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .cursor
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .matplotlib
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .ollama
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .rustup
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .ssh
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .u2net
+[15:54:55] INFO: [DEBUG] Skipping hidden directory: .wdc
+[15:54:55] INFO: [DEBUG] Added 26 directories to tree
+[15:54:55] INFO: [DEBUG] Skipping hidden file: .bash_history
+[15:54:55] INFO: [DEBUG] Skipping hidden file: .file_manager_learned_categories.json
+[15:54:55] INFO: [DEBUG] Skipping hidden file: .gitconfig
+[15:54:55] INFO: [DEBUG] Skipping hidden file: .lesshst
+[15:54:55] INFO: [DEBUG] Added 7 files to tree
+[15:54:55] SUCCESS: [OK] Connection settings loaded
+[15:55:06] INFO: [OK] All deployment steps selected
+[15:55:06] INFO: [DEBUG] 14 steps now selected
+[15:55:08] INFO: [LAUNCH] Starting PEBDEQ deployment...
+[15:55:08] INFO: [DEBUG] Selected steps: [CONNECT] Test server connection, [UPDATE] Update system packages, [FIREWALL] Configure firewall, [CLEAN] Clean existing deployment, [UPLOAD] Upload project files, [PYTHON] Setup Python environment, [DEPS] Install dependencies, [BUILD] Build frontend, [DB] Setup database, [SERVICE] Configure services, [NGINX] Setup web server, [SSL] Configure SSL, [TEST] Run health checks, [VERIFY] Final verification
+[15:55:08] INFO: [EXECUTE] [CONNECT] Test server connection - Selected and will run
+[15:55:08] INFO: Executing: [CONNECT] Test server connection
+[15:55:08] INFO: Testing server connection...
+[15:55:09] SUCCESS: Connection successful! Server: Linux ubuntu-2gb-ash-2 5.4.0-212-generic #232-Ubuntu SMP Sat Mar 15 15:34:35 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+[15:55:09] SUCCESS: [OK] [CONNECT] Test server connection - Completed
+[15:55:10] INFO: [EXECUTE] [UPDATE] Update system packages - Selected and will run
+[15:55:10] INFO: Executing: [UPDATE] Update system packages
+[15:55:11] INFO: Updating system packages...
+[15:55:14] INFO: Output: Hit:1 https://mirror.hetzner.com/ubuntu/packages focal InRelease
+Hit:2 https://mirror.hetzner.com/ubuntu/packages focal-updates InRelease
+Hit:3 https://mirror.hetzner.com/ubuntu/packages focal-backports InRelease
+Hit:4 https://mirror.hetzner.com/ubuntu/security focal-security InRelease
+Hit:5 http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal InRelease
+Reading package lists...
+Building dependency tree...
+Reading state information...
+All packages are up to date.
+[15:55:15] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+The following security updates require Ubuntu Pro with 'esm-infra' enabled:
+  python3.8-venv linux-libc-dev libpython3.8-dev libpython3.8-minimal git-man
+  libsystemd0 python3-urllib3 sudo libpython3.8 python3.8 git udev
+  python3-requests libudev1 libsoup2.4-1 systemd-timesyncd python3.8-minimal
+  systemd-sysv libpam-systemd systemd libnss-systemd libpython3.8-stdlib
+  python3.8-dev linux-image-virtual libxslt1.1
+Learn more about Ubuntu Pro at https://ubuntu.com/pro
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:55:16] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:55:17] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+python3 is already the newest version (3.8.2-0ubuntu2).
+npm is already the newest version (6.14.4+ds-1ubuntu2).
+python3-venv is already the newest version (3.8.2-0ubuntu2).
+build-essential is already the newest version (12.8ubuntu1.1).
+curl is already the newest version (7.68.0-1ubuntu2.25).
+git is already the newest version (1:2.25.1-1ubuntu3.14).
+nginx is already the newest version (1.18.0-0ubuntu1.7).
+wget is already the newest version (1.20.3-1ubuntu2.1).
+nodejs is already the newest version (10.19.0~dfsg-3ubuntu1.6).
+python3-pip is already the newest version (20.0.2-5ubuntu1.11).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:55:17] INFO: Checking for Python 3.13 availability...
+[15:55:19] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+software-properties-common is already the newest version (0.99.9.12).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:55:25] INFO: Output: Hit:1 https://mirror.hetzner.com/ubuntu/packages focal InRelease
+Hit:2 https://mirror.hetzner.com/ubuntu/packages focal-updates InRelease
+Hit:3 https://mirror.hetzner.com/ubuntu/packages focal-backports InRelease
+Hit:4 https://mirror.hetzner.com/ubuntu/security focal-security InRelease
+Hit:5 http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal InRelease
+Reading package lists...
+[15:55:27] INFO: Output: Hit:1 https://mirror.hetzner.com/ubuntu/packages focal InRelease
+Hit:2 https://mirror.hetzner.com/ubuntu/packages focal-updates InRelease
+Hit:3 https://mirror.hetzner.com/ubuntu/packages focal-backports InRelease
+Hit:4 https://mirror.hetzner.com/ubuntu/security focal-security InRelease
+Hit:5 http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal InRelease
+Reading package lists...
+Building dependency tree...
+Reading state information...
+All packages are up to date.
+[15:55:28] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+Python 3.13 not available, using system Python
+[15:55:28] INFO: Output: Python 3.8.10
+[15:55:28] INFO: System Python version: Python 3.8.10
+
+[15:55:29] INFO: Output: Not found
+[15:55:29] INFO: Python 3.13 not available, using system Python 3.12
+[15:55:29] SUCCESS: [OK] [UPDATE] Update system packages - Completed
+[15:55:30] INFO: [EXECUTE] [FIREWALL] Configure firewall - Selected and will run
+[15:55:30] INFO: Executing: [FIREWALL] Configure firewall
+[15:55:30] INFO: Configuring UFW firewall...
+[15:55:31] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+ufw is already the newest version (0.36-6ubuntu1.1).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:55:31] INFO: Output: Backing up 'user.rules' to '/etc/ufw/user.rules.20250725_195530'
+Backing up 'before.rules' to '/etc/ufw/before.rules.20250725_195530'
+Backing up 'after.rules' to '/etc/ufw/after.rules.20250725_195530'
+Backing up 'user6.rules' to '/etc/ufw/user6.rules.20250725_195530'
+Backing up 'before6.rules' to '/etc/ufw/before6.rules.20250725_195530'
+Backing up 'after6.rules' to '/etc/ufw/after6.rules.20250725_195530'
+[15:55:31] INFO: Output: Rules updated
+Rules updated (v6)
+[15:55:32] INFO: Output: Rules updated
+Rules updated (v6)
+[15:55:32] INFO: Output: Rules updated
+Rules updated (v6)
+[15:55:32] INFO: Output: Rules updated
+[15:55:32] INFO: Output: Firewall is active and enabled on system startup
+[15:55:33] INFO: Output: Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere                  
+80/tcp                     ALLOW       Anywhere                  
+443/tcp                    ALLOW       Anywhere                  
+5005                       ALLOW       127.0.0.1                 
+22/tcp (v6)                ALLOW       Anywhere (v6)             
+80/tcp (v6)                ALLOW       Anywhere (v6)             
+443/tcp (v6)               ALLOW       Anywhere (v6)
+[15:55:33] SUCCESS: [OK] [FIREWALL] Configure firewall - Completed
+[15:55:34] INFO: [EXECUTE] [CLEAN] Clean existing deployment - Selected and will run
+[15:55:34] INFO: Executing: [CLEAN] Clean existing deployment
+[15:55:34] INFO: [CLEAN] Performing comprehensive cleanup of existing deployment...
+[15:55:34] INFO: 1. Safely stopping and cleaning services...
+[15:55:35] INFO: 2. Cleaning deployment files systematically...
+[15:55:35] INFO: Service cleanup: rm -f /etc/systemd/system/pebdeq-backend.service
+[15:55:35] INFO: Service cleanup: rm -f /etc/systemd/system/pebdeq*.service
+[15:55:36] INFO: Service cleanup: systemctl daemon-reload
+[15:55:36] INFO: Backing up important data before cleanup...
+[15:55:37] INFO: Output: total 248
+drwxr-xr-x  3 root root   4096 Jul 25 19:55 .
+drwxrwxrwt 21 root root   4096 Jul 25 19:55 ..
+-rwxr-xr-x  1 root root 237568 Jul 25 19:55 pebdeq.db.backup
+-rwxr-xr-x  1 root root   2020 Jul 25 19:55 requirements.txt.backup
+drwxr-xr-x  8 root root   4096 Jul 25 19:55 uploads_backup
+[15:55:37] INFO: [OK] Backup created at: /tmp/pebdeq_backup_1753473336
+[15:55:37] INFO: Backup contents:
+[15:55:37] INFO: total 248
+drwxr-xr-x  3 root root   4096 Jul 25 19:55 .
+drwxrwxrwt 21 root root   4096 Jul 25 19:55 ..
+-rwxr-xr-x  1 root root 237568 Jul 25 19:55 pebdeq.db.backup
+-rwxr-xr-x  1 root root   2020 Jul 25 19:55 requirements.txt.backup
+drwxr-xr-x  8 root root   4096 Jul 25 19:55 uploads_backup
+
+[15:55:37] INFO: App cleanup: rm -rf /var/www/pebdeq/*
+[15:55:37] INFO: App cleanup: rm -rf /opt/pebdeq/*
+[15:55:39] INFO: App cleanup: mkdir -p /var/www/pebdeq
+[15:55:39] INFO: App cleanup: mkdir -p /opt/pebdeq
+[15:55:39] INFO: 3. Cleaning nginx configuration...
+[15:55:39] INFO: Nginx cleanup: rm -f /etc/nginx/sites-enabled/pebdeq
+[15:55:39] INFO: Nginx cleanup: rm -f /etc/nginx/sites-available/pebdeq
+[15:55:40] INFO: Nginx cleanup: nginx -t && systemctl reload nginx || echo 'nginx config test failed'
+[15:55:40] INFO: 4. System-level cleanup...
+[15:55:41] INFO: 5. Verifying cleanup completion...
+[15:55:41] INFO: Output: 3
+[15:55:42] INFO: [OK] Backend directory: Clean
+[15:55:42] INFO: Output: 3
+[15:55:42] INFO: [OK] Web directory: Clean
+[15:55:42] INFO: Output: REMOVED
+[15:55:42] INFO: [OK] Service file: Clean
+[15:55:42] INFO: Output: REMOVED
+[15:55:42] INFO: [OK] Nginx config: Clean
+[15:55:42] INFO: Output: NONE
+[15:55:42] INFO: [OK] Running processes: Clean
+[15:55:43] INFO: Output: FREE
+[15:55:43] INFO: [OK] Port 5005: Clean
+[15:55:43] INFO: 6. Preparing for fresh installation...
+[15:55:44] INFO: Cleanup Summary:
+[15:55:44] INFO:   [OK] Services stopped and disabled
+[15:55:44] INFO:   [OK] Application files removed
+[15:55:44] INFO:   [OK] Web files cleaned
+[15:55:44] INFO:   [OK] Nginx configuration removed
+[15:55:44] INFO:   [OK] System files cleaned
+[15:55:44] INFO:   [OK] Fresh directory structure created
+[15:55:44] INFO:   [UPLOAD] Backup available at: /tmp/pebdeq_backup_1753473336
+[15:55:44] INFO: [OK] Clean deployment completed successfully!
+[15:55:44] SUCCESS: [OK] [CLEAN] Clean existing deployment - Completed
+[15:55:45] INFO: [EXECUTE] [UPLOAD] Upload project files - Selected and will run
+[15:55:45] INFO: Executing: [UPLOAD] Upload project files
+[15:55:46] INFO: [PROGRESS] Starting incremental file upload...
+[15:55:46] INFO: [INFO] Note: Incremental upload feature in development, using full upload
+[15:55:46] INFO: Uploading backend files...
+[15:55:46] INFO: Uploaded: .env.example
+[15:55:46] INFO: Uploaded: api_test_commands.txt
+[15:55:47] INFO: Uploaded: add_custom_themes_table.py
+[15:55:47] INFO: Uploaded: models.py
+[15:55:47] INFO: Uploaded: admin.py
+[15:55:48] INFO: Uploaded: auth.py
+[15:55:48] INFO: Uploaded: cart.py
+[15:55:48] INFO: Uploaded: categories.py
+[15:55:48] INFO: Uploaded: emails.py
+[15:55:49] INFO: Uploaded: emails.py.backup_20250718_222610
+[15:55:49] INFO: Uploaded: emails.py.backup_20250719_004024
+[15:55:49] INFO: Uploaded: invoices.py
+[15:55:49] INFO: Uploaded: main.py
+[15:55:50] INFO: Uploaded: messages.py
+[15:55:50] INFO: Uploaded: orders.py
+[15:55:50] INFO: Uploaded: products.py
+[15:55:50] INFO: Uploaded: site_settings.py
+[15:55:51] INFO: Uploaded: test_runner.py
+[15:55:51] INFO: Uploaded: test_runner.py.backup_20250123
+[15:55:51] INFO: Uploaded: test_runner.py.backup_20250723_152454
+[15:55:51] INFO: Uploaded: themes.py
+[15:55:52] INFO: Uploaded: uploads.py
+[15:55:52] INFO: Uploaded: users.py
+[15:55:52] INFO: Uploaded: variations.py
+[15:55:52] INFO: Uploaded: invoice_PBD_2025_07_0001.pdf
+[15:55:53] INFO: Uploaded: config.py
+[15:55:53] INFO: Uploaded: decorators.py
+[15:55:53] INFO: Uploaded: email_service.py
+[15:55:53] INFO: Uploaded: invoice_pdf.py
+[15:55:54] INFO: Uploaded: template_service.py
+[15:55:54] INFO: Uploaded: __init__.py
+[15:55:54] INFO: Uploaded: __init__.py
+[15:55:54] INFO: Uploaded: backup_current_settings.py
+[15:55:55] INFO: Uploaded: invoice.json
+[15:55:55] INFO: Uploaded: newsletter.json
+[15:55:55] INFO: Uploaded: order_confirmation.json
+[15:55:55] INFO: Uploaded: order_status_update.json
+[15:55:56] INFO: Uploaded: payment_confirmation.json
+[15:55:56] INFO: Uploaded: shipping_notification.json
+[15:55:56] INFO: Uploaded: welcome.json
+[15:55:56] INFO: Uploaded: check_db.py
+[15:55:56] INFO: Uploaded: check_users.py
+[15:55:57] INFO: Uploaded: create_backup.py
+[15:55:57] INFO: Uploaded: create_test_users.py
+[15:55:57] INFO: Uploaded: db_reset.py
+[15:55:57] INFO: Uploaded: DUPLICATE_FUNCTION_FIX.md
+[15:55:58] INFO: Uploaded: invoice.json
+[15:55:58] INFO: Uploaded: newsletter.json
+[15:55:58] INFO: Uploaded: order_confirmation.json
+[15:55:58] INFO: Uploaded: order_status_update.json
+[15:55:59] INFO: Uploaded: payment_confirmation.json
+[15:55:59] INFO: Uploaded: shipping_notification.json
+[15:55:59] INFO: Uploaded: welcome.json
+[15:55:59] INFO: Uploaded: env.production.example
+[15:56:00] INFO: Uploaded: fix_google_oauth_settings.py
+[15:56:00] INFO: Uploaded: init_email_templates.py
+[15:56:00] INFO: Uploaded: pebdeq.db
+[15:56:01] INFO: Uploaded: alembic.ini
+[15:56:01] INFO: Uploaded: env.py
+[15:56:01] INFO: Uploaded: README
+[15:56:01] INFO: Uploaded: script.py.mako
+[15:56:02] INFO: Uploaded: 1a0121271809_add_about_page_cms_fields_to_.py
+[15:56:02] INFO: Uploaded: 2cb789ad34d9_add_site_url_settings_for_dynamic_.py
+[15:56:02] INFO: Uploaded: 44ba9f727e37_add_google_oauth_settings_to_.py
+[15:56:02] INFO: Uploaded: 56ab06a42a86_add_logo_shadow_settings.py
+[15:56:03] INFO: Uploaded: 75b60e302559_add_google_id_to_user_model.py
+[15:56:03] INFO: Uploaded: 9ef6c1f54b25_add_last_login_field_to_user_model.py
+[15:56:03] INFO: Uploaded: add_product_reviews_table.py
+[15:56:03] INFO: Uploaded: af51b733fef2_add_new_fields_to_category_table.py
+[15:56:04] INFO: Uploaded: fc1b8d793938_add_theme_preference_to_user_model.py
+[15:56:04] INFO: Uploaded: package-lock.json
+[15:56:04] INFO: Uploaded: README.md
+[15:56:04] INFO: Uploaded: README_DATABASE.md
+[15:56:05] INFO: Uploaded: requirements-server.txt
+[15:56:05] INFO: Uploaded: requirements.txt
+[15:56:05] INFO: Uploaded: requirementsx.txt
+[15:56:05] INFO: Uploaded: reset_db.py
+[15:56:05] INFO: Uploaded: restore_database.py
+[15:56:06] INFO: Uploaded: run.py
+[15:56:06] INFO: Uploaded: test_server.py
+[15:56:07] INFO: Uploaded: 0451f1e9d22d43659d73324246a3d2d2.png
+[15:56:10] INFO: Uploaded: 349e5267957342a890236ac3848747ab.png
+[15:56:13] INFO: Uploaded: 3a9e1a1388394016b6b1e4d65702765e.png
+[15:56:13] INFO: Uploaded: 60a533cf648d4339a7ca6b50d1a4a845.jpg
+[15:56:14] INFO: Uploaded: 9a6d0375d6594ab2893b927a565bf0a1.jpg
+[15:56:15] INFO: Uploaded: b6a397ee6e2a4771a95bdd549785bf5e.png
+[15:56:15] INFO: Uploaded: b99eda59cd1e4c46970220ee74c07296.jpg
+[15:56:16] INFO: Uploaded: ba8a0f3c375442a48f87291400e92743.png
+[15:56:19] INFO: Uploaded: d135a66f9f664334a0c05f64ed621c7e.png
+[15:56:20] INFO: Uploaded: ee82e1d1a58b401ca5fc27f51a5f1bd1.png
+[15:56:21] INFO: Uploaded: fd98293a2c294e3cbbc69313b49e588b.png
+[15:56:21] INFO: Uploading frontend files...
+[15:56:21] INFO: Uploaded: .env.example
+[15:56:22] INFO: Uploaded: .eslintrc.js
+[15:56:23] INFO: Uploaded: package-lock.json
+[15:56:23] INFO: Uploaded: package.json
+[15:56:23] INFO: Uploaded: index.html
+[15:56:23] INFO: Uploaded: manifest.json
+[15:56:24] INFO: Uploaded: blue.css
+[15:56:24] INFO: Uploaded: dark.css
+[15:56:24] INFO: Uploaded: default.css
+[15:56:24] INFO: Uploaded: green.css
+[15:56:25] INFO: Uploaded: variables.css
+[15:56:25] INFO: Uploaded: App.css
+[15:56:25] INFO: Uploaded: App.js
+[15:56:26] INFO: Uploaded: BackgroundRemovalModal.css
+[15:56:26] INFO: Uploaded: BackgroundRemovalModal.js
+[15:56:26] INFO: Uploaded: BlogManagement.js
+[15:56:26] INFO: Uploaded: CategoryAnalytics.js
+[15:56:27] INFO: Uploaded: CategoryManagement.js
+[15:56:27] INFO: Uploaded: Footer.js
+[15:56:27] INFO: Uploaded: GoogleSignIn.js
+[15:56:27] INFO: Uploaded: Header.js
+[15:56:27] INFO: Uploaded: ImageCropModal.css
+[15:56:28] INFO: Uploaded: ImageCropModal.js
+[15:56:28] INFO: Uploaded: ImagePreviewModal.css
+[15:56:28] INFO: Uploaded: ImagePreviewModal.js
+[15:56:28] INFO: Uploaded: LikeButton.js
+[15:56:29] INFO: Uploaded: ResponsiveThemeTest.css
+[15:56:29] INFO: Uploaded: ResponsiveThemeTest.js
+[15:56:29] INFO: Uploaded: ScrollToTop.js
+[15:56:29] INFO: Uploaded: ShareButtons.js
+[15:56:30] INFO: Uploaded: ThemeBuilder.css
+[15:56:30] INFO: Uploaded: ThemeBuilder.js
+[15:56:30] INFO: Uploaded: ThemePerformanceMonitor.css
+[15:56:30] INFO: Uploaded: ThemePerformanceMonitor.js
+[15:56:31] INFO: Uploaded: ThemePreview.css
+[15:56:31] INFO: Uploaded: ThemePreview.js
+[15:56:31] INFO: Uploaded: ThemeSelector.css
+[15:56:31] INFO: Uploaded: ThemeSelector.js
+[15:56:32] INFO: Uploaded: config.js
+[15:56:32] INFO: Uploaded: AuthContext.js
+[15:56:32] INFO: Uploaded: CartContext.js
+[15:56:32] INFO: Uploaded: ThemeContext.js
+[15:56:33] INFO: Uploaded: index.js
+[15:56:33] INFO: Uploaded: About.js
+[15:56:33] INFO: Uploaded: AccessibilityStatement.js
+[15:56:34] INFO: Uploaded: AdminDashboard.js
+[15:56:34] INFO: Uploaded: Blog.js
+[15:56:34] INFO: Uploaded: BlogPost.js
+[15:56:34] INFO: Uploaded: Cart.js
+[15:56:34] INFO: Uploaded: Category.js
+[15:56:35] INFO: Uploaded: Checkout.js
+[15:56:35] INFO: Uploaded: Contact.js
+[15:56:35] INFO: Uploaded: CookiePolicy.js
+[15:56:35] INFO: Uploaded: DMCANotice.js
+[15:56:36] INFO: Uploaded: EmailManagement.js
+[15:56:36] INFO: Uploaded: GeneralSettings.js
+[15:56:36] INFO: Uploaded: Home.css
+[15:56:36] INFO: Uploaded: Home.js
+[15:56:37] INFO: Uploaded: InformationSettings.js
+[15:56:37] INFO: Uploaded: Login.js
+[15:56:37] INFO: Uploaded: MenuSettings.js
+[15:56:37] INFO: Uploaded: OrderConfirmation.js
+[15:56:38] INFO: Uploaded: Orders.js
+[15:56:38] INFO: Uploaded: PrivacyPolicy.js
+[15:56:38] INFO: Uploaded: ProductDetail.js
+[15:56:38] INFO: Uploaded: Products.css
+[15:56:39] INFO: Uploaded: Products.js
+[15:56:39] INFO: Uploaded: Profile.js
+[15:56:39] INFO: Uploaded: Register.js
+[15:56:39] INFO: Uploaded: ReturnPolicy.js
+[15:56:40] INFO: Uploaded: ShippingPolicy.js
+[15:56:40] INFO: Uploaded: SiteSettings2.js
+[15:56:40] INFO: Uploaded: TermsOfService.js
+[15:56:40] INFO: Uploaded: TestDashboard.css
+[15:56:41] INFO: Uploaded: TestDashboard.js
+[15:56:41] INFO: Uploaded: TestDashboard_clean.js
+[15:56:41] INFO: Uploaded: UserDashboard.js
+[15:56:42] INFO: Uploaded: UserSettings.js
+[15:56:42] INFO: Uploaded: globals.css
+[15:56:42] INFO: Uploaded: utilities.css
+[15:56:42] INFO: Uploaded: variables.css
+[15:56:43] INFO: Uploaded: blue.css
+[15:56:43] INFO: Uploaded: dark.css
+[15:56:43] INFO: Uploaded: default.css
+[15:56:43] INFO: Uploaded: green.css
+[15:56:44] INFO: Uploaded: index.js
+[15:56:44] INFO: Uploaded: performance.js
+[15:56:44] INFO: Uploaded: siteSettingsIntegration.js
+[15:56:44] INFO: Uploaded: variables.css
+[15:56:45] INFO: Uploaded: config.js
+[15:56:45] INFO: Uploaded: themeTemplate.js
+[15:56:45] INFO: Uploading test suite...
+[15:56:45] INFO: Uploaded: test_auth.py
+[15:56:46] INFO: Uploaded: test_basic_setup.py
+[15:56:46] INFO: Uploaded: add_custom_themes_table.py.backup
+[15:56:47] INFO: Uploaded: models.py.backup
+[15:56:47] INFO: Uploaded: admin.py.backup
+[15:56:47] INFO: Uploaded: auth.py.backup
+[15:56:47] INFO: Uploaded: cart.py.backup
+[15:56:48] INFO: Uploaded: categories.py.backup
+[15:56:48] INFO: Uploaded: emails.py.backup
+[15:56:48] INFO: Uploaded: invoices.py.backup
+[15:56:48] INFO: Uploaded: main.py.backup
+[15:56:49] INFO: Uploaded: messages.py.backup
+[15:56:49] INFO: Uploaded: orders.py.backup
+[15:56:49] INFO: Uploaded: products.py.backup
+[15:56:49] INFO: Uploaded: site_settings.py.backup
+[15:56:50] INFO: Uploaded: test_runner.py.backup
+[15:56:50] INFO: Uploaded: themes.py.backup
+[15:56:50] INFO: Uploaded: uploads.py.backup
+[15:56:50] INFO: Uploaded: users.py.backup
+[15:56:51] INFO: Uploaded: variations.py.backup
+[15:56:51] INFO: Uploaded: config.py.backup
+[15:56:51] INFO: Uploaded: decorators.py.backup
+[15:56:51] INFO: Uploaded: email_service.py.backup
+[15:56:52] INFO: Uploaded: invoice_pdf.py.backup
+[15:56:52] INFO: Uploaded: template_service.py.backup
+[15:56:52] INFO: Uploaded: __init__.py.backup
+[15:56:52] INFO: Uploaded: __init__.py.backup
+[15:56:53] INFO: Uploaded: backup_current_settings.py.backup
+[15:56:53] INFO: Uploaded: check_db.py.backup
+[15:56:53] INFO: Uploaded: check_users.py.backup
+[15:56:53] INFO: Uploaded: create_backup.py.backup
+[15:56:54] INFO: Uploaded: create_test_users.py.backup
+[15:56:54] INFO: Uploaded: db_reset.py.backup
+[15:56:54] INFO: Uploaded: fix_google_oauth_settings.py.backup
+[15:56:54] INFO: Uploaded: init_email_templates.py.backup
+[15:56:55] INFO: Uploaded: env.py.backup
+[15:56:55] INFO: Uploaded: 1a0121271809_add_about_page_cms_fields_to_.py.backup
+[15:56:55] INFO: Uploaded: 2cb789ad34d9_add_site_url_settings_for_dynamic_.py.backup
+[15:56:56] INFO: Uploaded: 44ba9f727e37_add_google_oauth_settings_to_.py.backup
+[15:56:56] INFO: Uploaded: 56ab06a42a86_add_logo_shadow_settings.py.backup
+[15:56:56] INFO: Uploaded: 75b60e302559_add_google_id_to_user_model.py.backup
+[15:56:56] INFO: Uploaded: 9ef6c1f54b25_add_last_login_field_to_user_model.py.backup
+[15:56:57] INFO: Uploaded: add_product_reviews_table.py.backup
+[15:56:57] INFO: Uploaded: af51b733fef2_add_new_fields_to_category_table.py.backup
+[15:56:57] INFO: Uploaded: fc1b8d793938_add_theme_preference_to_user_model.py.backup
+[15:56:57] INFO: Uploaded: reset_db.py.backup
+[15:56:58] INFO: Uploaded: restore_database.py.backup
+[15:56:58] INFO: Uploaded: run.py.backup
+[15:56:58] INFO: Uploaded: test_server.py.backup
+[15:56:58] INFO: Uploaded: .eslintrc.js.backup
+[15:56:59] INFO: Uploaded: blue.css.backup
+[15:56:59] INFO: Uploaded: dark.css.backup
+[15:56:59] INFO: Uploaded: default.css.backup
+[15:56:59] INFO: Uploaded: green.css.backup
+[15:57:00] INFO: Uploaded: variables.css.backup
+[15:57:00] INFO: Uploaded: App.css.backup
+[15:57:00] INFO: Uploaded: App.js.backup
+[15:57:01] INFO: Uploaded: BackgroundRemovalModal.css.backup
+[15:57:01] INFO: Uploaded: BackgroundRemovalModal.js.backup
+[15:57:01] INFO: Uploaded: BlogManagement.js.backup
+[15:57:01] INFO: Uploaded: CategoryAnalytics.js.backup
+[15:57:02] INFO: Uploaded: CategoryManagement.js.backup
+[15:57:02] INFO: Uploaded: Footer.js.backup
+[15:57:02] INFO: Uploaded: GoogleSignIn.js.backup
+[15:57:02] INFO: Uploaded: Header.js.backup
+[15:57:03] INFO: Uploaded: ImageCropModal.css.backup
+[15:57:03] INFO: Uploaded: ImageCropModal.js.backup
+[15:57:03] INFO: Uploaded: ImagePreviewModal.css.backup
+[15:57:03] INFO: Uploaded: ImagePreviewModal.js.backup
+[15:57:03] INFO: Uploaded: LikeButton.js.backup
+[15:57:04] INFO: Uploaded: ResponsiveThemeTest.css.backup
+[15:57:04] INFO: Uploaded: ResponsiveThemeTest.js.backup
+[15:57:04] INFO: Uploaded: ScrollToTop.js.backup
+[15:57:04] INFO: Uploaded: ShareButtons.js.backup
+[15:57:05] INFO: Uploaded: ThemeBuilder.css.backup
+[15:57:05] INFO: Uploaded: ThemeBuilder.js.backup
+[15:57:05] INFO: Uploaded: ThemePerformanceMonitor.css.backup
+[15:57:05] INFO: Uploaded: ThemePerformanceMonitor.js.backup
+[15:57:06] INFO: Uploaded: ThemePreview.css.backup
+[15:57:06] INFO: Uploaded: ThemePreview.js.backup
+[15:57:06] INFO: Uploaded: ThemeSelector.css.backup
+[15:57:06] INFO: Uploaded: ThemeSelector.js.backup
+[15:57:07] INFO: Uploaded: config.js.backup
+[15:57:07] INFO: Uploaded: AuthContext.js.backup
+[15:57:07] INFO: Uploaded: CartContext.js.backup
+[15:57:07] INFO: Uploaded: ThemeContext.js.backup
+[15:57:08] INFO: Uploaded: index.js.backup
+[15:57:08] INFO: Uploaded: About.js.backup
+[15:57:08] INFO: Uploaded: AccessibilityStatement.js.backup
+[15:57:09] INFO: Uploaded: AdminDashboard.js.backup
+[15:57:09] INFO: Uploaded: Blog.js.backup
+[15:57:09] INFO: Uploaded: BlogPost.js.backup
+[15:57:09] INFO: Uploaded: Cart.js.backup
+[15:57:10] INFO: Uploaded: Category.js.backup
+[15:57:10] INFO: Uploaded: Checkout.js.backup
+[15:57:10] INFO: Uploaded: Contact.js.backup
+[15:57:10] INFO: Uploaded: CookiePolicy.js.backup
+[15:57:11] INFO: Uploaded: DMCANotice.js.backup
+[15:57:11] INFO: Uploaded: EmailManagement.js.backup
+[15:57:11] INFO: Uploaded: GeneralSettings.js.backup
+[15:57:11] INFO: Uploaded: Home.css.backup
+[15:57:11] INFO: Uploaded: Home.js.backup
+[15:57:12] INFO: Uploaded: InformationSettings.js.backup
+[15:57:12] INFO: Uploaded: Login.js.backup
+[15:57:12] INFO: Uploaded: MenuSettings.js.backup
+[15:57:12] INFO: Uploaded: OrderConfirmation.js.backup
+[15:57:13] INFO: Uploaded: Orders.js.backup
+[15:57:13] INFO: Uploaded: PrivacyPolicy.js.backup
+[15:57:13] INFO: Uploaded: ProductDetail.js.backup
+[15:57:13] INFO: Uploaded: Products.css.backup
+[15:57:14] INFO: Uploaded: Products.js.backup
+[15:57:14] INFO: Uploaded: Profile.js.backup
+[15:57:14] INFO: Uploaded: Register.js.backup
+[15:57:14] INFO: Uploaded: ReturnPolicy.js.backup
+[15:57:15] INFO: Uploaded: ShippingPolicy.js.backup
+[15:57:15] INFO: Uploaded: SiteSettings2.js.backup
+[15:57:15] INFO: Uploaded: TermsOfService.js.backup
+[15:57:15] INFO: Uploaded: TestDashboard.css.backup
+[15:57:16] INFO: Uploaded: TestDashboard.js.backup
+[15:57:16] INFO: Uploaded: TestDashboard_clean.js.backup
+[15:57:16] INFO: Uploaded: UserDashboard.js.backup
+[15:57:17] INFO: Uploaded: UserSettings.js.backup
+[15:57:17] INFO: Uploaded: globals.css.backup
+[15:57:17] INFO: Uploaded: utilities.css.backup
+[15:57:17] INFO: Uploaded: variables.css.backup
+[15:57:18] INFO: Uploaded: blue.css.backup
+[15:57:18] INFO: Uploaded: dark.css.backup
+[15:57:18] INFO: Uploaded: default.css.backup
+[15:57:18] INFO: Uploaded: green.css.backup
+[15:57:19] INFO: Uploaded: index.js.backup
+[15:57:19] INFO: Uploaded: performance.js.backup
+[15:57:19] INFO: Uploaded: siteSettingsIntegration.js.backup
+[15:57:19] INFO: Uploaded: variables.css.backup
+[15:57:20] INFO: Uploaded: config.js.backup
+[15:57:20] INFO: Uploaded: themeTemplate.js.backup
+[15:57:20] INFO: Uploaded: test_auth.py.backup
+[15:57:21] INFO: Uploaded: test_basic_setup.py.backup
+[15:57:21] INFO: Uploaded: test_config.py.backup
+[15:57:21] INFO: Uploaded: base_test.py.backup
+[15:57:22] INFO: Uploaded: code_integrity.py.backup
+[15:57:22] INFO: Uploaded: api_client.py.backup
+[15:57:22] INFO: Uploaded: environment_manager.py.backup
+[15:57:22] INFO: Uploaded: test_data_helper.py.backup
+[15:57:23] INFO: Uploaded: run_auth_tests_standalone.py.backup
+[15:57:23] INFO: Uploaded: run_admin_tests.py.backup
+[15:57:23] INFO: Uploaded: run_auth_tests.py.backup
+[15:57:23] INFO: Uploaded: run_basic_tests.py.backup
+[15:57:24] INFO: Uploaded: run_code_integrity_tests.py.backup
+[15:57:24] INFO: Uploaded: run_code_quality_tests.py.backup
+[15:57:24] INFO: Uploaded: run_frontend_tests.py.backup
+[15:57:24] INFO: Uploaded: run_integration_tests.py.backup
+[15:57:25] INFO: Uploaded: run_invoice_tests.py.backup
+[15:57:25] INFO: Uploaded: run_order_tests.py.backup
+[15:57:25] INFO: Uploaded: run_performance_tests.py.backup
+[15:57:25] INFO: Uploaded: run_product_tests.py.backup
+[15:57:26] INFO: Uploaded: run_security_tests.py.backup
+[15:57:26] INFO: Uploaded: run_theme_tests.py.backup
+[15:57:26] INFO: Uploaded: run_upload_tests.py.backup
+[15:57:27] INFO: Uploaded: setup_test_environment.py.backup
+[15:57:27] INFO: Uploaded: test_admin_api.py.backup
+[15:57:27] INFO: Uploaded: test_authentication.py.backup
+[15:57:27] INFO: Uploaded: test_invoice_api.py.backup
+[15:57:28] INFO: Uploaded: test_order_api.py.backup
+[15:57:28] INFO: Uploaded: test_product_api.py.backup
+[15:57:28] INFO: Uploaded: test_site_settings_api.py.backup
+[15:57:28] INFO: Uploaded: test_theme_api.py.backup
+[15:57:29] INFO: Uploaded: test_upload_api.py.backup
+[15:57:29] INFO: Uploaded: test_all_project_files.py.backup
+[15:57:29] INFO: Uploaded: test_products_management.py.backup
+[15:57:30] INFO: Uploaded: test_login.py.backup
+[15:57:30] INFO: Uploaded: test_sharebuttons_only.py.backup
+[15:57:30] INFO: Uploaded: test_testdashboard_only.py.backup
+[15:57:30] INFO: Uploaded: rollback_manifest.json
+[15:57:31] INFO: Uploaded: test_config.py
+[15:57:31] INFO: Uploaded: api_responses.json
+[15:57:31] INFO: Uploaded: base_test.py
+[15:57:32] INFO: Uploaded: code_integrity.py
+[15:57:32] INFO: Uploaded: api_client.py
+[15:57:32] INFO: Uploaded: environment_manager.py
+[15:57:32] INFO: Uploaded: test_data_helper.py
+[15:57:33] INFO: Uploaded: HOW_TO_RUN_TESTS.md
+[15:57:33] INFO: Uploaded: pytest.ini
+[15:57:33] INFO: Uploaded: README.md
+[15:57:33] INFO: Uploaded: README_CODE_QUALITY.md
+[15:57:34] INFO: Uploaded: README_CODE_QUALITY_NEW.md
+[15:57:34] INFO: Uploaded: code_quality_report_20250723_214939.json
+[15:57:34] INFO: Uploaded: code_quality_report_20250723_214947.json
+[15:57:35] INFO: Uploaded: code_quality_report_20250723_214954.json
+[15:57:35] INFO: Uploaded: code_quality_report_20250723_215003.json
+[15:57:35] INFO: Uploaded: code_quality_report_20250723_215010.json
+[15:57:35] INFO: Uploaded: code_quality_report_20250723_215019.json
+[15:57:35] INFO: Uploaded: code_quality_report_20250723_215030.json
+[15:57:36] INFO: Uploaded: code_quality_report_20250723_215040.json
+[15:57:36] INFO: Uploaded: code_quality_report_20250723_215048.json
+[15:57:36] INFO: Uploaded: code_quality_report_20250723_215056.json
+[15:57:37] INFO: Uploaded: requirements.txt
+[15:57:37] INFO: Uploaded: run_auth_tests_standalone.py
+[15:57:37] INFO: Uploaded: new_file_list.txt
+[15:57:37] INFO: Uploaded: run_admin_tests.py
+[15:57:38] INFO: Uploaded: run_auth_tests.py
+[15:57:38] INFO: Uploaded: run_basic_tests.py
+[15:57:38] INFO: Uploaded: run_code_integrity_tests.py
+[15:57:38] INFO: Uploaded: run_code_quality_tests.py
+[15:57:39] INFO: Uploaded: run_frontend_tests.py
+[15:57:39] INFO: Uploaded: run_integration_tests.py
+[15:57:39] INFO: Uploaded: run_invoice_tests.py
+[15:57:39] INFO: Uploaded: run_order_tests.py
+[15:57:40] INFO: Uploaded: run_performance_tests.py
+[15:57:40] INFO: Uploaded: run_product_tests.py
+[15:57:40] INFO: Uploaded: run_security_tests.py
+[15:57:40] INFO: Uploaded: run_theme_tests.py
+[15:57:41] INFO: Uploaded: run_upload_tests.py
+[15:57:41] INFO: Uploaded: setup_test_environment.py
+[15:57:41] INFO: Uploaded: temp_file_list.txt
+[15:57:41] INFO: Uploaded: test_admin_api.py
+[15:57:42] INFO: Uploaded: test_authentication.py
+[15:57:42] INFO: Uploaded: test_invoice_api.py
+[15:57:42] INFO: Uploaded: test_order_api.py
+[15:57:42] INFO: Uploaded: test_product_api.py
+[15:57:43] INFO: Uploaded: test_site_settings_api.py
+[15:57:43] INFO: Uploaded: test_theme_api.py
+[15:57:43] INFO: Uploaded: test_upload_api.py
+[15:57:43] INFO: Uploaded: test_all_project_files.py
+[15:57:44] INFO: Uploaded: test_products_management.py
+[15:57:44] INFO: Uploaded: test_login.py
+[15:57:44] INFO: Uploaded: test_sharebuttons_only.py
+[15:57:45] INFO: Uploaded: test_testdashboard_only.py
+[15:57:45] INFO: [OK] File upload completed successfully!
+[15:57:45] SUCCESS: [OK] [UPLOAD] Upload project files - Completed
+[15:57:46] INFO: [EXECUTE] [PYTHON] Setup Python environment - Selected and will run
+[15:57:46] INFO: Executing: [PYTHON] Setup Python environment
+[15:57:46] INFO: [PYTHON] Setting up bulletproof Python environment...
+[15:57:46] INFO: Cleaning up any existing virtual environment...
+[15:57:46] INFO: Installing essential system packages...
+[15:57:48] INFO: Output: Hit:1 https://mirror.hetzner.com/ubuntu/packages focal InRelease
+Hit:2 https://mirror.hetzner.com/ubuntu/packages focal-updates InRelease
+Hit:3 https://mirror.hetzner.com/ubuntu/packages focal-backports InRelease
+Hit:4 https://mirror.hetzner.com/ubuntu/security focal-security InRelease
+Hit:5 http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal InRelease
+Reading package lists...
+Building dependency tree...
+Reading state information...
+All packages are up to date.
+[15:57:49] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+python3 is already the newest version (3.8.2-0ubuntu2).
+python3-dev is already the newest version (3.8.2-0ubuntu2).
+python3-venv is already the newest version (3.8.2-0ubuntu2).
+build-essential is already the newest version (12.8ubuntu1.1).
+python3-pip is already the newest version (20.0.2-5ubuntu1.11).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:57:49] INFO: Creating fresh Python virtual environment...
+[15:57:49] INFO: Output: not found
+[15:57:49] INFO: Output: not found
+[15:57:50] INFO: Output: not found
+[15:57:50] INFO: Output: /usr/bin/python3
+[15:57:50] INFO: Trying python3...
+[15:57:52] INFO: Successfully created venv with python3
+[15:57:52] INFO: Output: lrwxrwxrwx 1 root root  7 Jul 25 19:57 venv/bin/python -> python3
+lrwxrwxrwx 1 root root 16 Jul 25 19:57 venv/bin/python3 -> /usr/bin/python3
+[15:57:52] INFO: Virtual environment contents: lrwxrwxrwx 1 root root  7 Jul 25 19:57 venv/bin/python -> python3
+lrwxrwxrwx 1 root root 16 Jul 25 19:57 venv/bin/python3 -> /usr/bin/python3
+
+[15:57:52] INFO: Upgrading pip in virtual environment...
+[15:57:54] INFO: Output: Collecting pip
+  Downloading pip-25.0.1-py3-none-any.whl (1.8 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 20.0.2
+    Uninstalling pip-20.0.2:
+      Successfully uninstalled pip-20.0.2
+Successfully installed pip-25.0.1
+[15:57:55] INFO: Installing essential build tools...
+[15:57:55] INFO: Output: Collecting wheel
+  Downloading wheel-0.45.1-py3-none-any.whl.metadata (2.3 kB)
+Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
+Installing collected packages: wheel
+Successfully installed wheel-0.45.1
+[15:57:56] INFO: Output: Requirement already satisfied: setuptools in ./venv/lib/python3.8/site-packages (44.0.0)
+[15:57:56] INFO: Output: Python 3.8 OK
+[15:57:56] INFO: Python verification: Python 3.8 OK
+
+[15:57:56] INFO: Setting proper file ownership...
+[15:57:56] INFO: [OK] Python environment setup completed successfully!
+[15:57:56] SUCCESS: [OK] [PYTHON] Setup Python environment - Completed
+[15:57:57] INFO: [EXECUTE] [DEPS] Install dependencies - Selected and will run
+[15:57:57] INFO: Executing: [DEPS] Install dependencies
+[15:57:57] INFO: [DEPS] Installing dependencies with bulletproof approach...
+[15:57:57] INFO: 1. Installing Python backend dependencies...
+[15:57:57] INFO: Output: -rw-r--r-- 1 root root 2020 Jul 25 19:56 /opt/pebdeq/backend/requirements.txt
+[15:57:58] INFO: Output: Python 3.8.10
+[15:57:58] INFO: Installing critical packages first...
+[15:57:58] INFO: Installing wheel>=0.37.0...
+[15:57:58] INFO: Output: Requirement already satisfied: wheel>=0.37.0 in ./venv/lib/python3.8/site-packages (0.45.1)
+[15:57:58] INFO: OK: wheel>=0.37.0 installed successfully
+[15:57:58] INFO: Installing setuptools>=65.0.0...
+[15:58:00] INFO: Output: Collecting setuptools>=65.0.0
+  Downloading setuptools-75.3.2-py3-none-any.whl.metadata (6.9 kB)
+Downloading setuptools-75.3.2-py3-none-any.whl (1.3 MB)
+   ???????????????????????????????????????? 1.3/1.3 MB 100.4 MB/s eta 0:00:00
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 44.0.0
+    Uninstalling setuptools-44.0.0:
+      Successfully uninstalled setuptools-44.0.0
+Successfully installed setuptools-75.3.2
+[15:58:00] INFO: OK: setuptools>=65.0.0 installed successfully
+[15:58:00] INFO: Installing flask>=2.0.0...
+[15:58:01] INFO: Output: Collecting flask>=2.0.0
+  Downloading flask-3.0.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting Werkzeug>=3.0.0 (from flask>=2.0.0)
+  Downloading werkzeug-3.0.6-py3-none-any.whl.metadata (3.7 kB)
+Collecting Jinja2>=3.1.2 (from flask>=2.0.0)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.1.2 (from flask>=2.0.0)
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting click>=8.1.3 (from flask>=2.0.0)
+  Downloading click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
+Collecting blinker>=1.6.2 (from flask>=2.0.0)
+  Downloading blinker-1.8.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting importlib-metadata>=3.6.0 (from flask>=2.0.0)
+  Downloading importlib_metadata-8.5.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting zipp>=3.20 (from importlib-metadata>=3.6.0->flask>=2.0.0)
+  Downloading zipp-3.20.2-py3-none-any.whl.metadata (3.7 kB)
+Collecting MarkupSafe>=2.0 (from Jinja2>=3.1.2->flask>=2.0.0)
+  Downloading MarkupSafe-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.0 kB)
+Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+Downloading blinker-1.8.2-py3-none-any.whl (9.5 kB)
+Downloading click-8.1.8-py3-none-any.whl (98 kB)
+Downloading importlib_metadata-8.5.0-py3-none-any.whl (26 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading werkzeug-3.0.6-py3-none-any.whl (227 kB)
+Downloading MarkupSafe-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (26 kB)
+Downloading zipp-3.20.2-py3-none-any.whl (9.2 kB)
+Installing collected packages: zipp, MarkupSafe, itsdangerous, click, blinker, Werkzeug, Jinja2, importlib-metadata, flask
+Successfully installed Jinja2-3.1.6 MarkupSafe-2.1.5 Werkzeug-3.0.6 blinker-1.8.2 click-8.1.8 flask-3.0.3 importlib-metadata-8.5.0 itsdangerous-2.2.0 zipp-3.20.2
+[15:58:02] INFO: OK: flask>=2.0.0 installed successfully
+[15:58:02] INFO: Installing werkzeug>=2.0.0...
+[15:58:02] INFO: Output: Requirement already satisfied: werkzeug>=2.0.0 in ./venv/lib/python3.8/site-packages (3.0.6)
+Requirement already satisfied: MarkupSafe>=2.1.1 in ./venv/lib/python3.8/site-packages (from werkzeug>=2.0.0) (2.1.5)
+[15:58:02] INFO: OK: werkzeug>=2.0.0 installed successfully
+[15:58:02] INFO: Installing sqlalchemy>=1.4.0...
+[15:58:05] INFO: Output: Collecting sqlalchemy>=1.4.0
+  Downloading sqlalchemy-2.0.41-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+Collecting typing-extensions>=4.6.0 (from sqlalchemy>=1.4.0)
+  Downloading typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting greenlet>=1 (from sqlalchemy>=1.4.0)
+  Downloading greenlet-3.1.1-cp38-cp38-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Downloading sqlalchemy-2.0.41-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.2 MB)
+   ???????????????????????????????????????? 3.2/3.2 MB 196.6 MB/s eta 0:00:00
+Downloading greenlet-3.1.1-cp38-cp38-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (605 kB)
+   ???????????????????????????????????????? 606.0/606.0 kB 72.0 MB/s eta 0:00:00
+Downloading typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+Installing collected packages: typing-extensions, greenlet, sqlalchemy
+Successfully installed greenlet-3.1.1 sqlalchemy-2.0.41 typing-extensions-4.13.2
+[15:58:05] INFO: OK: sqlalchemy>=1.4.0 installed successfully
+[15:58:05] INFO: Installing flask-sqlalchemy>=2.5.0...
+[15:58:05] INFO: Output: Collecting flask-sqlalchemy>=2.5.0
+  Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+Requirement already satisfied: flask>=2.2.5 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy>=2.5.0) (3.0.3)
+Requirement already satisfied: sqlalchemy>=2.0.16 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy>=2.5.0) (2.0.41)
+Requirement already satisfied: Werkzeug>=3.0.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (3.0.6)
+Requirement already satisfied: Jinja2>=3.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (3.1.6)
+Requirement already satisfied: itsdangerous>=2.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (8.1.8)
+Requirement already satisfied: blinker>=1.6.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (1.8.2)
+Requirement already satisfied: importlib-metadata>=3.6.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy>=2.5.0) (8.5.0)
+Requirement already satisfied: typing-extensions>=4.6.0 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy>=2.5.0) (4.13.2)
+Requirement already satisfied: greenlet>=1 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy>=2.5.0) (3.1.1)
+Requirement already satisfied: zipp>=3.20 in ./venv/lib/python3.8/site-packages (from importlib-metadata>=3.6.0->flask>=2.2.5->flask-sqlalchemy>=2.5.0) (3.20.2)
+Requirement already satisfied: MarkupSafe>=2.0 in ./venv/lib/python3.8/site-packages (from Jinja2>=3.1.2->flask>=2.2.5->flask-sqlalchemy>=2.5.0) (2.1.5)
+Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+Installing collected packages: flask-sqlalchemy
+Successfully installed flask-sqlalchemy-3.1.1
+[15:58:05] INFO: OK: flask-sqlalchemy>=2.5.0 installed successfully
+[15:58:05] INFO: Installing all requirements.txt dependencies with conflict resolution...
+[15:58:07] INFO: Output: Collecting alembic==1.14.0 (from -r requirements.txt (line 1))
+  Downloading alembic-1.14.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting amqp==5.3.1 (from -r requirements.txt (line 2))
+  Downloading amqp-5.3.1-py3-none-any.whl.metadata (8.9 kB)
+Collecting attrs==25.3.0 (from -r requirements.txt (line 3))
+  Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+Collecting babel==2.17.0 (from -r requirements.txt (line 4))
+  Downloading babel-2.17.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting bcrypt==4.3.0 (from -r requirements.txt (line 5))
+  Downloading bcrypt-4.3.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting billiard==4.2.1 (from -r requirements.txt (line 6))
+  Downloading billiard-4.2.1-py3-none-any.whl.metadata (4.4 kB)
+Collecting blinker==1.8.2 (from -r requirements.txt (line 7))
+  Downloading blinker-1.8.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting cachetools==5.5.2 (from -r requirements.txt (line 8))
+  Downloading cachetools-5.5.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting celery==5.5.3 (from -r requirements.txt (line 9))
+  Downloading celery-5.5.3-py3-none-any.whl.metadata (22 kB)
+Collecting certifi==2025.7.14 (from -r requirements.txt (line 10))
+  Downloading certifi-2025.7.14-py3-none-any.whl.metadata (2.4 kB)
+Collecting cffi==1.17.1 (from -r requirements.txt (line 11))
+  Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting charset-normalizer==3.4.2 (from -r requirements.txt (line 12))
+  Downloading charset_normalizer-3.4.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+ERROR: Could not find a version that satisfies the requirement click==8.2.1 (from versions: 0.1, 0.2, 0.3, 0.4, 0.5, 0.5.1, 0.6, 0.7, 1.0, 1.1, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.0, 3.1, 3.2, 3.3, 4.0, 4.1, 5.0, 5.1, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7.dev0, 6.7, 7.0, 7.1, 7.1.1, 7.1.2, 8.0.0a1, 8.0.0rc1, 8.0.0, 8.0.1, 8.0.2, 8.0.3, 8.0.4, 8.1.0, 8.1.1, 8.1.2, 8.1.3, 8.1.4, 8.1.5, 8.1.6, 8.1.7, 8.1.8)
+ERROR: No matching distribution found for click==8.2.1
+[15:58:07] WARNING: [ERROR] Version conflicts detected! Auto-fixing...
+[15:58:07] INFO: Applying version conflict fixes...
+[15:58:08] INFO: Retrying with flexible versioning...
+[15:58:09] INFO: Output: Collecting alembic==1.14.0 (from -r requirements.txt (line 1))
+  Downloading alembic-1.14.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting amqp==5.3.1 (from -r requirements.txt (line 2))
+  Downloading amqp-5.3.1-py3-none-any.whl.metadata (8.9 kB)
+Collecting attrs>=23.0.0 (from -r requirements.txt (line 3))
+  Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+Collecting babel==2.17.0 (from -r requirements.txt (line 4))
+  Downloading babel-2.17.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting bcrypt==4.3.0 (from -r requirements.txt (line 5))
+  Downloading bcrypt-4.3.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting billiard==4.2.1 (from -r requirements.txt (line 6))
+  Downloading billiard-4.2.1-py3-none-any.whl.metadata (4.4 kB)
+Requirement already satisfied: blinker==1.8.2 in ./venv/lib/python3.8/site-packages (from -r requirements.txt (line 7)) (1.8.2)
+Collecting cachetools==5.5.2 (from -r requirements.txt (line 8))
+  Downloading cachetools-5.5.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting celery==5.5.3 (from -r requirements.txt (line 9))
+  Downloading celery-5.5.3-py3-none-any.whl.metadata (22 kB)
+Collecting certifi==2025.7.14 (from -r requirements.txt (line 10))
+  Downloading certifi-2025.7.14-py3-none-any.whl.metadata (2.4 kB)
+Collecting cffi==1.17.1 (from -r requirements.txt (line 11))
+  Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting charset-normalizer==3.4.2 (from -r requirements.txt (line 12))
+  Downloading charset_normalizer-3.4.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+ERROR: Could not find a version that satisfies the requirement click==8.2.1 (from versions: 0.1, 0.2, 0.3, 0.4, 0.5, 0.5.1, 0.6, 0.7, 1.0, 1.1, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.0, 3.1, 3.2, 3.3, 4.0, 4.1, 5.0, 5.1, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7.dev0, 6.7, 7.0, 7.1, 7.1.1, 7.1.2, 8.0.0a1, 8.0.0rc1, 8.0.0, 8.0.1, 8.0.2, 8.0.3, 8.0.4, 8.1.0, 8.1.1, 8.1.2, 8.1.3, 8.1.4, 8.1.5, 8.1.6, 8.1.7, 8.1.8)
+ERROR: No matching distribution found for click==8.2.1
+[15:58:09] INFO: Individual package installation fallback...
+[15:58:09] INFO: Installing flask-cors...
+[15:58:10] INFO: Output: Collecting flask-cors
+  Downloading Flask_Cors-5.0.0-py2.py3-none-any.whl.metadata (5.5 kB)
+Requirement already satisfied: Flask>=0.9 in ./venv/lib/python3.8/site-packages (from flask-cors) (3.0.3)
+Requirement already satisfied: Werkzeug>=3.0.0 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (3.0.6)
+Requirement already satisfied: Jinja2>=3.1.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (3.1.6)
+Requirement already satisfied: itsdangerous>=2.1.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (8.1.8)
+Requirement already satisfied: blinker>=1.6.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (1.8.2)
+Requirement already satisfied: importlib-metadata>=3.6.0 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-cors) (8.5.0)
+Requirement already satisfied: zipp>=3.20 in ./venv/lib/python3.8/site-packages (from importlib-metadata>=3.6.0->Flask>=0.9->flask-cors) (3.20.2)
+Requirement already satisfied: MarkupSafe>=2.0 in ./venv/lib/python3.8/site-packages (from Jinja2>=3.1.2->Flask>=0.9->flask-cors) (2.1.5)
+Downloading Flask_Cors-5.0.0-py2.py3-none-any.whl (14 kB)
+Installing collected packages: flask-cors
+Successfully installed flask-cors-5.0.0
+[15:58:11] INFO: [OK] flask-cors installed successfully
+[15:58:11] INFO: Installing flask-sqlalchemy...
+[15:58:12] INFO: Output: Requirement already satisfied: flask-sqlalchemy in ./venv/lib/python3.8/site-packages (3.1.1)
+Requirement already satisfied: flask>=2.2.5 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy) (3.0.3)
+Requirement already satisfied: sqlalchemy>=2.0.16 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy) (2.0.41)
+Requirement already satisfied: Werkzeug>=3.0.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (3.0.6)
+Requirement already satisfied: Jinja2>=3.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (3.1.6)
+Requirement already satisfied: itsdangerous>=2.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (8.1.8)
+Requirement already satisfied: blinker>=1.6.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (1.8.2)
+Requirement already satisfied: importlib-metadata>=3.6.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (8.5.0)
+Requirement already satisfied: typing-extensions>=4.6.0 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy) (4.13.2)
+Requirement already satisfied: greenlet>=1 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy) (3.1.1)
+Requirement already satisfied: zipp>=3.20 in ./venv/lib/python3.8/site-packages (from importlib-metadata>=3.6.0->flask>=2.2.5->flask-sqlalchemy) (3.20.2)
+Requirement already satisfied: MarkupSafe>=2.0 in ./venv/lib/python3.8/site-packages (from Jinja2>=3.1.2->flask>=2.2.5->flask-sqlalchemy) (2.1.5)
+[15:58:12] WARNING: [WARNING] flask-sqlalchemy installation had issues: Requirement already satisfied: flask-sqlalchemy in ./venv/lib/python3.8/site-packages (3.1.1)
+Requirement already satisfied: flask>=2.2.5 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy) (3.0.3)
+Requirement already satisfied: sqlalchemy>=2.0.16 in ./venv/lib/python3.8/site-packages (from flask-sqlalchemy) (2.0.41)
+Requirement already satisfied: Werkzeug>=3.0.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (3.0.6)
+Requirement already satisfied: Jinja2>=3.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (3.1.6)
+Requirement already satisfied: itsdangerous>=2.1.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (8.1.8)
+Requirement already satisfied: blinker>=1.6.2 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (1.8.2)
+Requirement already satisfied: importlib-metadata>=3.6.0 in ./venv/lib/python3.8/site-packages (from flask>=2.2.5->flask-sqlalchemy) (8.5.0)
+Requirement already satisfied: typing-extensions>=4.6.0 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy) (4.13.2)
+Requirement already satisfied: greenlet>=1 in ./venv/lib/python3.8/site-packages (from sqlalchemy>=2.0.16->flask-sqlalchemy) (3.1.1)
+Requirement already satisfied: zipp>=3.20 in ./venv/lib/python3.8/site-packages (from importlib-metadata>=3.6.0->flask>=2.2.5->flask-sqlalchemy) (3.20.2)
+Requirement already satisfied: MarkupSafe>=2.0 in ./venv/lib/python3.8/site-packages (from Jinja2>=3.1.2->flask>=2.2.5->flask-sqlalchemy) (2.1.5)
+
+[15:58:12] INFO: Installing flask-migrate...
+[15:58:13] INFO: Output: Collecting flask-migrate
+  Downloading Flask_Migrate-4.1.0-py3-none-any.whl.metadata (3.3 kB)
+Requirement already satisfied: Flask>=0.9 in ./venv/lib/python3.8/site-packages (from flask-migrate) (3.0.3)
+Requirement already satisfied: Flask-SQLAlchemy>=1.0 in ./venv/lib/python3.8/site-packages (from flask-migrate) (3.1.1)
+Collecting alembic>=1.9.0 (from flask-migrate)
+  Downloading alembic-1.14.1-py3-none-any.whl.metadata (7.4 kB)
+Requirement already satisfied: SQLAlchemy>=1.3.0 in ./venv/lib/python3.8/site-packages (from alembic>=1.9.0->flask-migrate) (2.0.41)
+Collecting Mako (from alembic>=1.9.0->flask-migrate)
+  Downloading mako-1.3.10-py3-none-any.whl.metadata (2.9 kB)
+Requirement already satisfied: importlib-metadata in ./venv/lib/python3.8/site-packages (from alembic>=1.9.0->flask-migrate) (8.5.0)
+Collecting importlib-resources (from alembic>=1.9.0->flask-migrate)
+  Downloading importlib_resources-6.4.5-py3-none-any.whl.metadata (4.0 kB)
+Requirement already satisfied: typing-extensions>=4 in ./venv/lib/python3.8/site-packages (from alembic>=1.9.0->flask-migrate) (4.13.2)
+Requirement already satisfied: Werkzeug>=3.0.0 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-migrate) (3.0.6)
+Requirement already satisfied: Jinja2>=3.1.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-migrate) (3.1.6)
+Requirement already satisfied: itsdangerous>=2.1.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-migrate) (2.2.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-migrate) (8.1.8)
+Requirement already satisfied: blinker>=1.6.2 in ./venv/lib/python3.8/site-packages (from Flask>=0.9->flask-migrate) (1.8.2)
+Requirement already satisfied: zipp>=3.20 in ./venv/lib/python3.8/site-packages (from importlib-metadata->alembic>=1.9.0->flask-migrate) (3.20.2)
+Requirement already satisfied: MarkupSafe>=2.0 in ./venv/lib/python3.8/site-packages (from Jinja2>=3.1.2->Flask>=0.9->flask-migrate) (2.1.5)
+Requirement already satisfied: greenlet>=1 in ./venv/lib/python3.8/site-packages (from SQLAlchemy>=1.3.0->alembic>=1.9.0->flask-migrate) (3.1.1)
+Downloading Flask_Migrate-4.1.0-py3-none-any.whl (21 kB)
+Downloading alembic-1.14.1-py3-none-any.whl (233 kB)
+Downloading importlib_resources-6.4.5-py3-none-any.whl (36 kB)
+Downloading mako-1.3.10-py3-none-any.whl (78 kB)
+Installing collected packages: Mako, importlib-resources, alembic, flask-migrate
+Successfully installed Mako-1.3.10 alembic-1.14.1 flask-migrate-4.1.0 importlib-resources-6.4.5
+[15:58:13] INFO: [OK] flask-migrate installed successfully
+[15:58:13] INFO: Installing gunicorn...
+[15:58:14] INFO: Output: Collecting gunicorn
+  Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting packaging (from gunicorn)
+  Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+Downloading packaging-25.0-py3-none-any.whl (66 kB)
+Installing collected packages: packaging, gunicorn
+Successfully installed gunicorn-23.0.0 packaging-25.0
+[15:58:14] INFO: [OK] gunicorn installed successfully
+[15:58:14] INFO: Installing pillow...
+[15:58:15] INFO: Output: Collecting pillow
+  Downloading pillow-10.4.0-cp38-cp38-manylinux_2_28_x86_64.whl.metadata (9.2 kB)
+Downloading pillow-10.4.0-cp38-cp38-manylinux_2_28_x86_64.whl (4.5 MB)
+   ???????????????????????????????????????? 4.5/4.5 MB 148.3 MB/s eta 0:00:00
+Installing collected packages: pillow
+Successfully installed pillow-10.4.0
+[15:58:15] INFO: [OK] pillow installed successfully
+[15:58:15] INFO: Installing requests...
+[15:58:16] INFO: Output: Collecting requests
+  Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+Collecting charset_normalizer<4,>=2 (from requests)
+  Downloading charset_normalizer-3.4.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+Collecting idna<4,>=2.5 (from requests)
+  Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+Collecting urllib3<3,>=1.21.1 (from requests)
+  Downloading urllib3-2.2.3-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests)
+  Downloading certifi-2025.7.14-py3-none-any.whl.metadata (2.4 kB)
+Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+Downloading certifi-2025.7.14-py3-none-any.whl (162 kB)
+Downloading charset_normalizer-3.4.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (147 kB)
+Downloading idna-3.10-py3-none-any.whl (70 kB)
+Downloading urllib3-2.2.3-py3-none-any.whl (126 kB)
+Installing collected packages: urllib3, idna, charset_normalizer, certifi, requests
+Successfully installed certifi-2025.7.14 charset_normalizer-3.4.2 idna-3.10 requests-2.32.4 urllib3-2.2.3
+[15:58:17] INFO: [OK] requests installed successfully
+[15:58:17] INFO: Installing python-dotenv...
+[15:58:17] INFO: Output: Collecting python-dotenv
+  Downloading python_dotenv-1.0.1-py3-none-any.whl.metadata (23 kB)
+Downloading python_dotenv-1.0.1-py3-none-any.whl (19 kB)
+Installing collected packages: python-dotenv
+Successfully installed python-dotenv-1.0.1
+[15:58:17] INFO: [OK] python-dotenv installed successfully
+[15:58:17] INFO: Installing bcrypt...
+[15:58:18] INFO: Output: Collecting bcrypt
+  Downloading bcrypt-4.3.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (10 kB)
+Downloading bcrypt-4.3.0-cp38-abi3-manylinux_2_28_x86_64.whl (284 kB)
+Installing collected packages: bcrypt
+Successfully installed bcrypt-4.3.0
+[15:58:18] INFO: [OK] bcrypt installed successfully
+[15:58:18] INFO: Installing werkzeug...
+[15:58:19] INFO: Output: Requirement already satisfied: werkzeug in ./venv/lib/python3.8/site-packages (3.0.6)
+Requirement already satisfied: MarkupSafe>=2.1.1 in ./venv/lib/python3.8/site-packages (from werkzeug) (2.1.5)
+[15:58:19] WARNING: [WARNING] werkzeug installation had issues: Requirement already satisfied: werkzeug in ./venv/lib/python3.8/site-packages (3.0.6)
+Requirement already satisfied: MarkupSafe>=2.1.1 in ./venv/lib/python3.8/site-packages (from werkzeug) (2.1.5)
+
+[15:58:19] INFO: [OK] Dependencies installation successful!
+[15:58:19] INFO: Verifying critical Python imports...
+[15:58:19] INFO: Output: Flask OK
+[15:58:19] INFO: [OK] flask import successful
+[15:58:20] INFO: Output: SQLAlchemy OK
+[15:58:20] INFO: [OK] sqlalchemy import successful
+[15:58:20] INFO: Output: Werkzeug OK
+[15:58:20] INFO: [OK] werkzeug import successful
+[15:58:20] INFO: 2. Installing Node.js frontend dependencies...
+[15:58:20] INFO: Output: -rw-r--r-- 1 root root 1094 Jul 25 19:56 /opt/pebdeq/frontend/package.json
+[15:58:21] INFO: Output: v10.19.0
+[15:58:21] INFO: Cleaning npm cache...
+[15:58:22] INFO: NPM install attempt 1/2
+[15:59:01] INFO: Output: npm WARN read-shrinkwrap This version of npm is compatible with lockfileVersion@1, but package-lock.json was generated for lockfileVersion@3. I'll try to do my best with it!
+npm WARN deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+npm WARN deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+npm WARN deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm WARN deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm WARN deprecated @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+npm WARN deprecated @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+npm WARN deprecated @babel/plugin-proposal-numeric-separator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
+npm WARN deprecated @babel/plugin-proposal-private-property-in-object@7.21.11: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
+npm WARN deprecated @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+npm WARN deprecated @babel/plugin-proposal-private-methods@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
+npm WARN deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+npm WARN deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+npm WARN deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm WARN deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+npm WARN deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
+npm WARN deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0
+npm WARN deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+npm WARN deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm WARN deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm WARN deprecated 
+npm WARN deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm WARN deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm WARN deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.
+npm WARN deprecated domexception@2.0.1: Use your platform's native DOMException instead
+npm WARN deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+> core-js@3.44.0 postinstall /opt/pebdeq/frontend/node_modules/core-js
+> node -e "try{require('./postinstall')}catch(e){}"
+
+?[96mThank you for using core-js (?[94m https://github.com/zloirock/core-js ?[96m) for polyfilling JavaScript standard library!?[0m
+
+?[96mThe project needs your help! Please consider supporting core-js:?[0m
+?[96m>?[94m https://opencollective.com/core-js ?[0m
+?[96m>?[94m https://patreon.com/zloirock ?[0m
+?[96m>?[94m https://boosty.to/zloirock ?[0m
+?[96m>?[94m bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz ?[0m
+
+?[96mI highly recommend reading this:?[94m https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md ?[96m?[0m
+
+
+> core-js-pure@3.44.0 postinstall /opt/pebdeq/frontend/node_modules/core-js-pure
+> node -e "try{require('./postinstall')}catch(e){}"
+
+?[96mThank you for using core-js (?[94m https://github.com/zloirock/core-js ?[96m) for polyfilling JavaScript standard library!?[0m
+
+?[96mThe project needs your help! Please consider supporting core-js:?[0m
+?[96m>?[94m https://opencollective.com/core-js ?[0m
+?[96m>?[94m https://patreon.com/zloirock ?[0m
+?[96m>?[94m https://boosty.to/zloirock ?[0m
+?[96m>?[94m bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz ?[0m
+
+?[96mI highly recommend reading this:?[94m https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md ?[96m?[0m
+
+npm WARN notsup Unsupported engine for @google-cloud/local-auth@3.0.1: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @google-cloud/local-auth@3.0.1
+npm WARN notsup Unsupported engine for @testing-library/react@13.4.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @testing-library/react@13.4.0
+npm WARN notsup Unsupported engine for googleapis@152.0.0: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: googleapis@152.0.0
+npm WARN notsup Unsupported engine for react-router-dom@6.30.1: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: react-router-dom@6.30.1
+npm WARN notsup Unsupported engine for react-scripts@5.0.1: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: react-scripts@5.0.1
+npm WARN notsup Unsupported engine for google-auth-library@9.15.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-auth-library@9.15.1
+npm WARN notsup Unsupported engine for gaxios@6.7.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gaxios@6.7.1
+npm WARN notsup Unsupported engine for gtoken@7.1.0: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gtoken@7.1.0
+npm WARN notsup Unsupported engine for gcp-metadata@6.1.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gcp-metadata@6.1.1
+npm WARN notsup Unsupported engine for https-proxy-agent@7.0.6: wanted: {"node":">= 14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: https-proxy-agent@7.0.6
+npm WARN notsup Unsupported engine for agent-base@7.1.4: wanted: {"node":">= 14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: agent-base@7.1.4
+npm WARN notsup Unsupported engine for google-logging-utils@0.0.2: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-logging-utils@0.0.2
+npm WARN notsup Unsupported engine for expect@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: expect@30.0.5
+npm WARN notsup Unsupported engine for pretty-format@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: pretty-format@30.0.5
+npm WARN notsup Unsupported engine for @jest/expect-utils@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/expect-utils@30.0.5
+npm WARN notsup Unsupported engine for @jest/get-type@30.0.1: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/get-type@30.0.1
+npm WARN notsup Unsupported engine for jest-matcher-utils@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-matcher-utils@30.0.5
+npm WARN notsup Unsupported engine for jest-message-util@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-message-util@30.0.5
+npm WARN notsup Unsupported engine for jest-mock@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-mock@30.0.5
+npm WARN notsup Unsupported engine for jest-util@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-util@30.0.5
+npm WARN notsup Unsupported engine for jest-diff@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-diff@30.0.5
+npm WARN notsup Unsupported engine for @jest/diff-sequences@30.0.1: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/diff-sequences@30.0.1
+npm WARN notsup Unsupported engine for @jest/schemas@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/schemas@30.0.5
+npm WARN notsup Unsupported engine for @jest/types@30.0.5: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/types@30.0.5
+npm WARN notsup Unsupported engine for @jest/pattern@30.0.1: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/pattern@30.0.1
+npm WARN notsup Unsupported engine for jest-regex-util@30.0.1: wanted: {"node":"^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-regex-util@30.0.1
+npm WARN notsup Unsupported engine for picomatch@4.0.3: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: picomatch@4.0.3
+npm WARN notsup Unsupported engine for @testing-library/dom@8.20.1: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @testing-library/dom@8.20.1
+npm WARN notsup Unsupported engine for googleapis-common@8.0.0: wanted: {"node":">=18.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: googleapis-common@8.0.0
+npm WARN notsup Unsupported engine for google-auth-library@10.2.0: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-auth-library@10.2.0
+npm WARN notsup Unsupported engine for gaxios@7.1.1: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gaxios@7.1.1
+npm WARN notsup Unsupported engine for gcp-metadata@7.0.1: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gcp-metadata@7.0.1
+npm WARN notsup Unsupported engine for google-logging-utils@1.1.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-logging-utils@1.1.1
+npm WARN notsup Unsupported engine for gtoken@8.0.0: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gtoken@8.0.0
+npm WARN notsup Unsupported engine for node-fetch@3.3.2: wanted: {"node":"^12.20.0 || ^14.13.1 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: node-fetch@3.3.2
+npm WARN notsup Unsupported engine for data-uri-to-buffer@4.0.1: wanted: {"node":">= 12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: data-uri-to-buffer@4.0.1
+npm WARN notsup Unsupported engine for fetch-blob@3.2.0: wanted: {"node":"^12.20 || >= 14.13"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: fetch-blob@3.2.0
+npm WARN notsup Unsupported engine for formdata-polyfill@4.0.10: wanted: {"node":">=12.20.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: formdata-polyfill@4.0.10
+npm WARN notsup Unsupported engine for gaxios@7.1.1: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gaxios@7.1.1
+npm WARN notsup Unsupported engine for google-auth-library@10.2.0: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-auth-library@10.2.0
+npm WARN notsup Unsupported engine for node-fetch@3.3.2: wanted: {"node":"^12.20.0 || ^14.13.1 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: node-fetch@3.3.2
+npm WARN notsup Unsupported engine for gcp-metadata@7.0.1: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gcp-metadata@7.0.1
+npm WARN notsup Unsupported engine for google-logging-utils@1.1.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: google-logging-utils@1.1.1
+npm WARN notsup Unsupported engine for gtoken@8.0.0: wanted: {"node":">=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: gtoken@8.0.0
+npm WARN notsup Unsupported engine for react-router@6.30.1: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: react-router@6.30.1
+npm WARN notsup Unsupported engine for @remix-run/router@1.23.0: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @remix-run/router@1.23.0
+npm WARN notsup Unsupported engine for eslint@8.57.1: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint@8.57.1
+npm WARN notsup Unsupported engine for fs-extra@10.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: fs-extra@10.1.0
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@^2.3.2 (node_modules/react-scripts/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.3.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+npm WARN notsup Unsupported engine for css-loader@6.11.0: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: css-loader@6.11.0
+npm WARN notsup Unsupported engine for sass-loader@12.6.0: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: sass-loader@12.6.0
+npm WARN notsup Unsupported engine for tailwindcss@3.4.17: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: tailwindcss@3.4.17
+npm WARN notsup Unsupported engine for style-loader@3.3.4: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: style-loader@3.3.4
+npm WARN notsup Unsupported engine for postcss-loader@6.2.1: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-loader@6.2.1
+npm WARN notsup Unsupported engine for react-dev-utils@12.0.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: react-dev-utils@12.0.1
+npm WARN notsup Unsupported engine for postcss-normalize@10.0.1: wanted: {"node":">= 12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-normalize@10.0.1
+npm WARN notsup Unsupported engine for source-map-loader@3.0.2: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: source-map-loader@3.0.2
+npm WARN notsup Unsupported engine for postcss-preset-env@7.8.3: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-preset-env@7.8.3
+npm WARN notsup Unsupported engine for react-app-polyfill@3.0.0: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: react-app-polyfill@3.0.0
+npm WARN notsup Unsupported engine for webpack-dev-server@4.15.2: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: webpack-dev-server@4.15.2
+npm WARN notsup Unsupported engine for jest-watch-typeahead@1.1.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-watch-typeahead@1.1.0
+npm WARN notsup Unsupported engine for eslint-webpack-plugin@3.2.0: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-webpack-plugin@3.2.0
+npm WARN notsup Unsupported engine for eslint-config-react-app@7.0.1: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-config-react-app@7.0.1
+npm WARN notsup Unsupported engine for mini-css-extract-plugin@2.9.2: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: mini-css-extract-plugin@2.9.2
+npm WARN notsup Unsupported engine for webpack-manifest-plugin@4.1.1: wanted: {"node":">=12.22.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: webpack-manifest-plugin@4.1.1
+npm WARN notsup Unsupported engine for css-minimizer-webpack-plugin@3.4.1: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: css-minimizer-webpack-plugin@3.4.1
+npm WARN notsup Unsupported engine for source-map@0.7.6: wanted: {"node":">= 12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: source-map@0.7.6
+npm WARN notsup Unsupported engine for espree@9.6.1: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: espree@9.6.1
+npm WARN notsup Unsupported engine for @eslint/js@8.57.1: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @eslint/js@8.57.1
+npm WARN notsup Unsupported engine for eslint-scope@7.2.2: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-scope@7.2.2
+npm WARN notsup Unsupported engine for @eslint/eslintrc@2.1.4: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @eslint/eslintrc@2.1.4
+npm WARN notsup Unsupported engine for eslint-visitor-keys@3.4.3: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-visitor-keys@3.4.3
+npm WARN notsup Unsupported engine for @eslint-community/regexpp@4.12.1: wanted: {"node":"^12.0.0 || ^14.0.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @eslint-community/regexpp@4.12.1
+npm WARN notsup Unsupported engine for @eslint-community/eslint-utils@4.7.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @eslint-community/eslint-utils@4.7.0
+npm WARN notsup Unsupported engine for @humanwhocodes/module-importer@1.0.1: wanted: {"node":">=12.22"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @humanwhocodes/module-importer@1.0.1
+npm WARN notsup Unsupported engine for eslint-plugin-jest@25.7.0: wanted: {"node":"^12.13.0 || ^14.15.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-plugin-jest@25.7.0
+npm WARN notsup Unsupported engine for eslint-plugin-flowtype@8.0.3: wanted: {"node":">=12.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-plugin-flowtype@8.0.3
+npm WARN notsup Unsupported engine for @typescript-eslint/parser@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/parser@5.62.0
+npm WARN notsup Unsupported engine for eslint-plugin-testing-library@5.11.1: wanted: {"npm":">=6","node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: eslint-plugin-testing-library@5.11.1
+npm WARN notsup Unsupported engine for @typescript-eslint/eslint-plugin@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/eslint-plugin@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/utils@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/utils@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/type-utils@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/type-utils@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/scope-manager@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/scope-manager@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/types@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/types@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/visitor-keys@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/visitor-keys@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/typescript-estree@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/typescript-estree@5.62.0
+npm WARN notsup Unsupported engine for @typescript-eslint/experimental-utils@5.62.0: wanted: {"node":"^12.22.0 || ^14.17.0 || >=16.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @typescript-eslint/experimental-utils@5.62.0
+npm WARN notsup Unsupported engine for jest-worker@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-worker@28.1.3
+npm WARN notsup Unsupported engine for html-minifier-terser@6.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: html-minifier-terser@6.1.0
+npm WARN notsup Unsupported engine for commander@8.3.0: wanted: {"node":">= 12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: commander@8.3.0
+npm WARN notsup Unsupported engine for slash@4.0.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: slash@4.0.0
+npm WARN notsup Unsupported engine for strip-ansi@7.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: strip-ansi@7.1.0
+npm WARN notsup Unsupported engine for jest-watcher@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-watcher@28.1.3
+npm WARN notsup Unsupported engine for string-length@5.0.1: wanted: {"node":">=12.20"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: string-length@5.0.1
+npm WARN notsup Unsupported engine for jest-regex-util@28.0.2: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-regex-util@28.0.2
+npm WARN notsup Unsupported engine for emittery@0.10.2: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: emittery@0.10.2
+npm WARN notsup Unsupported engine for jest-util@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-util@28.1.3
+npm WARN notsup Unsupported engine for @jest/types@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/types@28.1.3
+npm WARN notsup Unsupported engine for @jest/test-result@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/test-result@28.1.3
+npm WARN notsup Unsupported engine for @jest/console@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/console@28.1.3
+npm WARN notsup Unsupported engine for jest-message-util@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: jest-message-util@28.1.3
+npm WARN notsup Unsupported engine for @jest/schemas@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @jest/schemas@28.1.3
+npm WARN notsup Unsupported engine for pretty-format@28.1.3: wanted: {"node":"^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: pretty-format@28.1.3
+npm WARN notsup Unsupported engine for char-regex@2.0.2: wanted: {"node":">=12.20"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: char-regex@2.0.2
+npm WARN notsup Unsupported engine for ansi-regex@6.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-regex@6.1.0
+npm WARN notsup Unsupported engine for postcss-place@7.0.5: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-place@7.0.5
+npm WARN notsup Unsupported engine for css-has-pseudo@3.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: css-has-pseudo@3.0.4
+npm WARN notsup Unsupported engine for postcss-logical@5.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-logical@5.0.4
+npm WARN notsup Unsupported engine for postcss-nesting@10.2.0: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-nesting@10.2.0
+npm WARN notsup Unsupported engine for css-blank-pseudo@3.0.3: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: css-blank-pseudo@3.0.3
+npm WARN notsup Unsupported engine for postcss-custom-media@8.0.2: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-custom-media@8.0.2
+npm WARN notsup Unsupported engine for postcss-env-function@4.0.6: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-env-function@4.0.6
+npm WARN notsup Unsupported engine for postcss-focus-within@5.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-focus-within@5.0.4
+npm WARN notsup Unsupported engine for postcss-lab-function@4.2.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-lab-function@4.2.1
+npm WARN notsup Unsupported engine for postcss-selector-not@6.0.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-selector-not@6.0.1
+npm WARN notsup Unsupported engine for postcss-focus-visible@6.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-focus-visible@6.0.4
+npm WARN notsup Unsupported engine for postcss-gap-properties@3.0.5: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-gap-properties@3.0.5
+npm WARN notsup Unsupported engine for postcss-color-hex-alpha@8.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-color-hex-alpha@8.0.4
+npm WARN notsup Unsupported engine for css-prefers-color-scheme@6.0.3: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: css-prefers-color-scheme@6.0.3
+npm WARN notsup Unsupported engine for postcss-custom-selectors@6.0.3: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-custom-selectors@6.0.3
+npm WARN notsup Unsupported engine for postcss-dir-pseudo-class@6.0.5: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-dir-pseudo-class@6.0.5
+npm WARN notsup Unsupported engine for @csstools/postcss-ic-unit@1.0.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-ic-unit@1.0.1
+npm WARN notsup Unsupported engine for postcss-custom-properties@12.1.11: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-custom-properties@12.1.11
+npm WARN notsup Unsupported engine for postcss-image-set-function@4.0.7: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-image-set-function@4.0.7
+npm WARN notsup Unsupported engine for postcss-opacity-percentage@1.1.3: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-opacity-percentage@1.1.3
+npm WARN notsup Unsupported engine for postcss-overflow-shorthand@3.0.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-overflow-shorthand@3.0.4
+npm WARN notsup Unsupported engine for postcss-color-rebeccapurple@7.1.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-color-rebeccapurple@7.1.1
+npm WARN notsup Unsupported engine for @csstools/postcss-nested-calc@1.0.0: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-nested-calc@1.0.0
+npm WARN notsup Unsupported engine for @csstools/postcss-unset-value@1.0.2: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-unset-value@1.0.2
+npm WARN notsup Unsupported engine for postcss-pseudo-class-any-link@7.1.6: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-pseudo-class-any-link@7.1.6
+npm WARN notsup Unsupported engine for @csstools/postcss-hwb-function@1.0.2: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-hwb-function@1.0.2
+npm WARN notsup Unsupported engine for @csstools/postcss-cascade-layers@1.1.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-cascade-layers@1.1.1
+npm WARN notsup Unsupported engine for @csstools/postcss-color-function@1.1.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-color-function@1.1.1
+npm WARN notsup Unsupported engine for @csstools/postcss-oklab-function@1.1.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-oklab-function@1.1.1
+npm WARN notsup Unsupported engine for @csstools/postcss-is-pseudo-class@2.0.7: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-is-pseudo-class@2.0.7
+npm WARN notsup Unsupported engine for postcss-color-functional-notation@4.2.4: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-color-functional-notation@4.2.4
+npm WARN notsup Unsupported engine for postcss-double-position-gradients@3.1.2: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-double-position-gradients@3.1.2
+npm WARN notsup Unsupported engine for postcss-attribute-case-insensitive@5.0.2: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-attribute-case-insensitive@5.0.2
+npm WARN notsup Unsupported engine for @csstools/postcss-font-format-keywords@1.0.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-font-format-keywords@1.0.1
+npm WARN notsup Unsupported engine for @csstools/postcss-stepped-value-functions@1.0.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-stepped-value-functions@1.0.1
+npm WARN notsup Unsupported engine for @csstools/postcss-trigonometric-functions@1.0.2: wanted: {"node":"^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-trigonometric-functions@1.0.2
+npm WARN notsup Unsupported engine for @csstools/postcss-normalize-display-values@1.0.1: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-normalize-display-values@1.0.1
+npm WARN notsup Unsupported engine for @csstools/postcss-text-decoration-shorthand@1.0.0: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-text-decoration-shorthand@1.0.0
+npm WARN notsup Unsupported engine for @csstools/postcss-progressive-custom-properties@1.3.0: wanted: {"node":"^12 || ^14 || >=16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/postcss-progressive-custom-properties@1.3.0
+npm WARN notsup Unsupported engine for @csstools/selector-specificity@2.2.0: wanted: {"node":"^14 || ^16 || >=18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @csstools/selector-specificity@2.2.0
+npm WARN notsup Unsupported engine for open@8.4.2: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: open@8.4.2
+npm WARN notsup Unsupported engine for loader-utils@3.3.1: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: loader-utils@3.3.1
+npm WARN notsup Unsupported engine for sucrase@3.35.0: wanted: {"node":">=16 || 14 >=14.17"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: sucrase@3.35.0
+npm WARN notsup Unsupported engine for lilconfig@3.1.3: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: lilconfig@3.1.3
+npm WARN notsup Unsupported engine for postcss-js@4.0.1: wanted: {"node":"^12 || ^14 || >= 16"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-js@4.0.1
+npm WARN notsup Unsupported engine for postcss-import@15.1.0: wanted: {"node":">=14.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-import@15.1.0
+npm WARN notsup Unsupported engine for postcss-nested@6.2.0: wanted: {"node":">=12.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-nested@6.2.0
+npm WARN notsup Unsupported engine for postcss-load-config@4.0.2: wanted: {"node":">= 14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: postcss-load-config@4.0.2
+npm WARN notsup Unsupported engine for yaml@2.8.0: wanted: {"node":">= 14.6"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: yaml@2.8.0
+npm WARN notsup Unsupported engine for lilconfig@3.1.3: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: lilconfig@3.1.3
+npm WARN notsup Unsupported engine for minipass@7.1.2: wanted: {"node":">=16 || 14 >=14.17"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: minipass@7.1.2
+npm WARN notsup Unsupported engine for minimatch@9.0.5: wanted: {"node":">=16 || 14 >=14.17"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: minimatch@9.0.5
+npm WARN notsup Unsupported engine for path-scurry@1.11.1: wanted: {"node":">=16 || 14 >=14.18"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: path-scurry@1.11.1
+npm WARN notsup Unsupported engine for foreground-child@3.3.1: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: foreground-child@3.3.1
+npm WARN notsup Unsupported engine for signal-exit@4.1.0: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: signal-exit@4.1.0
+npm WARN notsup Unsupported engine for @isaacs/cliui@8.0.2: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @isaacs/cliui@8.0.2
+npm WARN notsup Unsupported engine for @pkgjs/parseargs@0.11.0: wanted: {"node":">=14"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: @pkgjs/parseargs@0.11.0
+npm WARN notsup Unsupported engine for string-width@5.1.2: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: string-width@5.1.2
+npm WARN notsup Unsupported engine for strip-ansi@7.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: strip-ansi@7.1.0
+npm WARN notsup Unsupported engine for wrap-ansi@8.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: wrap-ansi@8.1.0
+npm WARN notsup Unsupported engine for ansi-regex@6.1.0: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-regex@6.1.0
+npm WARN notsup Unsupported engine for ansi-styles@6.2.1: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: ansi-styles@6.2.1
+npm WARN notsup Unsupported engine for open@8.4.2: wanted: {"node":">=12"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: open@8.4.2
+npm WARN notsup Unsupported engine for http-proxy-middleware@2.0.9: wanted: {"node":">=12.0.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: http-proxy-middleware@2.0.9
+npm WARN notsup Unsupported engine for webpack-dev-middleware@5.3.4: wanted: {"node":">= 12.13.0"} (current: {"node":"10.19.0","npm":"6.14.4"})
+npm WARN notsup Not compatible with your version of node/npm: webpack-dev-middleware@5.3.4
+npm WARN @types/react-dom@18.3.7 requires a peer of @types/react@^18.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN tsutils@3.21.0 requires a peer of typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta but none is installed. You must install peer dependencies yourself.
+npm WARN @csstools/selector-specificity@2.2.0 requires a peer of postcss-selector-parser@^6.0.10 but none is installed. You must install peer dependencies yourself.
+npm WARN fork-ts-checker-webpack-plugin@6.5.3 requires a peer of typescript@>= 2.7 but none is installed. You must install peer dependencies yourself.
+
+added 1646 packages from 716 contributors and audited 1647 packages in 37.442s
+
+282 packages are looking for funding
+  run `npm fund` for details
+
+found 4 vulnerabilities (3 moderate, 1 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+[15:59:01] INFO: NPM dependencies installed successfully!
+[15:59:01] INFO: 3. Running final dependency verification...
+[15:59:02] INFO: Installed packages: 
+[15:59:02] INFO: Output: No broken requirements found.
+[15:59:02] INFO: [OK] All pip requirements satisfied
+[15:59:02] INFO: [OK] Dependencies installation completed successfully!
+[15:59:02] SUCCESS: [OK] [DEPS] Install dependencies - Completed
+[15:59:03] INFO: [EXECUTE] [BUILD] Build frontend - Selected and will run
+[15:59:04] INFO: Executing: [BUILD] Build frontend
+[15:59:04] INFO: Creating clean production config.js...
+[15:59:04] INFO: Simple URL replacement for localhost references...
+[15:59:04] INFO: Running basic URL replacements...
+[15:59:04] INFO: Output: src/index.js
+src/contexts/AuthContext.js
+src/contexts/CartContext.js
+src/contexts/ThemeContext.js
+src/components/ImagePreviewModal.js
+src/components/CategoryManagement.js
+src/components/ResponsiveThemeTest.js
+src/components/Footer.js
+src/components/CategoryAnalytics.js
+src/components/GoogleSignIn.js
+src/components/ThemeBuilder.js
+src/components/LikeButton.js
+src/components/ScrollToTop.js
+src/components/BackgroundRemovalModal.js
+src/components/ShareButtons.js
+src/components/ThemePreview.js
+src/components/ThemeSelector.js
+src/components/ImageCropModal.js
+src/components/BlogManagement.js
+src/components/Header.js
+src/components/ThemePerformanceMonitor.js
+src/themes/index.js
+src/themes/performance.js
+src/themes/siteSettingsIntegration.js
+src/utils/themeTemplate.js
+src/pages/Products.js
+src/pages/DMCANotice.js
+src/pages/Register.js
+src/pages/ProductDetail.js
+src/pages/BlogPost.js
+src/pages/Category.js
+src/pages/TestDashboard_clean.js
+src/pages/MenuSettings.js
+src/pages/ReturnPolicy.js
+src/pages/AccessibilityStatement.js
+src/pages/AdminDashboard.js
+src/pages/UserSettings.js
+src/pages/PrivacyPolicy.js
+src/pages/UserDashboard.js
+src/pages/Checkout.js
+src/pages/Orders.js
+src/pages/EmailManagement.js
+src/pages/SiteSettings2.js
+src/pages/CookiePolicy.js
+src/pages/InformationSettings.js
+src/pages/About.js
+src/pages/ShippingPolicy.js
+src/pages/TermsOfService.js
+src/pages/Login.js
+src/pages/GeneralSettings.js
+src/pages/Home.js
+src/pages/Cart.js
+src/pages/Contact.js
+src/pages/OrderConfirmation.js
+src/pages/TestDashboard.js
+src/pages/Profile.js
+src/pages/Blog.js
+src/App.js
+[15:59:04] INFO: Processing: src/index.js
+[15:59:04] INFO: [OK] Fixed: src/index.js (URLs replaced)
+[15:59:04] INFO: Processing: src/contexts/AuthContext.js
+[15:59:05] INFO: [OK] Fixed: src/contexts/AuthContext.js (URLs replaced)
+[15:59:05] INFO: Processing: src/contexts/CartContext.js
+[15:59:05] INFO: [OK] Fixed: src/contexts/CartContext.js (URLs replaced)
+[15:59:05] INFO: Processing: src/contexts/ThemeContext.js
+[15:59:06] INFO: [OK] Fixed: src/contexts/ThemeContext.js (URLs replaced)
+[15:59:06] INFO: Processing: src/components/ImagePreviewModal.js
+[15:59:07] INFO: [OK] Fixed: src/components/ImagePreviewModal.js (URLs replaced)
+[15:59:07] INFO: Processing: src/components/CategoryManagement.js
+[15:59:07] INFO: [OK] Fixed: src/components/CategoryManagement.js (URLs replaced)
+[15:59:07] INFO: Processing: src/components/ResponsiveThemeTest.js
+[15:59:08] INFO: [OK] Fixed: src/components/ResponsiveThemeTest.js (URLs replaced)
+[15:59:08] INFO: Processing: src/components/Footer.js
+[15:59:08] INFO: [OK] Fixed: src/components/Footer.js (URLs replaced)
+[15:59:08] INFO: Processing: src/components/CategoryAnalytics.js
+[15:59:09] INFO: [OK] Fixed: src/components/CategoryAnalytics.js (URLs replaced)
+[15:59:09] INFO: Processing: src/components/GoogleSignIn.js
+[15:59:09] INFO: [OK] Fixed: src/components/GoogleSignIn.js (URLs replaced)
+[15:59:09] INFO: Processing: src/components/ThemeBuilder.js
+[15:59:10] INFO: [OK] Fixed: src/components/ThemeBuilder.js (URLs replaced)
+[15:59:10] INFO: Processing: src/components/LikeButton.js
+[15:59:10] INFO: [OK] Fixed: src/components/LikeButton.js (URLs replaced)
+[15:59:10] INFO: Processing: src/components/ScrollToTop.js
+[15:59:11] INFO: [OK] Fixed: src/components/ScrollToTop.js (URLs replaced)
+[15:59:11] INFO: Processing: src/components/BackgroundRemovalModal.js
+[15:59:12] INFO: [OK] Fixed: src/components/BackgroundRemovalModal.js (URLs replaced)
+[15:59:12] INFO: Processing: src/components/ShareButtons.js
+[15:59:12] INFO: [OK] Fixed: src/components/ShareButtons.js (URLs replaced)
+[15:59:12] INFO: Processing: src/components/ThemePreview.js
+[15:59:13] INFO: [OK] Fixed: src/components/ThemePreview.js (URLs replaced)
+[15:59:13] INFO: Processing: src/components/ThemeSelector.js
+[15:59:13] INFO: [OK] Fixed: src/components/ThemeSelector.js (URLs replaced)
+[15:59:13] INFO: Processing: src/components/ImageCropModal.js
+[15:59:14] INFO: [OK] Fixed: src/components/ImageCropModal.js (URLs replaced)
+[15:59:14] INFO: Processing: src/components/BlogManagement.js
+[15:59:14] INFO: [OK] Fixed: src/components/BlogManagement.js (URLs replaced)
+[15:59:14] INFO: Processing: src/components/Header.js
+[15:59:15] INFO: [OK] Fixed: src/components/Header.js (URLs replaced)
+[15:59:15] INFO: Processing: src/components/ThemePerformanceMonitor.js
+[15:59:15] INFO: [OK] Fixed: src/components/ThemePerformanceMonitor.js (URLs replaced)
+[15:59:16] INFO: Processing: src/themes/index.js
+[15:59:16] INFO: [OK] Fixed: src/themes/index.js (URLs replaced)
+[15:59:16] INFO: Processing: src/themes/performance.js
+[15:59:17] INFO: [OK] Fixed: src/themes/performance.js (URLs replaced)
+[15:59:17] INFO: Processing: src/themes/siteSettingsIntegration.js
+[15:59:17] INFO: [OK] Fixed: src/themes/siteSettingsIntegration.js (URLs replaced)
+[15:59:17] INFO: Processing: src/utils/themeTemplate.js
+[15:59:18] INFO: [OK] Fixed: src/utils/themeTemplate.js (URLs replaced)
+[15:59:18] INFO: Processing: src/pages/Products.js
+[15:59:18] INFO: [OK] Fixed: src/pages/Products.js (URLs replaced)
+[15:59:18] INFO: Processing: src/pages/DMCANotice.js
+[15:59:19] INFO: [OK] Fixed: src/pages/DMCANotice.js (URLs replaced)
+[15:59:19] INFO: Processing: src/pages/Register.js
+[15:59:19] INFO: [OK] Fixed: src/pages/Register.js (URLs replaced)
+[15:59:19] INFO: Processing: src/pages/ProductDetail.js
+[15:59:20] INFO: [OK] Fixed: src/pages/ProductDetail.js (URLs replaced)
+[15:59:20] INFO: Processing: src/pages/BlogPost.js
+[15:59:20] INFO: [OK] Fixed: src/pages/BlogPost.js (URLs replaced)
+[15:59:20] INFO: Processing: src/pages/Category.js
+[15:59:21] INFO: [OK] Fixed: src/pages/Category.js (URLs replaced)
+[15:59:21] INFO: Processing: src/pages/TestDashboard_clean.js
+[15:59:22] INFO: [OK] Fixed: src/pages/TestDashboard_clean.js (URLs replaced)
+[15:59:22] INFO: Processing: src/pages/MenuSettings.js
+[15:59:22] INFO: [OK] Fixed: src/pages/MenuSettings.js (URLs replaced)
+[15:59:22] INFO: Processing: src/pages/ReturnPolicy.js
+[15:59:23] INFO: [OK] Fixed: src/pages/ReturnPolicy.js (URLs replaced)
+[15:59:23] INFO: Processing: src/pages/AccessibilityStatement.js
+[15:59:23] INFO: [OK] Fixed: src/pages/AccessibilityStatement.js (URLs replaced)
+[15:59:23] INFO: Processing: src/pages/AdminDashboard.js
+[15:59:24] INFO: [OK] Fixed: src/pages/AdminDashboard.js (URLs replaced)
+[15:59:24] INFO: Processing: src/pages/UserSettings.js
+[15:59:24] INFO: [OK] Fixed: src/pages/UserSettings.js (URLs replaced)
+[15:59:24] INFO: Processing: src/pages/PrivacyPolicy.js
+[15:59:25] INFO: [OK] Fixed: src/pages/PrivacyPolicy.js (URLs replaced)
+[15:59:25] INFO: Processing: src/pages/UserDashboard.js
+[15:59:25] INFO: [OK] Fixed: src/pages/UserDashboard.js (URLs replaced)
+[15:59:25] INFO: Processing: src/pages/Checkout.js
+[15:59:26] INFO: [OK] Fixed: src/pages/Checkout.js (URLs replaced)
+[15:59:26] INFO: Processing: src/pages/Orders.js
+[15:59:26] INFO: [OK] Fixed: src/pages/Orders.js (URLs replaced)
+[15:59:26] INFO: Processing: src/pages/EmailManagement.js
+[15:59:27] INFO: [OK] Fixed: src/pages/EmailManagement.js (URLs replaced)
+[15:59:27] INFO: Processing: src/pages/SiteSettings2.js
+[15:59:27] INFO: [OK] Fixed: src/pages/SiteSettings2.js (URLs replaced)
+[15:59:28] INFO: Processing: src/pages/CookiePolicy.js
+[15:59:28] INFO: [OK] Fixed: src/pages/CookiePolicy.js (URLs replaced)
+[15:59:28] INFO: Processing: src/pages/InformationSettings.js
+[15:59:29] INFO: [OK] Fixed: src/pages/InformationSettings.js (URLs replaced)
+[15:59:29] INFO: Processing: src/pages/About.js
+[15:59:29] INFO: [OK] Fixed: src/pages/About.js (URLs replaced)
+[15:59:29] INFO: Processing: src/pages/ShippingPolicy.js
+[15:59:30] INFO: [OK] Fixed: src/pages/ShippingPolicy.js (URLs replaced)
+[15:59:30] INFO: Processing: src/pages/TermsOfService.js
+[15:59:30] INFO: [OK] Fixed: src/pages/TermsOfService.js (URLs replaced)
+[15:59:30] INFO: Processing: src/pages/Login.js
+[15:59:31] INFO: [OK] Fixed: src/pages/Login.js (URLs replaced)
+[15:59:31] INFO: Processing: src/pages/GeneralSettings.js
+[15:59:31] INFO: [OK] Fixed: src/pages/GeneralSettings.js (URLs replaced)
+[15:59:31] INFO: Processing: src/pages/Home.js
+[15:59:32] INFO: [OK] Fixed: src/pages/Home.js (URLs replaced)
+[15:59:32] INFO: Processing: src/pages/Cart.js
+[15:59:32] INFO: [OK] Fixed: src/pages/Cart.js (URLs replaced)
+[15:59:32] INFO: Processing: src/pages/Contact.js
+[15:59:33] INFO: [OK] Fixed: src/pages/Contact.js (URLs replaced)
+[15:59:33] INFO: Processing: src/pages/OrderConfirmation.js
+[15:59:34] INFO: [OK] Fixed: src/pages/OrderConfirmation.js (URLs replaced)
+[15:59:34] INFO: Processing: src/pages/TestDashboard.js
+[15:59:34] INFO: [OK] Fixed: src/pages/TestDashboard.js (URLs replaced)
+[15:59:34] INFO: Processing: src/pages/Profile.js
+[15:59:35] INFO: [OK] Fixed: src/pages/Profile.js (URLs replaced)
+[15:59:35] INFO: Processing: src/pages/Blog.js
+[15:59:35] INFO: [OK] Fixed: src/pages/Blog.js (URLs replaced)
+[15:59:35] INFO: Processing: src/App.js
+[15:59:36] INFO: [OK] Fixed: src/App.js (URLs replaced)
+[15:59:36] INFO: URL Fix Result: Files processed: 58
+[15:59:36] INFO: URL Fix Result: Files modified: 58
+[15:59:36] INFO: Building React frontend...
+[15:59:38] INFO: Output: > pebdeq-frontend@0.1.0 build /opt/pebdeq/frontend
+> react-scripts build
+
+/opt/pebdeq/frontend/node_modules/eslint-webpack-plugin/node_modules/jest-worker/build/index.js:110
+  _ending;
+         ^
+
+SyntaxError: Unexpected token ;
+    at Module._compile (internal/modules/cjs/loader.js:723:23)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/opt/pebdeq/frontend/node_modules/eslint-webpack-plugin/dist/getESLint.js:9:5)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! pebdeq-frontend@0.1.0 build: `react-scripts build`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the pebdeq-frontend@0.1.0 build script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2025-07-25T19_59_37_983Z-debug.log
+[15:59:38] WARNING: Build had issues, but continuing...
+[15:59:38] INFO: Build output: 
+> pebdeq-frontend@0.1.0 build /opt/pebdeq/frontend
+> react-scripts build
+
+/opt/pebdeq/frontend/node_modules/eslint-webpack-plugin/node_modules/jest-worker/build/index.js:110
+  _ending;
+         ^
+
+SyntaxError: Unexpected token ;
+    at Module._compile (internal/modules/cjs/loader.js:723:23)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/opt/pebdeq/frontend/node_modules/eslint-webpack-plugin/dist/getESLint.js:9:5)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! pebdeq-frontend@0.1.0 build: `react-scripts build`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the pebdeq-frontend@0.1.0 build script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2025-07-25T19_59_37_983Z-debug.log
+
+[15:59:38] INFO: Deploying frontend files...
+[15:59:39] INFO: Output: Build directory not found, deploying source files...
+Deployed public files as fallback
+[15:59:39] INFO: Output: -rwxr-xr-x 1 www-data www-data 903 Jul 25 19:59 /var/www/pebdeq/index.html
+[15:59:39] INFO: Frontend deployment completed!
+[15:59:39] SUCCESS: [OK] [BUILD] Build frontend - Completed
+[15:59:40] INFO: [EXECUTE] [DB] Setup database - Selected and will run
+[15:59:40] INFO: Executing: [DB] Setup database
+[15:59:40] INFO: Setting up database...
+[15:59:41] WARNING: Command error: Traceback (most recent call last):
+  File "reset_db.py", line 14, in <module>
+    from app import create_app, db
+  File "/opt/pebdeq/backend/app/__init__.py", line 5, in <module>
+    from flask_mail import Mail
+ModuleNotFoundError: No module named 'flask_mail'
+
+[15:59:42] SUCCESS: [OK] [DB] Setup database - Completed
+[15:59:43] INFO: [EXECUTE] [SERVICE] Configure services - Selected and will run
+[15:59:43] INFO: Executing: [SERVICE] Configure services
+[15:59:43] INFO: [SERVICE] Configuring bulletproof systemd service...
+[15:59:43] INFO: 1. Creating systemd service file...
+[15:59:43] INFO: Output: -rw-r--r-- 1 root root 1123 Jul 25 19:59 /etc/systemd/system/pebdeq-backend.service
+[15:59:43] INFO: [OK] Service file created successfully
+[15:59:43] INFO: 2. Setting up proper permissions...
+[15:59:44] INFO: Output: uid=33(www-data) gid=33(www-data) groups=33(www-data)
+[15:59:46] INFO: [OK] Permissions configured
+[15:59:46] INFO: 3. Configuring systemctl...
+[15:59:47] INFO: Output: ? pebdeq-backend.service - PEBDEQ Backend Service
+     Loaded: loaded (/etc/systemd/system/pebdeq-backend.service; disabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Fri 2025-07-25 19:45:13 UTC; 14min ago
+   Main PID: 59223 (code=exited, status=1/FAILURE)
+
+Jul 25 19:45:13 ubuntu-2gb-ash-2 systemd[1]: Stopped PEBDEQ Backend Service.
+Jul 25 19:45:13 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Start request repeated too quickly.
+Jul 25 19:45:13 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Failed with result 'exit-code'.
+Jul 25 19:45:13 ubuntu-2gb-ash-2 systemd[1]: Failed to start PEBDEQ Backend Service.
+Jul 25 19:45:32 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Start request repeated too quickly.
+Jul 25 19:45:32 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Failed with result 'exit-code'.
+Jul 25 19:45:32 ubuntu-2gb-ash-2 systemd[1]: Failed to start PEBDEQ Backend Service.
+Jul 25 19:46:08 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Start request repeated too quickly.
+Jul 25 19:46:08 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Failed with result 'exit-code'.
+Jul 25 19:46:08 ubuntu-2gb-ash-2 systemd[1]: Failed to start PEBDEQ Backend Service.
+[15:59:47] INFO: Output: Created symlink /etc/systemd/system/multi-user.target.wants/pebdeq-backend.service ? /etc/systemd/system/pebdeq-backend.service.
+[15:59:47] INFO: [OK] Service enabled for auto-start
+[15:59:47] INFO: 4. Verifying service configuration...
+[15:59:47] INFO: Output: ?[0;1;38;5;185m/lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.?[0m
+[15:59:48] INFO: Service file syntax check: ?[0;1;38;5;185m/lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.?[0m
+
+[15:59:48] INFO: Output: enabled
+[15:59:48] INFO: [OK] Service is enabled
+[15:59:48] INFO: 5. Additional system configuration...
+[15:59:48] INFO: Output: /usr/sbin/ufw
+[15:59:49] INFO: Output: Rule updated
+[15:59:49] INFO: [OK] Additional system configuration completed
+[15:59:49] INFO: 6. Final service verification...
+[15:59:49] INFO: Output: -rwxr-xr-x 1 www-data www-data 15708 Jul 25 19:56 /opt/pebdeq/backend/run.py
+[15:59:49] INFO: [OK] Verified: /opt/pebdeq/backend/run.py
+[15:59:49] INFO: Output: lrwxrwxrwx 1 www-data www-data 7 Jul 25 19:57 /opt/pebdeq/backend/venv/bin/python -> python3
+[15:59:49] INFO: [OK] Verified: /opt/pebdeq/backend/venv/bin/python
+[15:59:49] INFO: Output: -rw-r--r-- 1 root root 1123 Jul 25 19:59 /etc/systemd/system/pebdeq-backend.service
+[15:59:49] INFO: [OK] Verified: /etc/systemd/system/pebdeq-backend.service
+[15:59:49] INFO: Service Configuration Summary:
+[15:59:49] INFO:   Service file: /etc/systemd/system/pebdeq-backend.service
+[15:59:49] INFO:   Working directory: /opt/pebdeq/backend
+[15:59:49] INFO:   Python executable: /opt/pebdeq/backend/venv/bin/python
+[15:59:49] INFO:   Main script: /opt/pebdeq/backend/run.py
+[15:59:49] INFO:   User: www-data
+[15:59:49] INFO:   Auto-start: enabled
+[15:59:49] INFO: [OK] Service configuration completed successfully!
+[15:59:49] SUCCESS: [OK] [SERVICE] Configure services - Completed
+[15:59:50] INFO: [EXECUTE] [NGINX] Setup web server - Selected and will run
+[15:59:51] INFO: Executing: [NGINX] Setup web server
+[15:59:51] INFO: Configuring Nginx web server...
+[15:59:53] SUCCESS: [OK] [NGINX] Setup web server - Completed
+[15:59:54] INFO: [EXECUTE] [SSL] Configure SSL - Selected and will run
+[15:59:54] INFO: Executing: [SSL] Configure SSL
+[15:59:55] INFO: Output: Reading package lists...
+Building dependency tree...
+Reading state information...
+certbot is already the newest version (0.40.0-1ubuntu0.1).
+python3-certbot-nginx is already the newest version (0.40.0-0ubuntu0.1).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+[15:59:57] INFO: Output: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Congratulations! You have successfully enabled https://pebdeq.com and
+https://www.pebdeq.com
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=pebdeq.com
+https://www.ssllabs.com/ssltest/analyze.html?d=www.pebdeq.com
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/pebdeq.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/pebdeq.com/privkey.pem
+   Your cert will expire on 2025-10-23. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot again
+   with the "certonly" option. To non-interactively renew *all* of
+   your certificates, run "certbot renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+[15:59:57] WARNING: Command error: sed: -e expression #1, char 136: unexpected `}'
+
+[15:59:58] SUCCESS: [OK] [SSL] Configure SSL - Completed
+[15:59:59] INFO: [EXECUTE] [TEST] Run health checks - Selected and will run
+[15:59:59] INFO: Executing: [TEST] Run health checks
+[15:59:59] INFO: [HEALTH] Running comprehensive health verification...
+[15:59:59] INFO: 1. Pre-start verification...
+[15:59:59] INFO: Output: -rwxr-xr-x 1 www-data www-data 15708 Jul 25 19:56 /opt/pebdeq/backend/run.py
+[15:59:59] INFO: [OK] Found: /opt/pebdeq/backend/run.py
+[15:59:59] INFO: Output: -rwxr-xr-x 1 www-data www-data 2021 Jul 25 19:58 /opt/pebdeq/backend/requirements.txt
+[15:59:59] INFO: [OK] Found: /opt/pebdeq/backend/requirements.txt
+[15:59:59] INFO: Output: lrwxrwxrwx 1 www-data www-data 7 Jul 25 19:57 /opt/pebdeq/backend/venv/bin/python -> python3
+[15:59:59] INFO: [OK] Found: /opt/pebdeq/backend/venv/bin/python
+[15:59:59] INFO: Output: -rw-r--r-- 1 root root 1123 Jul 25 19:59 /etc/systemd/system/pebdeq-backend.service
+[15:59:59] INFO: [OK] Found: /etc/systemd/system/pebdeq-backend.service
+[15:59:59] INFO: 2. Starting backend service with monitoring...
+[16:00:03] INFO: Starting pebdeq-backend service...
+[16:00:05] INFO: 3. Monitoring service startup...
+[16:00:06] INFO: Output: activating
+[16:00:08] INFO: Output: activating
+[16:00:09] INFO: Output: activating
+[16:00:10] INFO: Output: activating
+[16:00:11] INFO: Output: activating
+[16:00:12] INFO: Output: activating
+[16:00:12] INFO: Still waiting... (5/30s)
+[16:00:13] INFO: Output: activating
+[16:00:14] INFO: Output: activating
+[16:00:16] INFO: Output: activating
+[16:00:17] INFO: Output: activating
+[16:00:18] INFO: Output: active
+[16:00:18] INFO: [OK] Service became active after 11 seconds
+[16:00:18] INFO: Output: ? pebdeq-backend.service - PEBDEQ Backend Service
+     Loaded: loaded (/etc/systemd/system/pebdeq-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2025-07-25 20:00:17 UTC; 261ms ago
+    Process: 63192 ExecStartPre=/bin/sleep 2 (code=exited, status=0/SUCCESS)
+   Main PID: 63205 (python)
+      Tasks: 1 (limit: 2266)
+     Memory: 31.3M
+     CGroup: /system.slice/pebdeq-backend.service
+             ??63205 /opt/pebdeq/backend/venv/bin/python /opt/pebdeq/backend/run.py
+
+Jul 25 20:00:15 ubuntu-2gb-ash-2 systemd[1]: Starting PEBDEQ Backend Service...
+Jul 25 20:00:17 ubuntu-2gb-ash-2 systemd[1]: Started PEBDEQ Backend Service.
+[16:00:18] INFO: Final service status:
+[16:00:18] INFO: ? pebdeq-backend.service - PEBDEQ Backend Service
+     Loaded: loaded (/etc/systemd/system/pebdeq-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2025-07-25 20:00:17 UTC; 261ms ago
+    Process: 63192 ExecStartPre=/bin/sleep 2 (code=exited, status=0/SUCCESS)
+   Main PID: 63205 (python)
+      Tasks: 1 (limit: 2266)
+     Memory: 31.3M
+     CGroup: /system.slice/pebdeq-backend.service
+             ??63205 /opt/pebdeq/backend/venv/bin/python /opt/pebdeq/backend/run.py
+
+Jul 25 20:00:15 ubuntu-2gb-ash-2 systemd[1]: Starting PEBDEQ Backend Service...
+Jul 25 20:00:17 ubuntu-2gb-ash-2 systemd[1]: Started PEBDEQ Backend Service.
+
+[16:00:18] INFO: Output: active
+[16:00:18] INFO: 4. Testing API endpoints...
+[16:00:23] INFO: Output: 000000
+[16:00:23] INFO: API not ready yet (attempt 1/10, got HTTP 000000
+)
+[16:00:26] INFO: Output: 000000
+[16:00:26] INFO: API not ready yet (attempt 2/10, got HTTP 000000
+)
+[16:00:28] INFO: Output: 000000
+[16:00:28] INFO: API not ready yet (attempt 3/10, got HTTP 000000
+)
+[16:00:30] INFO: Output: 000000
+[16:00:30] INFO: API not ready yet (attempt 4/10, got HTTP 000000
+)
+[16:00:32] INFO: Output: 000000
+[16:00:32] INFO: API not ready yet (attempt 5/10, got HTTP 000000
+)
+[16:00:34] INFO: Output: 000000
+[16:00:34] INFO: API not ready yet (attempt 6/10, got HTTP 000000
+)
+[16:00:36] INFO: Output: 000000
+[16:00:36] INFO: API not ready yet (attempt 7/10, got HTTP 000000
+)
+[16:00:39] INFO: Output: 000000
+[16:00:39] INFO: API not ready yet (attempt 8/10, got HTTP 000000
+)
+[16:00:41] INFO: Output: 000000
+[16:00:41] INFO: API not ready yet (attempt 9/10, got HTTP 000000
+)
+[16:00:43] INFO: Output: 000000
+[16:00:43] ERROR: [ERROR] API health check failed after 10 attempts (HTTP 000000
+)
+[16:00:43] INFO: Port 5005 status: 
+[16:00:43] INFO: Output: root       63269  0.0  0.1   6892  3128 ?        Ss   20:00   0:00 bash -c ps aux | grep python | grep run.py
+[16:00:43] INFO: Backend process status: root       63269  0.0  0.1   6892  3128 ?        Ss   20:00   0:00 bash -c ps aux | grep python | grep run.py
+
+[16:00:43] ERROR: [FAIL] [TEST] Run health checks - Failed
+[16:00:44] INFO: [EXECUTE] [VERIFY] Final verification - Selected and will run
+[16:00:44] INFO: Executing: [VERIFY] Final verification
+[16:00:44] INFO: Running final verification...
+[16:00:44] INFO: Output: ? pebdeq-backend.service - PEBDEQ Backend Service
+     Loaded: loaded (/etc/systemd/system/pebdeq-backend.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Fri 2025-07-25 20:00:40 UTC; 3s ago
+    Process: 63226 ExecStartPre=/bin/sleep 2 (code=exited, status=0/SUCCESS)
+    Process: 63241 ExecStart=/opt/pebdeq/backend/venv/bin/python /opt/pebdeq/backend/run.py (code=exited, status=1/FAILURE)
+   Main PID: 63241 (code=exited, status=1/FAILURE)
+
+Jul 25 20:00:40 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Scheduled restart job, restart counter is at 3.
+Jul 25 20:00:40 ubuntu-2gb-ash-2 systemd[1]: Stopped PEBDEQ Backend Service.
+Jul 25 20:00:40 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Start request repeated too quickly.
+Jul 25 20:00:40 ubuntu-2gb-ash-2 systemd[1]: pebdeq-backend.service: Failed with result 'exit-code'.
+Jul 25 20:00:40 ubuntu-2gb-ash-2 systemd[1]: Failed to start PEBDEQ Backend Service.
+[16:00:45] INFO: Output: ? nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2025-07-25 19:59:52 UTC; 52s ago
+       Docs: man:nginx(8)
+   Main PID: 63038 (nginx)
+      Tasks: 3 (limit: 2266)
+     Memory: 4.2M
+     CGroup: /system.slice/nginx.service
+             ??63038 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+             ??63081 nginx: worker process
+             ??63082 nginx: worker process
+
+Jul 25 19:59:52 ubuntu-2gb-ash-2 systemd[1]: Starting A high performance web server and a reverse proxy server...
+Jul 25 19:59:52 ubuntu-2gb-ash-2 systemd[1]: Started A high performance web server and a reverse proxy server.
+Jul 25 19:59:56 ubuntu-2gb-ash-2 systemd[1]: Reloading A high performance web server and a reverse proxy server.
+Jul 25 19:59:56 ubuntu-2gb-ash-2 systemd[1]: Reloaded A high performance web server and a reverse proxy server.
+[16:00:45] INFO: Output: Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        38G  2.9G   33G   8% /
+/dev/sda1        38G  2.9G   33G   8% /
+[16:00:45] INFO: Output: root         759  0.0  0.7  29668 14780 ?        Ss   17:23   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         832  0.0  0.7 107944 15256 ?        Ssl  17:23   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root       63038  0.0  0.4  61728  8008 ?        Ss   19:59   0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+www-data   63081  0.0  0.2  62316  5428 ?        S    19:59   0:00 nginx: worker process
+www-data   63082  0.0  0.2  62316  5428 ?        S    19:59   0:00 nginx: worker process
+[16:00:45] SUCCESS: [OK] Final verification completed!
+[16:00:45] SUCCESS: [OK] [VERIFY] Final verification - Completed
+[16:00:46] SUCCESS: [SUCCESS] PEBDEQ deployment finished!
+[16:01:37] SUCCESS: Enhanced server status refreshed
+[16:01:42] INFO: Executing: systemctl start pebdeq-backend
+[16:01:42] ERROR: Service control error: Job for pebdeq-backend.service failed because the control process exited with error code.
+See "systemctl status pebdeq-backend.service" and "journalctl -xe" for details.
+
+[16:01:44] SUCCESS: Enhanced server status refreshed
+

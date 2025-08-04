@@ -1,0 +1,127 @@
+#!/bin/bash
+
+# Exit on any error
+set -e
+
+# Server Test Suite Setup Script
+# Run this script on your server to set up the pb_test_suite directory structure
+
+echo "🚀 Setting up Test Suite structure on server..."
+
+# Define the project root (adjust this path for your server)
+PROJECT_ROOT="/opt/pebdeq"
+
+# Check if project root exists
+if [ ! -d "$PROJECT_ROOT" ]; then
+    echo "❌ Error: Project root directory does not exist: $PROJECT_ROOT"
+    exit 1
+fi
+
+# Create main pb_test_suite directory
+mkdir -p "$PROJECT_ROOT/pb_test_suite"
+
+# Change to pb_test_suite directory
+if ! cd "$PROJECT_ROOT/pb_test_suite"; then
+    echo "❌ Error: Cannot change to pb_test_suite directory"
+    exit 1
+fi
+
+echo "📁 Creating directory structure..."
+
+# Create subdirectories
+mkdir -p backups/{rollback_points,code_quality,snapshots,successful_states}
+mkdir -p reports/{admin_tests,auth_tests,product_tests,invoice_tests,order_tests,test_results,logs}
+mkdir -p scripts
+mkdir -p config
+mkdir -p tests/code_quality
+
+echo "📄 Creating essential files..."
+
+# Create basic pytest.ini for test configuration
+cat > pytest.ini << 'EOF'
+[tool:pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = -v --tb=short
+filterwarnings = ignore::DeprecationWarning
+EOF
+
+# Create basic test config
+cat > config/test_config.py << 'EOF'
+"""Test Suite Configuration for Server"""
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+TEST_SUITE_PATH = PROJECT_ROOT / "pb_test_suite"
+BACKUPS_PATH = TEST_SUITE_PATH / "backups"
+REPORTS_PATH = TEST_SUITE_PATH / "reports"
+
+class TestConfig:
+    PROJECT_ROOT = PROJECT_ROOT
+    TEST_SUITE_PATH = TEST_SUITE_PATH
+    BACKUPS_PATH = BACKUPS_PATH
+    REPORTS_PATH = REPORTS_PATH
+    
+    @classmethod
+    def initialize(cls):
+        """Initialize test suite structure"""
+        for path in [cls.BACKUPS_PATH, cls.REPORTS_PATH]:
+            path.mkdir(parents=True, exist_ok=True)
+        return True
+EOF
+
+# Copy essential scripts from local (if they exist)
+echo "📋 Copying test scripts..."
+
+# Check if we can find the scripts locally
+if [ -f "$PROJECT_ROOT/pb_test_suite/scripts/run_code_quality_tests.py" ]; then
+    echo "✅ Found existing scripts - using them"
+else
+    echo "📦 Creating minimal script structure..."
+    
+    # Create a minimal run_code_quality_tests.py
+    cat > scripts/run_code_quality_tests.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Minimal Test Runner for Server Deployment
+"""
+import sys
+import json
+from pathlib import Path
+
+def main():
+    print("Test runner ready on server")
+    return True
+
+if __name__ == "__main__":
+    main()
+EOF
+fi
+
+echo "🔧 Setting permissions..."
+
+# Set proper permissions
+chmod -R 755 .
+chmod +x scripts/*.py 2>/dev/null || true
+
+# Create a status file
+cat > .setup_complete << EOF
+Test Suite setup completed on: $(date)
+Directory: $(pwd)
+User: $(whoami)
+Permissions: 755
+EOF
+
+echo "✅ Test Suite structure setup complete!"
+echo ""
+echo "📊 Directory structure:"
+find . -type d | head -20 | sed 's/^/  /'
+echo ""
+echo "🎯 Next steps:"
+echo "1. Restart your Flask application"
+echo "2. Test the admin dashboard"
+echo "3. Check backup history - it should work now!"
+echo ""
+echo "📍 Setup completed in: $(pwd)" 

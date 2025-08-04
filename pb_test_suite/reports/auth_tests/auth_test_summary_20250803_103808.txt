@@ -1,0 +1,40 @@
+AUTHENTICATION API TEST SUMMARY
+==================================================
+
+Test Date: 2025-08-03 10:38:08
+Total Tests: 15
+Passed: 10
+Failed: 5
+Errors: 0
+Skipped: 0
+Success Rate: 66.7%
+
+PERFORMANCE METRICS
+------------------------------
+Total Duration: 80.30s
+Average Duration: 5.35s
+Min Duration: 2.03s
+Max Duration: 12.43s
+
+FAILED/ERROR TESTS
+------------------------------
+Test: test_authentication_performance (backend_tests.api.test_auth.AuthenticationAPITests.test_authentication_performance)
+Status: FAILED
+Error: 401 != 200 : Login should succeed
+------------------------------
+Test: test_concurrent_login_sessions (backend_tests.api.test_auth.AuthenticationAPITests.test_concurrent_login_sessions)
+Status: FAILED
+Error: 401 != 200 : First login should succeed
+------------------------------
+Test: test_successful_logout (backend_tests.api.test_auth.AuthenticationAPITests.test_successful_logout)
+Status: FAILED
+Error: 401 != 200 : Login should succeed
+------------------------------
+Test: test_token_refresh (backend_tests.api.test_auth.AuthenticationAPITests.test_token_refresh)
+Status: FAILED
+Error: 401 != 200 : Login should succeed
+------------------------------
+Test: test_user_role_access_control (backend_tests.api.test_auth.AuthenticationAPITests.test_user_role_access_control)
+Status: FAILED
+Error: 401 != 200 : User login should succeed
+------------------------------

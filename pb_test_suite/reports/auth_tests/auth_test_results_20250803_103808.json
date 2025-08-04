@@ -1,0 +1,146 @@
+{
+  "start_time": "2025-08-03 10:36:48.178450",
+  "end_time": "2025-08-03 10:38:08.488416",
+  "total_tests": 15,
+  "passed_tests": 10,
+  "failed_tests": 5,
+  "error_tests": 0,
+  "skipped_tests": 0,
+  "test_results": [
+    {
+      "test_name": "test_authentication_performance (backend_tests.api.test_auth.AuthenticationAPITests.test_authentication_performance)",
+      "status": "FAILED",
+      "duration": 2.0649192333221436,
+      "error": "401 != 200 : Login should succeed"
+    },
+    {
+      "test_name": "test_brute_force_protection (backend_tests.api.test_auth.AuthenticationAPITests.test_brute_force_protection)",
+      "status": "PASSED",
+      "duration": 7.7079174518585205,
+      "error": null
+    },
+    {
+      "test_name": "test_concurrent_login_sessions (backend_tests.api.test_auth.AuthenticationAPITests.test_concurrent_login_sessions)",
+      "status": "FAILED",
+      "duration": 4.145355463027954,
+      "error": "401 != 200 : First login should succeed"
+    },
+    {
+      "test_name": "test_invalid_jwt_token (backend_tests.api.test_auth.AuthenticationAPITests.test_invalid_jwt_token)",
+      "status": "PASSED",
+      "duration": 12.426578283309937,
+      "error": null
+    },
+    {
+      "test_name": "test_jwt_token_validation (backend_tests.api.test_auth.AuthenticationAPITests.test_jwt_token_validation)",
+      "status": "PASSED",
+      "duration": 4.261013031005859,
+      "error": null
+    },
+    {
+      "test_name": "test_login_with_invalid_credentials (backend_tests.api.test_auth.AuthenticationAPITests.test_login_with_invalid_credentials)",
+      "status": "PASSED",
+      "duration": 10.31824803352356,
+      "error": null
+    },
+    {
+      "test_name": "test_login_with_missing_fields (backend_tests.api.test_auth.AuthenticationAPITests.test_login_with_missing_fields)",
+      "status": "PASSED",
+      "duration": 10.35443377494812,
+      "error": null
+    },
+    {
+      "test_name": "test_login_with_valid_credentials (backend_tests.api.test_auth.AuthenticationAPITests.test_login_with_valid_credentials)",
+      "status": "PASSED",
+      "duration": 2.176389217376709,
+      "error": null
+    },
+    {
+      "test_name": "test_logout_without_authentication (backend_tests.api.test_auth.AuthenticationAPITests.test_logout_without_authentication)",
+      "status": "PASSED",
+      "duration": 2.0542938709259033,
+      "error": null
+    },
+    {
+      "test_name": "test_successful_logout (backend_tests.api.test_auth.AuthenticationAPITests.test_successful_logout)",
+      "status": "FAILED",
+      "duration": 2.06002140045166,
+      "error": "401 != 200 : Login should succeed"
+    },
+    {
+      "test_name": "test_token_expiration (backend_tests.api.test_auth.AuthenticationAPITests.test_token_expiration)",
+      "status": "PASSED",
+      "duration": 2.0263352394104004,
+      "error": null
+    },
+    {
+      "test_name": "test_token_refresh (backend_tests.api.test_auth.AuthenticationAPITests.test_token_refresh)",
+      "status": "FAILED",
+      "duration": 2.043898344039917,
+      "error": "401 != 200 : Login should succeed"
+    },
+    {
+      "test_name": "test_user_registration (backend_tests.api.test_auth.AuthenticationAPITests.test_user_registration)",
+      "status": "PASSED",
+      "duration": 2.161780834197998,
+      "error": null
+    },
+    {
+      "test_name": "test_user_registration_validation (backend_tests.api.test_auth.AuthenticationAPITests.test_user_registration_validation)",
+      "status": "PASSED",
+      "duration": 10.216905117034912,
+      "error": null
+    },
+    {
+      "test_name": "test_user_role_access_control (backend_tests.api.test_auth.AuthenticationAPITests.test_user_role_access_control)",
+      "status": "FAILED",
+      "duration": 6.286893606185913,
+      "error": "401 != 200 : User login should succeed"
+    }
+  ],
+  "performance_metrics": {
+    "total_duration": 80.3049829006195,
+    "average_duration": 5.353665526707967,
+    "min_duration": 2.0263352394104004,
+    "max_duration": 12.426578283309937,
+    "slowest_tests": [
+      {
+        "test_name": "test_invalid_jwt_token (backend_tests.api.test_auth.AuthenticationAPITests.test_invalid_jwt_token)",
+        "status": "PASSED",
+        "duration": 12.426578283309937,
+        "error": null
+      },
+      {
+        "test_name": "test_login_with_missing_fields (backend_tests.api.test_auth.AuthenticationAPITests.test_login_with_missing_fields)",
+        "status": "PASSED",
+        "duration": 10.35443377494812,
+        "error": null
+      },
+      {
+        "test_name": "test_login_with_invalid_credentials (backend_tests.api.test_auth.AuthenticationAPITests.test_login_with_invalid_credentials)",
+        "status": "PASSED",
+        "duration": 10.31824803352356,
+        "error": null
+      },
+      {
+        "test_name": "test_user_registration_validation (backend_tests.api.test_auth.AuthenticationAPITests.test_user_registration_validation)",
+        "status": "PASSED",
+        "duration": 10.216905117034912,
+        "error": null
+      },
+      {
+        "test_name": "test_brute_force_protection (backend_tests.api.test_auth.AuthenticationAPITests.test_brute_force_protection)",
+        "status": "PASSED",
+        "duration": 7.7079174518585205,
+        "error": null
+      }
+    ]
+  },
+  "environment_status": {
+    "database_exists": false,
+    "temp_files_count": 0,
+    "temp_dirs_count": 0,
+    "backup_count": 4,
+    "backend_accessible": false
+  }
+}

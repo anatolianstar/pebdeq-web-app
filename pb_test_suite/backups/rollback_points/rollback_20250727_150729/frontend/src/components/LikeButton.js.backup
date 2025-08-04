@@ -1,0 +1,171 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
+
+const LikeButton = ({ type, itemId, className = '' }) => {
+  const { user } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const apiEndpoint = type === 'blog' ? `/api/blog/${itemId}` : `/api/products/${itemId}`;
+
+  useEffect(() => {
+    fetchLikeStatus();
+  }, [itemId]);
+
+  const fetchLikeStatus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Add authorization header if token exists
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      
+      const response = await fetch(`${apiEndpoint}/like-status`, {
+        headers: headers
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setIsLiked(data.is_liked);
+        setLikeCount(data.like_count);
+      }
+    } catch (error) {
+      console.error('Error fetching like status:', error);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error('Please login to like this item');
+      return;
+    }
+
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiEndpoint}/like`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsLiked(data.is_liked);
+        setLikeCount(data.like_count);
+        
+        if (data.action === 'liked') {
+          toast.success('Added to favorites!');
+        } else {
+          toast.success('Removed from favorites!');
+        }
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to update like status');
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      toast.error('Failed to update like status');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleLike}
+      disabled={loading}
+      className={`like-button ${isLiked ? 'liked' : ''} ${className}`}
+      title={isLiked ? 'Remove from favorites' : 'Add to favorites'}
+    >
+      <i className={`${isLiked ? 'fas' : 'far'} fa-heart`}></i>
+      <span className="like-count">{likeCount}</span>
+      
+      <style jsx="true">{`
+        .like-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          border: 2px solid #e9ecef;
+          border-radius: 25px;
+          background: white;
+          color: #6c757d;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        
+        .like-button:hover {
+          border-color: #ff6b6b;
+          color: #ff6b6b;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+        }
+        
+        .like-button.liked {
+          border-color: #ff6b6b;
+          background: #ff6b6b;
+          color: white;
+        }
+        
+        .like-button.liked:hover {
+          background: #ff5252;
+          border-color: #ff5252;
+        }
+        
+        .like-button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
+        
+        .like-button i {
+          font-size: 16px;
+        }
+        
+        .like-count {
+          font-weight: 600;
+          min-width: 20px;
+          text-align: center;
+        }
+        
+        /* Animation for heart icon */
+        .like-button.liked i {
+          animation: heartBeat 0.3s ease;
+        }
+        
+        @keyframes heartBeat {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+          .like-button {
+            padding: 0.4rem 0.8rem;
+            font-size: 12px;
+          }
+          
+          .like-button i {
+            font-size: 14px;
+          }
+        }
+      `}</style>
+    </button>
+  );
+};
+
+export default LikeButton; 

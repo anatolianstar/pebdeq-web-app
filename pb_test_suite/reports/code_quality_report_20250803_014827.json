@@ -1,0 +1,127 @@
+{
+  "timestamp": "20250803_014827",
+  "total_files_tested": 59,
+  "selected_files": [
+    "backend\\backup_current_settings.py",
+    "backend\\check_db.py",
+    "backend\\check_psutil.py",
+    "backend\\check_users.py",
+    "backend\\create_backup.py",
+    "backend\\create_test_users.py",
+    "backend\\db_reset.py",
+    "backend\\debug_birefnet.py",
+    "backend\\debug_models.py",
+    "backend\\fix_google_oauth_settings.py",
+    "backend\\init_email_templates.py",
+    "backend\\manual_test_birefnet.py",
+    "backend\\reset_db.py",
+    "backend\\restore_database.py",
+    "backend\\run.py",
+    "backend\\test_3_models.py",
+    "backend\\test_api.py",
+    "backend\\test_bria_integration.py",
+    "backend\\test_differentiation.py",
+    "backend\\test_new_order.py",
+    "backend\\test_quality_comparison.py",
+    "backend\\test_real_models.py",
+    "backend\\test_server.py",
+    "backend\\verify_bria_setup.py",
+    "backend\\app\\__init__.py",
+    "backend\\migrations\\env.py",
+    "backend\\app\\models\\models.py",
+    "backend\\app\\routes\\admin.py",
+    "backend\\app\\routes\\auth.py",
+    "backend\\app\\routes\\cart.py",
+    "backend\\app\\routes\\categories.py",
+    "backend\\app\\routes\\emails.py",
+    "backend\\app\\routes\\invoices.py",
+    "backend\\app\\routes\\main.py",
+    "backend\\app\\routes\\messages.py",
+    "backend\\app\\routes\\orders.py",
+    "backend\\app\\routes\\products.py",
+    "backend\\app\\routes\\site_settings.py",
+    "backend\\app\\routes\\test_runner.py",
+    "backend\\app\\routes\\themes.py",
+    "backend\\app\\routes\\uploads.py",
+    "backend\\app\\routes\\users.py",
+    "backend\\app\\routes\\variations.py",
+    "backend\\app\\utils\\config.py",
+    "backend\\app\\utils\\decorators.py",
+    "backend\\app\\utils\\email_service.py",
+    "backend\\app\\utils\\invoice_pdf.py",
+    "backend\\app\\utils\\template_service.py",
+    "backend\\app\\utils\\__init__.py",
+    "backend\\app\\migrations\\versions\\add_custom_themes_table.py",
+    "backend\\migrations\\versions\\1a0121271809_add_about_page_cms_fields_to_.py",
+    "backend\\migrations\\versions\\2cb789ad34d9_add_site_url_settings_for_dynamic_.py",
+    "backend\\migrations\\versions\\44ba9f727e37_add_google_oauth_settings_to_.py",
+    "backend\\migrations\\versions\\56ab06a42a86_add_logo_shadow_settings.py",
+    "backend\\migrations\\versions\\75b60e302559_add_google_id_to_user_model.py",
+    "backend\\migrations\\versions\\9ef6c1f54b25_add_last_login_field_to_user_model.py",
+    "backend\\migrations\\versions\\add_product_reviews_table.py",
+    "backend\\migrations\\versions\\af51b733fef2_add_new_fields_to_category_table.py",
+    "backend\\migrations\\versions\\fc1b8d793938_add_theme_preference_to_user_model.py"
+  ],
+  "test_results": {
+    "Syntax Tests": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Import Dependencies": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "API Connectivity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 1
+    },
+    "State Management": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Function Integrity": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Debug Cleanup": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Code Duplication": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Error Handling": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Async Operations": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    },
+    "Security Checks": {
+      "passed": true,
+      "issues": [],
+      "total_files": 59
+    },
+    "Deployment Quality": {
+      "passed": true,
+      "issues": [],
+      "total_files": 0
+    }
+  },
+  "summary": {
+    "total_tests": 11,
+    "passed_tests": 11,
+    "failed_tests": 0
+  }
+}

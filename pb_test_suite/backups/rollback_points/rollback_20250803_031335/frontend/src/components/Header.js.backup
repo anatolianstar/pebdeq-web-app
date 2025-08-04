@@ -1,0 +1,625 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import { useTheme } from '../contexts/ThemeContext';
+import ThemeSelector from './ThemeSelector';
+import { createApiUrl } from '../utils/config';
+
+const Header = React.memo(() => {
+  const { user, isAuthenticated, logout } = useAuth();
+  const { getTotalItems } = useCart();
+  const { isInitialized: themeInitialized, siteSettings, isUpdatingSiteSettings } = useTheme();
+  
+  const [categories, setCategories] = useState([]);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [showQuickHeader, setShowQuickHeader] = useState(false);
+
+  // Show basic header quickly while theme loads
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!themeInitialized || !siteSettings) {
+        setShowQuickHeader(true);
+      }
+    }, 200); // Show basic header after 200ms if theme isn't ready
+
+    return () => clearTimeout(timer);
+  }, [themeInitialized, siteSettings]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await fetch(createApiUrl('api/categories'));
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  // Show loading state only for very short time, then show basic header
+  // Don't show loading during theme updates, only during initial load
+  if (!themeInitialized || (!siteSettings && !showQuickHeader)) {
+    if (!showQuickHeader) {
+      return (
+        <header className="header" style={{
+          backgroundColor: 'var(--bg-primary, #ffffff)',
+          color: 'var(--text-primary, #333333)',
+          borderBottom: '1px solid var(--border-color, #e0e0e0)',
+          padding: '15px 0'
+        }}>
+          <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+            <div className="header-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h1 className="logo" style={{ 
+                color: 'var(--text-primary, #333333)', 
+                margin: 0, 
+                fontSize: '1.5rem',
+                fontWeight: 'bold'
+              }}>
+                PEBDEQ
+              </h1>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary, #666)' }}>
+                Loading...
+              </div>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // Show basic functional header with default styling
+    return (
+      <header className="header" style={{
+        backgroundColor: '#ffffff',
+        color: '#333333',
+        borderBottom: '1px solid #e0e0e0',
+        padding: '15px 0',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+          <div className="header-content" style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            minHeight: '60px'
+          }}>
+            {/* Logo */}
+            <div className="logo-section">
+              <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <h1 style={{ 
+                  margin: 0, 
+                  fontSize: '1.8rem',
+                  fontWeight: 'bold',
+                  color: '#007bff'
+                }}>
+                  PEBDEQ
+                </h1>
+              </Link>
+            </div>
+
+            {/* Navigation */}
+            <nav className="main-nav" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+              <Link to="/" style={{ textDecoration: 'none', color: '#333', fontWeight: '500' }}>Home</Link>
+              <Link to="/products" style={{ textDecoration: 'none', color: '#333', fontWeight: '500' }}>Products</Link>
+              
+              {/* Categories Dropdown */}
+              {categories.length > 0 && (
+                <div 
+                  className="categories-dropdown"
+                  style={{ position: 'relative' }}
+                  onMouseEnter={() => setShowCategoriesDropdown(true)}
+                  onMouseLeave={() => setShowCategoriesDropdown(false)}
+                >
+                  <span style={{ cursor: 'pointer', color: '#333', fontWeight: '500' }}>
+                    Categories ▼
+                  </span>
+                  {showCategoriesDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      backgroundColor: '#fff',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      padding: '10px 0',
+                      minWidth: '200px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 1000
+                    }}>
+                      {categories.slice(0, 8).map(category => (
+                        <Link
+                          key={category.id}
+                          to={`/category/${category.slug}`}
+                          style={{
+                            display: 'block',
+                            padding: '8px 16px',
+                            textDecoration: 'none',
+                            color: '#333',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </nav>
+
+            {/* Right Section */}
+            <div className="header-actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              {/* Cart */}
+              <Link to="/cart" style={{ 
+                textDecoration: 'none', 
+                color: '#333', 
+                position: 'relative',
+                padding: '8px'
+              }}>
+                🛒
+                {getTotalItems() > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '0',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '20px',
+                    height: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                  }}>
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Link>
+
+              {/* Auth Section */}
+              {isAuthenticated ? (
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <Link to="/profile" style={{ textDecoration: 'none', color: '#333' }}>
+                    {user?.first_name || 'Profile'}
+                  </Link>
+                  {user?.is_admin && (
+                    <Link to="/admin" style={{ textDecoration: 'none', color: '#007bff', fontWeight: '500' }}>
+                      Admin
+                    </Link>
+                  )}
+                  <button 
+                    onClick={handleLogout}
+                    style={{
+                      background: 'none',
+                      border: '1px solid #dc3545',
+                      color: '#dc3545',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px'
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <Link 
+                    to="/login"
+                    style={{
+                      textDecoration: 'none',
+                      background: '#007bff',
+                      color: 'white',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    to="/register"
+                    style={{
+                      textDecoration: 'none',
+                      background: 'transparent',
+                      color: '#007bff',
+                      border: '1px solid #007bff',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // Use site settings directly (they are now synced with theme)
+  const headerStyles = {
+    backgroundColor: siteSettings?.header_background_color || '#ffffff',
+    color: siteSettings?.header_text_color || '#212529',
+    borderBottom: siteSettings?.header_border_bottom ? `1px solid ${siteSettings?.header_border_color || '#dee2e6'}` : 'none',
+    boxShadow: siteSettings?.header_shadow ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'
+  };
+  
+  return (
+    <header 
+      className={`header ${siteSettings?.header_sticky ? 'sticky' : ''}`}
+      style={headerStyles}
+    >
+      {/* Marquee Banner */}
+      {siteSettings?.marquee_enabled && (
+        <div 
+          className={`marquee-banner ${siteSettings?.marquee_pause_on_hover ? 'pause-on-hover' : ''}`}
+          style={{
+            backgroundColor: siteSettings?.marquee_background_color || 'var(--primary-color)',
+            color: siteSettings?.marquee_color || 'var(--text-light)',
+            fontFamily: siteSettings?.marquee_font_family || 'var(--font-family-base)',
+            fontSize: siteSettings?.marquee_font_size || 'var(--font-size-sm)',
+            fontWeight: siteSettings?.marquee_font_weight || 'var(--font-weight-normal)'
+          }}
+        >
+          <div 
+            className={`marquee-content ${siteSettings?.marquee_direction === 'right' ? 'marquee-right' : 'marquee-left'}`}
+            style={{
+              animationDuration: `${1000 / (siteSettings?.marquee_speed || 30)}s`
+            }}
+          >
+            <span style={{ whiteSpace: 'pre-wrap' }}>{siteSettings?.marquee_text}</span>
+          </div>
+        </div>
+      )}
+      
+      <div className="container">
+        <div 
+          className="header-content"
+          style={{
+            padding: `${siteSettings?.header_padding || 15}px 0`,
+            justifyContent: siteSettings?.header_logo_position === 'center' ? 'center' : 'space-between',
+            minHeight: `${Math.min((siteSettings?.use_logo ? (siteSettings?.logo_height || 60) : 30) + (siteSettings?.header_padding || 15) * 2, 200)}px`
+          }}
+        >
+          <Link to="/" className="logo" style={{ color: siteSettings?.header_text_color || 'var(--text-primary)' }}>
+            <div 
+              className="logo-container"
+              style={{
+                minHeight: `${Math.min(siteSettings?.use_logo ? (siteSettings?.logo_height || 60) : 30, 120)}px`
+              }}
+            >
+              {siteSettings?.use_logo && siteSettings?.site_logo ? (
+                <img 
+                  src={`http://localhost:5005${siteSettings?.site_logo}`} 
+                  alt={siteSettings?.site_name || 'PEBDEQ'} 
+                  className="site-logo"
+                  style={{
+                    width: `${siteSettings?.logo_width || 120}px`,
+                    height: `${siteSettings?.logo_height || 60}px`,
+                    filter: siteSettings?.logo_shadow_enabled ? 
+                      `drop-shadow(${siteSettings?.logo_shadow_offset_x || 2}px ${siteSettings?.logo_shadow_offset_y || 2}px ${siteSettings?.logo_shadow_blur || 5}px ${siteSettings?.logo_shadow_color || '#000000'}${Math.round((siteSettings?.logo_shadow_opacity || 0.3) * 255).toString(16).padStart(2, '0')})` : 
+                      'none'
+                  }}
+                />
+              ) : (
+                <h1 style={{ color: siteSettings?.header_text_color || 'var(--text-primary)' }}>{siteSettings?.site_name || 'PEBDEQ'}</h1>
+              )}
+              {siteSettings?.use_logo2 && siteSettings?.site_logo2 && (
+                <img 
+                  src={`http://localhost:5005${siteSettings?.site_logo2}`} 
+                  alt={`${siteSettings?.site_name || 'PEBDEQ'} Logo 2`} 
+                  className="site-logo site-logo2"
+                  style={{
+                    width: `${siteSettings?.logo2_width || 120}px`,
+                    height: `${siteSettings?.logo2_height || 40}px`,
+                    filter: siteSettings?.logo2_shadow_enabled ? 
+                      `drop-shadow(${siteSettings?.logo2_shadow_offset_x || 2}px ${siteSettings?.logo2_shadow_offset_y || 2}px ${siteSettings?.logo2_shadow_blur || 5}px ${siteSettings?.logo2_shadow_color || '#000000'}${Math.round((siteSettings?.logo2_shadow_opacity || 0.3) * 255).toString(16).padStart(2, '0')})` : 
+                      'none'
+                  }}
+                />
+              )}
+            </div>
+          </Link>
+          <nav 
+            className="nav"
+            style={{
+              gap: `${siteSettings?.header_nav_spacing || 20}px`,
+              justifyContent: siteSettings?.header_nav_position === 'center' ? 'center' : 
+                            siteSettings?.header_nav_position === 'left' ? 'flex-start' : 'flex-end'
+            }}
+          >
+            {siteSettings?.navigation_links && siteSettings?.navigation_links
+              .filter(link => link.enabled)
+              .sort((a, b) => a.order - b.order)
+              .filter(link => {
+                // Filter based on authentication status
+                if (link.show_for === 'guest' && isAuthenticated) return false;
+                if (link.show_for === 'user' && !isAuthenticated) return false;
+                if (link.show_for === 'admin' && (!isAuthenticated || !user?.is_admin)) return false;
+                return true;
+              })
+              .map(link => {
+                const linkStyle = {
+                  color: siteSettings?.nav_link_color || 'var(--primary-color)',
+                  fontSize: `${siteSettings?.nav_link_font_size || 16}px`,
+                  fontWeight: siteSettings?.nav_link_font_weight || '500',
+                  textTransform: siteSettings?.nav_link_text_transform || 'none',
+                  textDecoration: siteSettings?.nav_link_underline ? 'underline' : 'none',
+                  fontFamily: siteSettings?.nav_link_font_family || 'var(--font-family-base)',
+                  textShadow: siteSettings?.nav_link_text_shadow ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none',
+                  transition: 'all 0.3s ease'
+                };
+
+                if (link.url === 'logout') {
+                  return (
+                    <button 
+                      key={link.id} 
+                      onClick={handleLogout} 
+                      className="nav-logout-btn"
+                      style={linkStyle}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                      }}
+                    >
+                      {link.title}
+                    </button>
+                  );
+                }
+                
+                if (link.is_internal) {
+                  // Special handling for Products link with dropdown
+                  if (link.url === '/products' && categories.length > 0) {
+                    return (
+                      <div 
+                        key={link.id} 
+                        className="nav-dropdown"
+                        style={{ position: 'relative' }}
+                        onMouseEnter={() => setShowCategoriesDropdown(true)}
+                        onMouseLeave={() => setShowCategoriesDropdown(false)}
+                      >
+                        <Link 
+                          to={link.url}
+                          style={linkStyle}
+                          onMouseEnter={(e) => {
+                            e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                          }}
+                        >
+                          {link.title} ({categories.filter(cat => cat.is_active).length})
+                        </Link>
+                        
+                        {showCategoriesDropdown && (
+                          <div className="dropdown-menu" style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: '0',
+                            backgroundColor: 'var(--card-bg)',
+                            boxShadow: 'var(--shadow-lg)',
+                            borderRadius: 'var(--border-radius)',
+                            padding: '0.5rem 0',
+                            minWidth: '200px',
+                            zIndex: 1000,
+                            border: '1px solid var(--border-color)'
+                          }}>
+                            <Link 
+                              to="/products"
+                              style={{
+                                display: 'block',
+                                padding: '0.5rem 1rem',
+                                color: 'var(--text-primary)',
+                                textDecoration: 'none',
+                                fontSize: '14px',
+                                fontWeight: 'bold',
+                                borderBottom: '1px solid var(--border-color)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = 'var(--bg-secondary)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = 'transparent';
+                              }}
+                            >
+                              All Categories
+                            </Link>
+                            {categories.filter(cat => cat.is_active).map(category => (
+                              <Link 
+                                key={category.id}
+                                to={`/products?category=${category.slug}`}
+                                style={{
+                                  display: 'block',
+                                  padding: '0.5rem 1rem',
+                                  color: 'var(--text-secondary)',
+                                  textDecoration: 'none',
+                                  fontSize: '14px',
+                                  transition: 'background-color 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = 'var(--bg-secondary)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = 'transparent';
+                                }}
+                              >
+                                {category.name}
+                                {category.product_count !== undefined && (
+                                  <span style={{ 
+                                    float: 'right', 
+                                    color: 'var(--text-muted)', 
+                                    fontSize: '12px' 
+                                  }}>
+                                    {category.product_count}
+                                  </span>
+                                )}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+                  
+                  return (
+                    <Link 
+                      key={link.id} 
+                      to={link.url}
+                      style={linkStyle}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                      }}
+                    >
+                      {link.title}
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <a 
+                      key={link.id} 
+                      href={link.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={linkStyle}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                      }}
+                    >
+                      {link.title}
+                    </a>
+                  );
+                }
+              })}
+              
+              {/* Cart Icon */}
+              <Link 
+                to="/cart" 
+                className="cart-icon"
+                style={{
+                  color: siteSettings?.nav_link_color || 'var(--primary-color)',
+                  fontSize: `${siteSettings?.nav_link_font_size || 16}px`,
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                }}
+              >
+                <span style={{ fontSize: '20px' }}>🛒</span>
+                {getTotalItems() > 0 && (
+                  <span 
+                    className="cart-count"
+                    style={{
+                      backgroundColor: 'var(--danger-color)',
+                      color: 'var(--text-light)',
+                      borderRadius: '50%',
+                      padding: '2px 6px',
+                      fontSize: '12px',
+                      minWidth: '18px',
+                      height: '18px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Link>
+
+              {/* Theme Selector */}
+              <ThemeSelector 
+                size="small" 
+                iconOnly={true}
+                className="header-theme-selector"
+                hideCustomThemes={true}
+              />
+
+              {/* User Icon */}
+              {isAuthenticated ? (
+                <Link 
+                  to={user?.is_admin ? "/admin" : "/user-dashboard"} 
+                  className="user-icon"
+                  style={{
+                    color: siteSettings?.nav_link_color || 'var(--primary-color)',
+                    fontSize: `${siteSettings?.nav_link_font_size || 16}px`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                  }}
+                  title={`Welcome, ${user?.first_name || 'User'}!`}
+                >
+                  <span style={{ fontSize: '20px' }}>👤</span>
+                </Link>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="login-icon"
+                  style={{
+                    color: siteSettings?.nav_link_color || 'var(--primary-color)',
+                    fontSize: `${siteSettings?.nav_link_font_size || 16}px`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = siteSettings?.nav_link_hover_color || 'var(--primary-hover)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = siteSettings?.nav_link_color || 'var(--primary-color)';
+                  }}
+                  title="Login"
+                >
+                  <span style={{ fontSize: '20px' }}>🔑</span>
+                </Link>
+              )}
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+});
+
+export default Header; 

@@ -1,0 +1,136 @@
+// Site Settings Integration with Theme System
+// This system synchronizes site settings colors with theme colors
+// When theme changes, site settings are updated to match theme colors via backend API
+
+/**
+ * Update site settings to match theme colors using backend API
+ * @param {string} themeId - The theme identifier (default, dark, blue, green)
+ * @returns {Promise<boolean>} - Success status
+ */
+export const updateSiteSettingsToMatchTheme = async (themeId) => {
+  try {
+  
+    
+    // Get auth token
+    const token = localStorage.getItem('token');
+    
+    // Call backend sync endpoint
+    const response = await fetch(createApiUrl('api/admin/site-settings/sync-theme'), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+      },
+      body: JSON.stringify({ theme_id: themeId })
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+
+      return true;
+    } else {
+      const error = await response.json();
+      console.error('Failed to update site settings:', error);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error updating site settings to match theme:', error);
+    return false;
+  }
+};
+
+/**
+ * Get resolved style value
+ * Since site settings are now synced with theme, just return the site setting value
+ * @param {string} siteSettingValue - The site setting value
+ * @param {string} fallbackCssVar - CSS variable fallback
+ * @returns {string} - The resolved style value
+ */
+export const getResolvedStyle = (siteSettingValue, fallbackCssVar) => {
+  // Since site settings are now synced with theme, just return the site setting value
+  // If no site setting value, fall back to CSS variable
+  if (siteSettingValue && siteSettingValue !== '') {
+    return siteSettingValue;
+  }
+  
+  // Fallback to CSS variable
+  return `var(${fallbackCssVar})`;
+};
+
+/**
+ * Apply theme-synced styles to document
+ * This is now mainly for CSS variable fallbacks
+ * @param {Object} siteSettings - Site settings object
+ */
+export const applyThemeSyncedStyles = (siteSettings) => {
+  if (!siteSettings) return;
+
+  const root = document.documentElement;
+  
+  // Apply site settings as CSS variables for fallback
+  const colorMappings = {
+    '--header-bg-synced': siteSettings.header_background_color,
+    '--header-text-synced': siteSettings.header_text_color,
+    '--header-border-synced': siteSettings.header_border_color,
+    '--nav-link-color-synced': siteSettings.nav_link_color,
+    '--nav-link-hover-synced': siteSettings.nav_link_hover_color,
+    '--footer-bg-synced': siteSettings.footer_background_color,
+    '--footer-text-synced': siteSettings.footer_text_color,
+    '--welcome-bg-synced': siteSettings.welcome_background_color,
+    '--welcome-text-synced': siteSettings.welcome_text_color,
+    '--welcome-button-synced': siteSettings.welcome_button_color,
+    '--homepage-bg-synced': siteSettings.homepage_background_color,
+    '--marquee-bg-synced': siteSettings.marquee_background_color,
+    '--marquee-color-synced': siteSettings.marquee_color,
+    '--products-page-bg-synced': siteSettings.products_page_background_color,
+    '--products-page-title-synced': siteSettings.products_page_title_color,
+    '--products-page-name-synced': siteSettings.products_page_product_name_color,
+    '--products-page-price-synced': siteSettings.products_page_product_price_color,
+    '--products-page-category-synced': siteSettings.products_page_product_category_color,
+    '--homepage-products-name-synced': siteSettings.homepage_products_product_name_color,
+    '--homepage-products-price-synced': siteSettings.homepage_products_product_price_color,
+    '--homepage-products-category-synced': siteSettings.homepage_products_product_category_color,
+    '--product-detail-name-synced': siteSettings.product_detail_product_name_color,
+    '--product-detail-price-synced': siteSettings.product_detail_product_price_color,
+    '--product-detail-description-synced': siteSettings.product_detail_product_description_color
+  };
+
+  Object.entries(colorMappings).forEach(([property, value]) => {
+    if (value) {
+      root.style.setProperty(property, value);
+    }
+  });
+
+
+};
+
+/**
+ * Hook for using theme-synced styles
+ * @param {Object} siteSettings - Site settings object
+ * @returns {Object} - Style utilities
+ */
+export const useThemeSyncedStyles = (siteSettings) => {
+  const getStyle = (settingKey, fallbackVar) => {
+    return getResolvedStyle(siteSettings?.[settingKey], fallbackVar);
+  };
+
+  return {
+    getStyle,
+    isReady: !!siteSettings
+  };
+};
+
+// Legacy exports for compatibility (these now work with the synced system)
+export const integrateWithTheme = (siteSettings, themeVariables) => {
+  // In the new system, site settings are already synced with theme
+  return siteSettings;
+};
+
+export const applyIntegratedStyles = (integratedSettings) => {
+  // Apply as theme-synced styles
+  applyThemeSyncedStyles(integratedSettings);
+};
+
+export const useIntegratedStyles = (siteSettings) => {
+  return useThemeSyncedStyles(siteSettings);
+}; 
