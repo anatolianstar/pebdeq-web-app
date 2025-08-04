@@ -15,6 +15,17 @@ venv/
 ENV/
 .venv/
 
+# Desktop app virtual environment and dependencies
+PEBDEQ_desktopapp/venv_desktop/
+PEBDEQ_desktopapp/python-backend/venv_desktop/
+**/venv_desktop/
+
+# Large binary files
+*.dll
+*.lib
+*.so
+*.dylib
+
 # IDE
 .vscode/
 .idea/
