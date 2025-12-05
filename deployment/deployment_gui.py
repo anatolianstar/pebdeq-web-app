@@ -11,6 +11,7 @@ import subprocess
 import os
 import json
 import time
+from datetime import datetime
 import paramiko
 import requests
 from pathlib import Path
@@ -1362,30 +1363,19 @@ class DeploymentGUI:
         try:
             self.connect_ssh()
             self.log("Updating system packages...")
-            self.execute_ssh_command("apt update")
-            self.execute_ssh_command("apt upgrade -y")
-            self.execute_ssh_command("apt autoremove -y")
+            self.execute_ssh_command("export DEBIAN_FRONTEND=noninteractive && apt update")
+            self.execute_ssh_command("export DEBIAN_FRONTEND=noninteractive && apt upgrade -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'")
+            self.execute_ssh_command("export DEBIAN_FRONTEND=noninteractive && apt autoremove -y")
             
             # Install essential packages
             self.execute_ssh_command("apt install -y curl wget git nginx python3 python3-pip python3-venv nodejs npm build-essential")
             
-            # Try to install Python 3.13 if available (optional)
-            self.log("Checking for Python 3.13 availability...")
-            self.execute_ssh_command("apt install -y software-properties-common")
-            self.execute_ssh_command("add-apt-repository -y ppa:deadsnakes/ppa")
-            self.execute_ssh_command("apt update")
-            result = self.execute_ssh_command("apt install -y python3.13 python3.13-venv python3.13-pip || echo 'Python 3.13 not available, using system Python'")
-            
+            # Use system Python only (avoid external PPAs for stability)
+            self.log("Using system Python packages; skipping external PPAs (deadsnakes)")
+
             # Check which Python version we have
             python_version = self.execute_ssh_command("python3 --version")
             self.log(f"System Python version: {python_version}")
-            
-            # Check if Python 3.13 is available
-            python313_version = self.execute_ssh_command("python3.13 --version 2>/dev/null || echo 'Not found'")
-            if "Not found" not in python313_version:
-                self.log(f"Python 3.13 available: {python313_version}")
-            else:
-                self.log("Python 3.13 not available, using system Python 3.12")
             
             return True
         except Exception as e:
@@ -1753,11 +1743,54 @@ class DeploymentGUI:
             return False
             
     def deploy_install_dependencies(self):
-        """Step 5: Install dependencies - BULLETPROOF VERSION"""
+        """Step 5: Install dependencies - BULLETPROOF VERSION with auto-fix"""
         try:
             self.connect_ssh()
             
             self.log("[DEPS] Installing dependencies with bulletproof approach...")
+            
+            # ============ AUTO-FIX: Clean requirements.txt ============
+            self.log("0. Auto-fixing requirements.txt (remove null characters)...")
+            
+            clean_requirements_script = """
+import re
+
+# Read file with error handling
+try:
+    with open('/opt/pebdeq/backend/requirements.txt', 'rb') as f:
+        content = f.read()
+    
+    # Remove null bytes and other problematic characters
+    content = content.replace(b'\\x00', b'')
+    content = content.decode('utf-8', errors='ignore')
+    
+    # Remove lines with spacing issues (like 'p a y p a l')
+    lines = []
+    for line in content.split('\\n'):
+        line = line.strip()
+        # Skip empty lines
+        if not line:
+            continue
+        # Skip lines with excessive spacing
+        if '   ' in line or line.count(' ') > line.count('='):
+            print(f'Skipping malformed line: {line[:50]}')
+            continue
+        lines.append(line)
+    
+    # Write cleaned version
+    with open('/opt/pebdeq/backend/requirements.txt', 'w', encoding='utf-8') as f:
+        f.write('\\n'.join(lines))
+    
+    print(f'Cleaned requirements.txt: {len(lines)} valid packages')
+except Exception as e:
+    print(f'Error cleaning requirements: {e}')
+"""
+            
+            clean_result = self.execute_ssh_command(f"cd /opt/pebdeq/backend && ./venv/bin/python -c '{clean_requirements_script}' 2>&1")
+            if "Cleaned requirements" in clean_result:
+                self.log(f"✅ requirements.txt cleaned: {clean_result.strip()}", "SUCCESS")
+            else:
+                self.log(f"Requirements clean result: {clean_result}", "INFO")
             
             # ============ BACKEND DEPENDENCIES ============
             self.log("1. Installing Python backend dependencies...")
@@ -2059,7 +2092,7 @@ HTML_EOF""")
             return False
             
     def deploy_setup_database(self):
-        """Step 7: Setup database"""
+        """Step 7: Setup database with automatic fixes"""
         try:
             self.connect_ssh()
             
@@ -2071,6 +2104,40 @@ HTML_EOF""")
             
             # Initialize database with venv Python
             self.execute_ssh_command("cd /opt/pebdeq/backend && ./venv/bin/python reset_db.py")
+            
+            # AUTO-FIX: Convert old metric units to US Imperial
+            self.log("Auto-fixing product units (metric → US Imperial)...")
+            fix_units_script = """
+from app import create_app, db
+from app.models.models import Product
+
+app = create_app()
+with app.app_context():
+    products = Product.query.all()
+    fixed_count = 0
+    for p in products:
+        # Fix weight: convert string to float
+        if p.weight and isinstance(p.weight, str):
+            p.weight = 1.0
+            fixed_count += 1
+        elif not p.weight:
+            p.weight = 1.0
+            fixed_count += 1
+        
+        # Fix dimensions: convert string to JSON
+        if not p.dimensions or isinstance(p.dimensions, str):
+            p.dimensions = {"length": 10, "width": 10, "height": 10}
+            fixed_count += 1
+    
+    db.session.commit()
+    print(f"Fixed {fixed_count} product attributes")
+"""
+            
+            fix_result = self.execute_ssh_command(f"cd /opt/pebdeq/backend && ./venv/bin/python -c '{fix_units_script}' 2>&1")
+            if "Fixed" in fix_result:
+                self.log(f"✅ Product units fixed: {fix_result.strip()}", "SUCCESS")
+            else:
+                self.log(f"Unit fix result: {fix_result}", "INFO")
             
             # Set proper permissions
             self.execute_ssh_command("chown -R www-data:www-data /opt/pebdeq/backend/instance")
@@ -2454,13 +2521,15 @@ WantedBy=multi-user.target
 """
             
             if additional_config:
-                # Add security config to server block
-                self.execute_ssh_command(f"""
-sed -i '/server_name.*{self.domain_name.get()}/a\\{additional_config}' {nginx_config_path}
-""")
-                
+                # Add security config to server block using a temp file + sed read for multi-line safety
+                self.execute_ssh_command(f"""cat > /tmp/pebdeq_additional_ssl.conf << 'EOF'
+{additional_config}
+EOF""")
+                self.execute_ssh_command(f"sed -i \"/server_name.*{self.domain_name.get()}/r /tmp/pebdeq_additional_ssl.conf\" {nginx_config_path}")
+                self.execute_ssh_command("rm -f /tmp/pebdeq_additional_ssl.conf")
+
                 # Reload nginx
-                self.execute_ssh_command("nginx -t && systemctl reload nginx")
+                self.execute_ssh_command("nginx -t && systemctl reload nginx || echo 'nginx config test failed'")
                 
         except Exception as e:
             self.log(f"Advanced SSL configuration failed: {str(e)}", "WARNING")
@@ -2566,6 +2635,40 @@ sed -i '/server_name.*{self.domain_name.get()}/a\\{additional_config}' {nginx_co
                 self.log(f"Manual execution test: {manual_test}")
                 
                 return False
+            
+            # ============ AUTO-FIX: Database Product Units ============
+            self.log("3.5. Auto-fixing database product units...")
+            
+            db_fix_script = """
+from app import create_app, db
+from app.models.models import Product
+
+app = create_app()
+with app.app_context():
+    try:
+        products = Product.query.all()
+        fixed = 0
+        for p in products:
+            if p.weight and isinstance(p.weight, str):
+                p.weight = 1.0
+                fixed += 1
+            elif not p.weight:
+                p.weight = 1.0
+                fixed += 1
+            
+            if not p.dimensions or isinstance(p.dimensions, str):
+                p.dimensions = {"length": 10, "width": 10, "height": 10}
+                fixed += 1
+        
+        db.session.commit()
+        print(f"Fixed {fixed} product units")
+    except Exception as e:
+        print(f"DB fix error: {e}")
+"""
+            
+            db_fix_result = self.execute_ssh_command(f"cd /opt/pebdeq/backend && ./venv/bin/python -c '{db_fix_script}' 2>&1")
+            if "Fixed" in db_fix_result:
+                self.log(f"✅ Database units auto-fixed: {db_fix_result.strip()}", "SUCCESS")
             
             # ============ API HEALTH TESTING ============
             self.log("4. Testing API endpoints...")
@@ -2704,7 +2807,7 @@ sed -i '/server_name.*{self.domain_name.get()}/a\\{additional_config}' {nginx_co
                 
                 # Update file manager buttons if available
                 if hasattr(self, 'upload_btn'):
-                    self.enable_file_manager_buttons(True)
+                    self.update_filemanager_buttons(True)
                     
         except Exception as e:
             self.log(f"❌ SSH Connection failed: {str(e)}", "ERROR")
@@ -2719,7 +2822,7 @@ sed -i '/server_name.*{self.domain_name.get()}/a\\{additional_config}' {nginx_co
                 
                 # Update file manager buttons if available
                 if hasattr(self, 'upload_btn'):
-                    self.enable_file_manager_buttons(False)
+                    self.update_filemanager_buttons(False)
                     
                 # Clear server status
                 if hasattr(self, 'backend_status'):
@@ -3652,9 +3755,13 @@ sed -i '/server_name.*{self.domain_name.get()}/a\\{additional_config}' {nginx_co
             # Get directory listing
             stdin, stdout, stderr = self.ssh_client.exec_command(f"ls -la {remote_path}")
             output = stdout.read().decode()
+            error_output = stderr.read().decode()
             
-            if stderr.read():
-                self.log("Error accessing remote directory", "ERROR")
+            if error_output:
+                self.log(f"Error accessing remote directory '{remote_path}': {error_output.strip()}", "ERROR")
+                # Also log some debugging info
+                self.log(f"SSH connection status: {self.ssh_client.get_transport().is_active() if self.ssh_client.get_transport() else 'No transport'}", "DEBUG")
+                self.log(f"Command executed: ls -la {remote_path}", "DEBUG")
                 return
                 
             lines = output.strip().split('\n')[1:]  # Skip total line

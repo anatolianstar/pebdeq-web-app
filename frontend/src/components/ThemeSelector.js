@@ -1,60 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemePreviewModal from './ThemePreview';
+import themeService from '../services/ThemeService';
+import { BUILTIN_THEMES } from '../models/ThemeModel';
 import './ThemeSelector.css';
 import './ThemePreview.css';
-
-// Theme definitions for built-in themes (fallback)
-const FALLBACK_THEMES = {
-  default: {
-    id: 'default',
-    name: 'Light',
-    description: 'Clean light theme',
-    icon: '☀️',
-    type: 'builtin',
-    colors: {
-      primary: '#007bff',
-      background: '#ffffff',
-      text: '#212529'
-    }
-  },
-  dark: {
-    id: 'dark',
-    name: 'Dark',
-    description: 'Dark theme for low light',
-    icon: '🌙',
-    type: 'builtin',
-    colors: {
-      primary: '#4dabf7',
-      background: '#0d1117',
-      text: '#f0f6fc'
-    }
-  },
-  blue: {
-    id: 'blue',
-    name: 'Blue',
-    description: 'Professional blue theme',
-    icon: '💙',
-    type: 'builtin',
-    colors: {
-      primary: '#1976d2',
-      background: '#e3f2fd',
-      text: '#0d47a1'
-    }
-  },
-  green: {
-    id: 'green',
-    name: 'Green',
-    description: 'Natural green theme',
-    icon: '🌱',
-    type: 'builtin',
-    colors: {
-      primary: '#388e3c',
-      background: '#e8f5e8',
-      text: '#1b5e20'
-    }
-  }
-};
 
 const ThemeSelector = ({ 
   showLabel = true, 
@@ -70,23 +20,120 @@ const ThemeSelector = ({
     isUpdatingSiteSettings,
     builtInThemes,
     customThemes: contextCustomThemes,
-    deleteCustomTheme
+    deleteCustomTheme,
+    refreshCustomThemes,
+    
+    // Enhanced admin/user system
+    userIsAdmin,
+    userDefaultTheme,
+    getThemeDisplayName,
+    getFilteredThemes
   } = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const [previewTheme, setPreviewTheme] = useState(null);
+  const [transitionState, setTransitionState] = useState('idle'); // idle, loading, transitioning
   const dropdownRef = useRef(null);
 
-  // Get current theme info from context themes or fallback
-  const allThemes = [...(builtInThemes || []), ...(contextCustomThemes || [])];
-  const currentThemeInfo = allThemes.find(theme => theme.id === currentTheme) || 
-                           FALLBACK_THEMES[currentTheme] || 
-                           FALLBACK_THEMES.default;
+  // Listen for theme changes and reset loading state for all selectors
+  useEffect(() => {
+    const handleThemeCSSLoaded = (event) => {
+      const { themeId } = event.detail;
+      console.log(`🎨 CSS loaded for theme: ${themeId}`);
+      setTransitionState('idle');
+      setIsChanging(false);
+    };
 
-  // Separate built-in and custom themes
-  const builtinThemes = builtInThemes || Object.values(FALLBACK_THEMES);
-  const customThemes = contextCustomThemes || [];
+    const handleThemeChanged = (event) => {
+      const { theme } = event.detail;
+      console.log(`🎯 Theme changed event: ${theme?.id || 'unknown'}`);
+    };
+
+    // Listen for global theme change events from ThemeContext
+    const handleThemeChangeStart = (event) => {
+      const { themeId, from } = event.detail;
+      console.log(`🔄 Global theme change start: ${from} → ${themeId}`);
+      setTransitionState('loading');
+      setIsChanging(true);
+    };
+
+    const handleThemeChangeComplete = (event) => {
+      const { themeId } = event.detail;
+      console.log(`✅ Global theme change complete: ${themeId}`);
+      setTransitionState('idle');
+      setIsChanging(false);
+    };
+
+    const handleThemeChangeError = (event) => {
+      const { themeId, error } = event.detail;
+      console.log(`❌ Global theme change error for ${themeId}:`, error);
+      setTransitionState('idle');
+      setIsChanging(false);
+    };
+
+    window.addEventListener('themeCSSLoaded', handleThemeCSSLoaded);
+    window.addEventListener('themeChanged', handleThemeChanged);
+    window.addEventListener('themeChangeStart', handleThemeChangeStart);
+    window.addEventListener('themeChangeComplete', handleThemeChangeComplete);
+    window.addEventListener('themeChangeError', handleThemeChangeError);
+
+    return () => {
+      window.removeEventListener('themeCSSLoaded', handleThemeCSSLoaded);
+      window.removeEventListener('themeChanged', handleThemeChanged);
+      window.removeEventListener('themeChangeStart', handleThemeChangeStart);
+      window.removeEventListener('themeChangeComplete', handleThemeChangeComplete);
+      window.removeEventListener('themeChangeError', handleThemeChangeError);
+    };
+  }, []);
+
+  // Get current theme info from theme service
+  const currentThemeInfo = themeService.getTheme(currentTheme) || 
+    themeService.getTheme('pq-light') || 
+    { id: currentTheme, name: currentTheme, icon: '🎨', type: 'custom', colors: {} };
+
+  // Get all available themes with admin/user filtering
+  const allAvailableThemes = themeService.getAllThemes();
+  const filteredThemes = getFilteredThemes ? getFilteredThemes() : allAvailableThemes;
+
+  // Separate built-in and custom themes with admin/user context
+  const builtinThemes = filteredThemes.filter(t => t.type === 'builtin');
+  const customThemes = filteredThemes.filter(t => t.type === 'custom' || t.type === 'imported');
+  
+  // Transform theme names for display
+  const transformThemeForDisplay = (theme) => {
+    if (!getThemeDisplayName) return theme;
+    
+    return {
+      ...theme,
+      displayName: getThemeDisplayName(theme),
+      isUserDefault: theme.id === userDefaultTheme?.themeId && theme.type === 'custom'
+    };
+  };
+  
+  // Note: Debug logs removed to prevent console spam
+
+  // Theme service observer
+  useEffect(() => {
+    const unsubscribe = themeService.addObserver((event, data) => {
+      switch (event) {
+        case 'themeChangeStart':
+          setTransitionState('transitioning');
+          break;
+        case 'themeChangeComplete':
+          setTransitionState('idle');
+          break;
+        case 'themeChangeError':
+          setTransitionState('idle');
+          console.error('Theme change error:', data.error);
+          break;
+        default:
+          break;
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -102,25 +149,45 @@ const ThemeSelector = ({
     };
   }, []);
 
-  // Handle theme change
+  // Handle theme change with enhanced UX and cache busting
   const handleThemeChange = async (themeId) => {
     if (themeId === currentTheme || isChanging || isUpdatingSiteSettings) return;
     
     setIsChanging(true);
+    setTransitionState('loading');
     setIsOpen(false);
     
     try {
+      console.log(`🎨 Switching theme to: ${themeId}`);
+      
+      // Delegate switching directly to ThemeContext to prevent double-loading
       await changeTheme(themeId);
-      console.log(`✅ Theme changed to: ${themeId}`);
+      localStorage.setItem('selectedTheme', themeId);
+      setTransitionState('idle');
     } catch (error) {
       console.error('Failed to change theme:', error);
+      setTransitionState('idle');
+      
+      // Fallback: emergency cache clear + direct context change, then reload
+      console.log('🧹 Attempting emergency CSS cache clear...');
+      themeService.forceClearCSSCache();
+      try {
+        await changeTheme(themeId);
+      } catch (finalError) {
+        console.warn('Final fallback reload');
+        localStorage.setItem('selectedTheme', themeId);
+        window.location.reload();
+      }
     } finally {
-      setIsChanging(false);
+      // Reset UI state after a short delay
+      setTimeout(() => {
+        setIsChanging(false);
+      }, 300);
     }
   };
 
   // Handle custom theme deletion
-  const handleDeleteCustomTheme = (themeId, themeName, event) => {
+  const handleDeleteCustomTheme = async (themeId, themeName, event) => {
     event.stopPropagation(); // Prevent theme selection
     
     const confirmed = window.confirm(
@@ -128,13 +195,20 @@ const ThemeSelector = ({
     );
     
     if (confirmed) {
-      const success = deleteCustomTheme(themeId);
-      if (success) {
-        console.log(`✅ Custom theme "${themeName}" deleted successfully`);
-        // Optional: Add a success message or toast here
-        // For now using console message, can be enhanced with toast library
-      } else {
-        console.error(`❌ Failed to delete theme "${themeName}"`);
+      try {
+        const success = await deleteCustomTheme(themeId);
+        if (success) {
+          console.log(`✅ Custom theme "${themeName}" deleted successfully`);
+          // Refresh custom themes after deletion
+          if (refreshCustomThemes) {
+            await refreshCustomThemes();
+          }
+        } else {
+          console.error(`❌ Failed to delete theme "${themeName}"`);
+          alert(`Failed to delete theme "${themeName}". Please try again.`);
+        }
+      } catch (error) {
+        console.error(`❌ Error deleting theme "${themeName}":`, error);
         alert(`Failed to delete theme "${themeName}". Please try again.`);
       }
     }
@@ -169,7 +243,7 @@ const ThemeSelector = ({
     return classes.filter(Boolean).join(' ');
   };
 
-  const isLoading = isChanging || isUpdatingSiteSettings;
+  const isLoading = isChanging || isUpdatingSiteSettings || transitionState !== 'idle';
 
   return (
     <>
@@ -191,7 +265,13 @@ const ThemeSelector = ({
             <>
               {showLabel && (
                 <span className="theme-selector__label">
-                  {isLoading ? 'Updating...' : currentThemeInfo.name}
+                  {(() => {
+                    if (transitionState === 'loading') return 'Loading theme...';
+                    if (transitionState === 'transitioning') return 'Applying theme...';
+                    if (isChanging) return 'Updating...';
+                    if (isUpdatingSiteSettings) return 'Updating settings...';
+                    return currentThemeInfo.name;
+                  })()}
                 </span>
               )}
               <span className="theme-selector__arrow" aria-hidden="true">
@@ -207,121 +287,227 @@ const ThemeSelector = ({
             role="listbox"
             aria-label="Available themes"
           >
-            {/* Built-in Themes Section */}
-            <div className="theme-selector__section">
+            {/* Built-in Themes Section - Always at top */}
+            <div className="theme-selector__section theme-selector__section--builtin">
               <div className="theme-selector__section-header">
                 <span className="theme-selector__section-title">Built-in Themes</span>
+                <span className="theme-selector__section-badge">System</span>
               </div>
-              {builtinThemes.map((theme) => (
-                <button
-                  key={theme.id}
-                  className={`theme-selector__option ${
-                    theme.id === currentTheme ? 'theme-selector__option--active' : ''
-                  }`}
-                  onClick={() => handleThemeChange(theme.id)}
-                  disabled={theme.id === currentTheme}
-                  role="option"
-                  aria-selected={theme.id === currentTheme}
-                  title={theme.description}
-                >
-                  <span className="theme-selector__option-icon" role="img" aria-label={theme.name}>
-                    {theme.icon}
-                  </span>
-                  <div className="theme-selector__option-content">
-                    <span className="theme-selector__option-name">{theme.name}</span>
-                    <span className="theme-selector__option-description">{theme.description}</span>
-                  </div>
-                  <div className="theme-selector__option-colors">
-                    {FALLBACK_THEMES[theme.id] && (
-                      <>
-                        <div 
-                          className="theme-selector__color-preview"
-                          style={{ backgroundColor: FALLBACK_THEMES[theme.id].colors.primary }}
-                          aria-hidden="true"
-                        />
-                        <div 
-                          className="theme-selector__color-preview"
-                          style={{ backgroundColor: FALLBACK_THEMES[theme.id].colors.background }}
-                          aria-hidden="true"
-                        />
-                        <div 
-                          className="theme-selector__color-preview"
-                          style={{ backgroundColor: FALLBACK_THEMES[theme.id].colors.text }}
-                          aria-hidden="true"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <button
-                    className="theme-selector__preview-btn"
-                    onClick={(e) => handlePreview(theme.id, e)}
-                    aria-label={`Preview ${theme.name} theme`}
-                    title={`Preview ${theme.name} theme`}
-                  >
-                    👁️
-                  </button>
-                  {theme.id === currentTheme && (
-                    <span className="theme-selector__checkmark" aria-label="Currently selected">
-                      ✓
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Custom Themes Section */}
-            {!hideCustomThemes && customThemes.length > 0 && (
-              <div className="theme-selector__section">
-                <div className="theme-selector__section-header">
-                  <span className="theme-selector__section-title">Custom Themes</span>
-                  <span className="theme-selector__section-count">({customThemes.length})</span>
-                </div>
-                {customThemes.map((theme) => (
+              {builtinThemes.map((theme) => {
+                const displayTheme = transformThemeForDisplay(theme);
+                return (
                   <button
                     key={theme.id}
-                    className={`theme-selector__option theme-selector__option--custom ${
+                    className={`theme-selector__option ${
                       theme.id === currentTheme ? 'theme-selector__option--active' : ''
                     }`}
                     onClick={() => handleThemeChange(theme.id)}
                     disabled={theme.id === currentTheme}
                     role="option"
                     aria-selected={theme.id === currentTheme}
-                    title={theme.description || 'Custom theme'}
+                    title={theme.description}
                   >
-                    <span className="theme-selector__option-icon" role="img" aria-label={theme.name}>
+                    <span className="theme-selector__option-icon" role="img" aria-label={displayTheme.displayName || theme.name}>
                       {theme.icon}
                     </span>
                     <div className="theme-selector__option-content">
-                      <span className="theme-selector__option-name">{theme.name}</span>
-                      <span className="theme-selector__option-description">
-                        {theme.description || 'Imported custom theme'}
+                      <span className="theme-selector__option-name">
+                        {displayTheme.displayName || theme.name}
+                        {displayTheme.isUserDefault && (
+                          <span style={{ 
+                            marginLeft: '0.5rem', 
+                            fontSize: '0.7rem', 
+                            background: 'var(--primary-color)', 
+                            color: 'white', 
+                            padding: '0.1rem 0.3rem', 
+                            borderRadius: '3px' 
+                          }}>
+                            DEFAULT
+                          </span>
+                        )}
                       </span>
+                      <span className="theme-selector__option-description">{theme.description}</span>
                     </div>
-                    <div className="theme-selector__option-actions">
-                      <button
-                        className="theme-selector__preview-btn"
-                        onClick={(e) => handlePreview(theme.id, e)}
-                        aria-label={`Preview ${theme.name} theme`}
-                        title={`Preview ${theme.name} theme`}
-                      >
-                        👁️
-                      </button>
-                      <button
-                        className="theme-selector__delete-btn"
-                        onClick={(e) => handleDeleteCustomTheme(theme.id, theme.name, e)}
-                        aria-label={`Delete ${theme.name} theme`}
-                        title={`Delete ${theme.name} theme`}
-                      >
-                        🗑️
-                      </button>
+                    <div className="theme-selector__option-colors">
+                      {(() => {
+                        const previewColors = theme.getPreviewColors ? theme.getPreviewColors() : theme.colors || {};
+                        return (
+                          <>
+                            <div 
+                              className="theme-selector__color-preview"
+                              style={{ backgroundColor: previewColors.primary || '#007bff' }}
+                              aria-hidden="true"
+                              title="Primary color"
+                            />
+                            <div 
+                              className="theme-selector__color-preview"
+                              style={{ backgroundColor: previewColors.background || '#ffffff' }}
+                              aria-hidden="true"
+                              title="Background color"
+                            />
+                            <div 
+                              className="theme-selector__color-preview"
+                              style={{ backgroundColor: previewColors.text || '#000000' }}
+                              aria-hidden="true"
+                              title="Text color"
+                            />
+                            <div 
+                              className="theme-selector__color-preview"
+                              style={{ backgroundColor: previewColors.accent || '#17a2b8' }}
+                              aria-hidden="true"
+                              title="Accent color"
+                            />
+                          </>
+                        );
+                      })()}
                     </div>
+                    <span
+                      className="theme-selector__preview-btn"
+                      onClick={(e) => handlePreview(theme.id, e)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handlePreview(theme.id, e);
+                        }
+                      }}
+                      aria-label={`Preview ${displayTheme.displayName || theme.name} theme`}
+                      title={`Preview ${displayTheme.displayName || theme.name} theme`}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      👁️
+                    </span>
                     {theme.id === currentTheme && (
                       <span className="theme-selector__checkmark" aria-label="Currently selected">
                         ✓
                       </span>
                     )}
                   </button>
-                ))}
+                );
+              })}
+            </div>
+
+            {/* Custom Themes Section - Always at bottom */}
+            {!hideCustomThemes && (
+              <div className="theme-selector__section theme-selector__section--custom">
+                <div className="theme-selector__section-header">
+                  <span className="theme-selector__section-title">Custom Themes</span>
+                  <div className="theme-selector__section-info">
+                    <span className="theme-selector__section-count">({customThemes.length})</span>
+                    <span className="theme-selector__section-badge">Editable</span>
+                  </div>
+                </div>
+                {customThemes.length === 0 ? (
+                  <div style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)' }}>
+                    {userIsAdmin ? 'No custom themes yet' : 'No additional themes available'}
+                  </div>
+                ) : customThemes.map((theme) => {
+                  const displayTheme = transformThemeForDisplay(theme);
+                  return (
+                  <div
+                    key={theme.id}
+                    className={`theme-selector__option theme-selector__option--custom-card ${
+                      theme.id === currentTheme ? 'theme-selector__option--active' : ''
+                    }`}
+                  >
+                    {/* Tema Adı - Üstte Ortada */}
+                    <div className="custom-theme-header">
+                      <span className="theme-selector__option-icon" role="img" aria-label={displayTheme.displayName || theme.name}>
+                        {theme.icon}
+                      </span>
+                      <span className="custom-theme-name">
+                        {displayTheme.displayName || theme.name}
+                        {displayTheme.isUserDefault && (
+                          <span style={{ 
+                            marginLeft: '0.5rem', 
+                            fontSize: '0.6rem', 
+                            background: 'var(--primary-color)', 
+                            color: 'white', 
+                            padding: '0.1rem 0.3rem', 
+                            borderRadius: '3px',
+                            display: 'block',
+                            marginTop: '0.2rem'
+                          }}>
+                            DEFAULT
+                          </span>
+                        )}
+                      </span>
+                      {theme.id === currentTheme && (
+                        <span className="theme-selector__checkmark" aria-label="Currently selected">
+                          ✓
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Açıklama */}
+                    <div className="custom-theme-description">
+                      {displayTheme.isUserDefault 
+                        ? 'Default theme set by administrator'
+                        : (theme.description || 'Imported custom theme')
+                      }
+                    </div>
+
+                    {/* Ana Seçim Butonu */}
+                    <button
+                      className="custom-theme-select-btn"
+                      onClick={() => handleThemeChange(theme.id)}
+                      disabled={theme.id === currentTheme}
+                      style={{
+                        background: theme.id === currentTheme ? 'var(--success-color, #28a745)' : 'var(--primary-color, #007bff)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '8px 16px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        cursor: theme.id === currentTheme ? 'default' : 'pointer',
+                        margin: '8px 0'
+                      }}
+                    >
+                      {theme.id === currentTheme ? '✓ Active' : 'Select Theme'}
+                    </button>
+
+                    {/* Action Butonları - Altta */}
+                    <div className="custom-theme-actions">
+                      <button
+                        className="theme-selector__preview-btn"
+                        onClick={(e) => handlePreview(theme.id, e)}
+                        aria-label={`Preview ${theme.name} theme`}
+                        title={`Preview ${theme.name} theme`}
+                        style={{
+                          background: 'var(--info-color, #17a2b8)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '6px 12px',
+                          fontSize: '12px',
+                          cursor: 'pointer',
+                          marginRight: '8px'
+                        }}
+                      >
+                        👁️ Preview
+                      </button>
+                      <button
+                        className="theme-selector__delete-btn"
+                        onClick={(e) => handleDeleteCustomTheme(theme.id, theme.name, e)}
+                        aria-label={`Delete ${theme.name} theme`}
+                        title={`Delete ${theme.name} theme`}
+                        style={{
+                          background: 'var(--danger-color, #dc3545)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '6px 12px',
+                          fontSize: '12px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -347,7 +533,7 @@ export const QuickThemeToggle = ({ className = '' }) => {
     if (isUpdatingSiteSettings) return;
     
     // Simple toggle between light and dark
-    const newTheme = currentTheme === 'dark' ? 'default' : 'dark';
+    const newTheme = currentTheme === 'pq-dark' ? 'pq-light' : 'pq-dark';
     try {
       await changeTheme(newTheme);
     } catch (error) {
@@ -355,7 +541,10 @@ export const QuickThemeToggle = ({ className = '' }) => {
     }
   };
 
-  const currentThemeInfo = FALLBACK_THEMES[currentTheme] || FALLBACK_THEMES.default;
+  const currentThemeInfo = themeService.getTheme(currentTheme) || {
+    name: 'Current Theme',
+    icon: '🎨'
+  };
 
   return (
     <button
@@ -375,11 +564,12 @@ export const QuickThemeToggle = ({ className = '' }) => {
 // Theme preview card component
 export const ThemePreviewCard = ({ themeId, size = 'normal', onClick }) => {
   const { currentTheme } = useTheme();
-  const theme = FALLBACK_THEMES[themeId];
+  const theme = themeService.getTheme(themeId);
   
   if (!theme) return null;
 
   const isActive = themeId === currentTheme;
+  const previewColors = theme.getPreviewColors ? theme.getPreviewColors() : theme.colors || {};
 
   return (
     <div
@@ -399,7 +589,7 @@ export const ThemePreviewCard = ({ themeId, size = 'normal', onClick }) => {
         {isActive && <span className="theme-preview-card__checkmark">✓</span>}
       </div>
       <div className="theme-preview-card__colors">
-        {Object.entries(theme.colors).map(([key, color]) => (
+        {Object.entries(previewColors).map(([key, color]) => (
           <div
             key={key}
             className="theme-preview-card__color"
@@ -428,10 +618,13 @@ export const ThemeGallery = ({ onThemeChange }) => {
     }
   };
 
+  // Get all available themes from theme service
+  const availableThemes = themeService.getAllThemes();
+
   return (
     <div className="theme-gallery">
       <div className="theme-gallery__grid">
-        {Object.values(FALLBACK_THEMES).map((theme) => (
+        {availableThemes.map((theme) => (
           <ThemePreviewCard
             key={theme.id}
             themeId={theme.id}

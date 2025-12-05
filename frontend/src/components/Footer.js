@@ -1,8 +1,40 @@
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { toast } from 'react-hot-toast';
+import { createApiUrl } from '../utils/config';
 
 const Footer = () => {
   const { isInitialized: themeInitialized, siteSettings, isUpdatingSiteSettings } = useTheme();
+  const [, forceUpdate] = useState({});
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Force update when theme colors change
+  useEffect(() => {
+    const handleThemeUpdate = () => {
+      // console.log('🎨 Footer - Theme color update event received');
+      forceUpdate({});
+    };
+    
+    window.addEventListener('themeColorUpdate', handleThemeUpdate);
+    return () => window.removeEventListener('themeColorUpdate', handleThemeUpdate);
+  }, []);
+
+  // Apply Site Settings footer colors as CSS variables with highest priority
+  // This ensures Site Settings override Theme Manager CSS
+  // Must be called before any early returns (React hooks rule)
+  useEffect(() => {
+    if (siteSettings?.footer_background_color) {
+      document.documentElement.style.setProperty('--site-footer-bg', siteSettings.footer_background_color);
+      // Also set the standard variable for theme-bridge.css compatibility
+      document.documentElement.style.setProperty('--footer-bg', siteSettings.footer_background_color);
+    }
+    if (siteSettings?.footer_text_color) {
+      document.documentElement.style.setProperty('--site-footer-text', siteSettings.footer_text_color);
+      document.documentElement.style.setProperty('--footer-text', siteSettings.footer_text_color);
+    }
+  }, [siteSettings?.footer_background_color, siteSettings?.footer_text_color]);
 
   // Show loading state while theme is initializing or site settings are updating
   if (!themeInitialized || !siteSettings || isUpdatingSiteSettings) {
@@ -14,11 +46,41 @@ const Footer = () => {
     return null;
   }
 
-  // Use site settings directly (they are now synced with theme)
+  // Use site settings directly with inline !important style
+  const footerBgColor = siteSettings.footer_background_color || '#1f2937';
+  const footerTextColor = siteSettings.footer_section_text_color || siteSettings.footer_text_color || '#ffffff';
+  
   const footerStyle = {
-    backgroundColor: siteSettings.footer_background_color || 'var(--footer-bg)',
-    color: siteSettings.footer_text_color || 'var(--text-light)',
+    backgroundColor: footerBgColor,
+    color: footerTextColor,
     borderTop: '1px solid var(--border-color)'
+  };
+
+  // Dynamic styles for footer theme elements
+  const sectionTextStyle = {
+    color: siteSettings.footer_section_text_color || '#f1eaea',
+    fontSize: `${siteSettings.footer_section_text_size || 12}px`,
+    fontFamily: 'Helvetica, sans-serif'
+  };
+
+  const headingStyle = {
+    color: siteSettings.footer_heading_color || '#cbf094',
+    fontSize: `${siteSettings.footer_heading_size || 22}px`,
+    fontFamily: 'Georgia, serif'
+  };
+
+  const linksStyle = {
+    color: siteSettings.footer_links_color || '#2d6cd2'
+  };
+
+  const copyrightStyle = {
+    color: siteSettings.footer_copyright_color || '#f9dca9',
+    fontSize: `${siteSettings.footer_copyright_size || 13}px`,
+    fontFamily: 'Helvetica, sans-serif'
+  };
+
+  const socialIconsStyle = {
+    color: siteSettings.footer_social_icons_color || '#fdfcfc'
   };
 
   const renderSocialLinks = () => {
@@ -28,7 +90,7 @@ const Footer = () => {
     
     if (siteSettings.social_instagram) {
       socialLinks.push(
-        <a key="instagram" href={siteSettings.social_instagram.startsWith('http') ? siteSettings.social_instagram : `https://instagram.com/${siteSettings.social_instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{marginRight: '1rem', display: 'inline-block'}}>
+        <a key="instagram" href={siteSettings.social_instagram.startsWith('http') ? siteSettings.social_instagram : `https://instagram.com/${siteSettings.social_instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{...socialIconsStyle, marginRight: '1rem', display: 'inline-block'}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
           </svg>
@@ -38,7 +100,7 @@ const Footer = () => {
     
     if (siteSettings.social_twitter) {
       socialLinks.push(
-        <a key="twitter" href={siteSettings.social_twitter.startsWith('http') ? siteSettings.social_twitter : `https://x.com/${siteSettings.social_twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{marginRight: '1rem', display: 'inline-block'}}>
+        <a key="twitter" href={siteSettings.social_twitter.startsWith('http') ? siteSettings.social_twitter : `https://x.com/${siteSettings.social_twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{...socialIconsStyle, marginRight: '1rem', display: 'inline-block'}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
           </svg>
@@ -48,7 +110,7 @@ const Footer = () => {
     
     if (siteSettings.social_facebook) {
       socialLinks.push(
-        <a key="facebook" href={siteSettings.social_facebook.startsWith('http') ? siteSettings.social_facebook : `https://facebook.com/${siteSettings.social_facebook}`} target="_blank" rel="noopener noreferrer" style={{marginRight: '1rem', display: 'inline-block'}}>
+        <a key="facebook" href={siteSettings.social_facebook.startsWith('http') ? siteSettings.social_facebook : `https://facebook.com/${siteSettings.social_facebook}`} target="_blank" rel="noopener noreferrer" style={{...socialIconsStyle, marginRight: '1rem', display: 'inline-block'}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
@@ -58,7 +120,7 @@ const Footer = () => {
 
     if (siteSettings.social_youtube) {
       socialLinks.push(
-        <a key="youtube" href={siteSettings.social_youtube.startsWith('http') ? siteSettings.social_youtube : `https://youtube.com/${siteSettings.social_youtube}`} target="_blank" rel="noopener noreferrer" style={{marginRight: '1rem', display: 'inline-block'}}>
+        <a key="youtube" href={siteSettings.social_youtube.startsWith('http') ? siteSettings.social_youtube : `https://youtube.com/${siteSettings.social_youtube}`} target="_blank" rel="noopener noreferrer" style={{...socialIconsStyle, marginRight: '1rem', display: 'inline-block'}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
           </svg>
@@ -68,7 +130,7 @@ const Footer = () => {
 
     if (siteSettings.social_linkedin) {
       socialLinks.push(
-        <a key="linkedin" href={siteSettings.social_linkedin.startsWith('http') ? siteSettings.social_linkedin : `https://linkedin.com/in/${siteSettings.social_linkedin}`} target="_blank" rel="noopener noreferrer" style={{display: 'inline-block'}}>
+        <a key="linkedin" href={siteSettings.social_linkedin.startsWith('http') ? siteSettings.social_linkedin : `https://linkedin.com/in/${siteSettings.social_linkedin}`} target="_blank" rel="noopener noreferrer" style={{...socialIconsStyle, display: 'inline-block'}}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
@@ -90,18 +152,18 @@ const Footer = () => {
     if (!siteSettings.footer_quick_links_show_section || !siteSettings.footer_quick_links) return null;
 
     const linkStyle = {
-      color: 'var(--text-light)',
+      ...linksStyle,
       textDecoration: 'none',
       transition: 'color 0.3s ease'
     };
 
     const linkHoverStyle = {
-      color: 'var(--primary-color)'
+      color: 'var(--nav-link-hover-resolved, var(--nav-link-hover-override, var(--primary-color)))'
     };
 
     return (
       <div className="footer-section">
-        <h4 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+        <h4 style={{ ...headingStyle, marginBottom: '1rem' }}>
           {siteSettings.footer_quick_links_title || 'Quick Links'}
         </h4>
         <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -147,18 +209,18 @@ const Footer = () => {
     if (!siteSettings.footer_support_show_section || !siteSettings.footer_support_links) return null;
 
     const linkStyle = {
-      color: 'var(--text-light)',
+      ...linksStyle,
       textDecoration: 'none',
       transition: 'color 0.3s ease'
     };
 
     const linkHoverStyle = {
-      color: 'var(--primary-color)'
+      color: 'var(--nav-link-hover-resolved, var(--nav-link-hover-override, var(--primary-color)))'
     };
 
     return (
       <div className="footer-section">
-        <h4 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+        <h4 style={{ ...headingStyle, marginBottom: '1rem' }}>
           {siteSettings.footer_support_title || 'Support'}
         </h4>
         <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -204,18 +266,18 @@ const Footer = () => {
     if (!siteSettings.footer_legal_show_section) return null;
 
     const linkStyle = {
-      color: 'var(--text-light)',
+      ...linksStyle,
       textDecoration: 'none',
       transition: 'color 0.3s ease'
     };
 
     const linkHoverStyle = {
-      color: 'var(--primary-color)'
+      color: 'var(--nav-link-hover-resolved, var(--nav-link-hover-override, var(--primary-color)))'
     };
 
     return (
       <div className="footer-section">
-        <h4 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+        <h4 style={{ ...headingStyle, marginBottom: '1rem' }}>
           {siteSettings.footer_legal_title || 'Legal'}
         </h4>
         <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -336,21 +398,69 @@ const Footer = () => {
     );
   };
 
+  // Newsletter subscription handler
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!newsletterEmail || !newsletterEmail.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(createApiUrl('api/newsletter/subscribe'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: newsletterEmail
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || 'Successfully subscribed to newsletter!');
+        setNewsletterEmail(''); // Clear the input
+      } else {
+        toast.error(data.error || 'Failed to subscribe');
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast.error('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const renderNewsletter = () => {
     if (!siteSettings.footer_newsletter_show_section) return null;
 
     return (
       <div className="footer-section">
-        <h4 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+        <h4 style={{ ...headingStyle, marginBottom: '1rem' }}>
           {siteSettings.footer_newsletter_title || 'Newsletter'}
         </h4>
-        <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+        <p style={{ ...sectionTextStyle, marginBottom: '1rem' }}>
           {siteSettings.footer_newsletter_description || 'Subscribe to get updates about new products and offers.'}
         </p>
-        <div style={{marginTop: '1rem'}}>
+        <form onSubmit={handleNewsletterSubmit} style={{marginTop: '1rem'}}>
           <input
             type="email"
+            value={newsletterEmail}
+            onChange={(e) => setNewsletterEmail(e.target.value)}
             placeholder={siteSettings.footer_newsletter_placeholder || 'Enter your email address'}
+            disabled={isSubmitting}
             style={{
               padding: '0.5rem',
               marginRight: '0.5rem',
@@ -358,35 +468,52 @@ const Footer = () => {
               borderRadius: '4px',
               width: '200px',
               backgroundColor: 'var(--input-bg)',
-              color: 'var(--text-primary)'
+              color: 'var(--text-primary)',
+              opacity: isSubmitting ? 0.7 : 1
             }}
           />
           <button
+            type="submit"
+            disabled={isSubmitting}
             style={{
               padding: '0.5rem 1rem',
-              backgroundColor: 'var(--primary-color)',
+              backgroundColor: isSubmitting ? '#ccc' : 'var(--primary-color)',
               color: 'var(--button-text)',
               border: 'none',
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-hover)';
+              if (!isSubmitting) {
+                e.target.style.backgroundColor = 'var(--primary-hover)';
+              }
             }}
             onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--primary-color)';
+              if (!isSubmitting) {
+                e.target.style.backgroundColor = 'var(--primary-color)';
+              }
             }}
           >
-            {siteSettings.footer_newsletter_button_text || 'Subscribe'}
+            {isSubmitting ? 'Subscribing...' : (siteSettings.footer_newsletter_button_text || 'Subscribe')}
           </button>
-        </div>
+        </form>
       </div>
     );
   };
 
   return (
-    <footer className="footer" style={footerStyle}>
+    <footer 
+      className="footer site-footer" 
+      style={footerStyle}
+      ref={(el) => {
+        // Apply !important styles directly to overcome CSS specificity
+        if (el) {
+          el.style.setProperty('background-color', footerBgColor, 'important');
+          el.style.setProperty('color', footerTextColor, 'important');
+        }
+      }}
+    >
       <div className="container">
         <div className="footer-content">
           {/* Follow Us Section - Top Center */}
@@ -395,7 +522,7 @@ const Footer = () => {
               {siteSettings.footer_use_logo && siteSettings.footer_logo ? (
                 <div className="footer-logo-container" style={{ textAlign: 'center', width: '100%' }}>
                   <img 
-                    src={`http://localhost:5005${siteSettings.footer_logo}`} 
+                    src={createApiUrl(siteSettings.footer_logo.startsWith('/') ? siteSettings.footer_logo.slice(1) : siteSettings.footer_logo)} 
                     alt={siteSettings.footer_company_name || 'Company Logo'} 
                     style={{
                       width: `${siteSettings.footer_logo_width || 120}px`,
@@ -409,11 +536,11 @@ const Footer = () => {
                   />
                 </div>
               ) : (
-                <h3 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+                <h3 style={{ ...headingStyle, marginBottom: '1rem' }}>
                   {siteSettings.footer_company_name || 'PEBDEQ'}
                 </h3>
               )}
-              <p style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>
+              <p style={{ ...sectionTextStyle, marginBottom: '1rem' }}>
                 {siteSettings.footer_company_description || 'Crafted with passion, delivered with precision.'}
               </p>
             </div>
@@ -433,7 +560,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem', marginTop: '2rem' }}>
-          <p style={{ color: 'var(--text-light)', textAlign: 'center', margin: 0 }}>
+          <p style={{ ...copyrightStyle, textAlign: 'center', margin: 0 }}>
             {siteSettings.footer_copyright_text || '© 2024 PEBDEQ. All rights reserved.'}
           </p>
         </div>

@@ -1,24 +1,35 @@
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // OPTIMIZED: Import CSS in proper order for cascading
 import './styles/globals.css';
-import './styles/variables.css'; // Base CSS variables
+// import './styles/variables.css'; // Base CSS variables - Disabled to prevent conflicts
 import './styles/utilities.css';
+import './styles/responsive.css';
 
-// OPTIMIZED: Import ALL theme CSS files upfront for instant switching
-// This prevents re-downloading CSS files on theme change
-import './themes/default.css';  // Aurora theme
-import './themes/dark.css';     // Dark theme  
-import './themes/blue.css';     // Ocean theme (our optimized version)
-import './themes/green.css';    // Nature theme
+// Import cleanup utility (auto-runs in development with ?cleanup=mydark)
+import './utils/cleanupMyDarkThemes';
+
+// Import cache management for consistent cross-device styling
+import cacheManager from './utils/cacheManagement';
+
+// Note: Theme CSS files are now loaded dynamically from public/themes/
+// This prevents bundling all themes and allows for better performance
 
 import './App.css'; // App-specific styles last
+import './styles/theme-bridge.css'; // Theme variable bridge - MUST be last for theme overrides
 
 import Header from './components/Header';
+import MultiPageThemeManager from './components/live-theme-editor/MultiPageThemeManager';
+import CanvasEditorLocal from './components/CanvasEditorLocal';
+import CacheDebugger from './components/CacheDebugger';
+import RuntimePagesThemeLoader from './components/RuntimePagesThemeLoader';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+
 import Home from './pages/Home';
+
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import Category from './pages/Category';
@@ -37,6 +48,7 @@ import UserSettings from './pages/UserSettings';
 import Orders from './pages/Orders';
 import AdminDashboard from './pages/AdminDashboard';
 import TestDashboard from './pages/TestDashboard';
+import ThemeControlPanel from './pages/ThemeControlPanel';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import ReturnPolicy from './pages/ReturnPolicy';
@@ -50,10 +62,16 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext'; // Must be before components that use themes
 import { CartProvider } from './contexts/CartContext';
 
-// OPTIMIZED: Theme initialization helper
-const initializeThemeOnLoad = () => {
+// Import theme service for enhanced theme management
+import themeService from './services/ThemeService';
+
+// Import unified theme loader
+import UnifiedThemeLoader from './components/UnifiedThemeLoader';
+
+// Enhanced theme initialization with service integration
+const initializeThemeOnLoad = async () => {
   // Set initial theme attribute to prevent FOUC (Flash of Unstyled Content)
-  const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+  const savedTheme = localStorage.getItem('selectedTheme') || 'pq-light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   
   // Add performance markers
@@ -61,24 +79,122 @@ const initializeThemeOnLoad = () => {
     window.performance.mark('theme-init-start');
   }
   
-  console.log('🎨 Initial theme set:', savedTheme);
+  try {
+    // Initialize theme service with current theme
+    await themeService.switchTheme(savedTheme, { 
+      showLoader: false,
+      skipTransition: true // Skip transition on initial load
+    });
+    
+    // Preload common themes for faster switching
+    // Note: PQ themes now have automatic loading system, no need for preload
+    // const commonThemes = ['pq-light', 'pq-dark', 'pq-gray'];
+    // themeService.preloadThemes(commonThemes.filter(t => t !== savedTheme));
+
+    console.log('✅ Enhanced theme system initialized:', savedTheme);
+  } catch (error) {
+    console.warn('⚠️ Theme service initialization failed, using fallback:', error);
+    // Fallback to basic initialization
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+  
+  // Performance marker
+  if (window.performance && window.performance.mark) {
+    window.performance.mark('theme-init-complete');
+    try {
+      window.performance.measure('theme-init-duration', 'theme-init-start', 'theme-init-complete');
+    } catch (e) {
+      // Ignore measurement errors
+    }
+  }
+
+  // Initialize cache management for consistent cross-device styling
+  try {
+    await cacheManager.initialize();
+    console.log('✅ Cache management initialized for consistent styling');
+  } catch (error) {
+    console.warn('⚠️ Cache management initialization warning:', error);
+  }
 };
 
 // Initialize theme immediately when module loads
 initializeThemeOnLoad();
 
+
+
 function App() {
+  // Homepage style preference
+  const [homepageStyle, setHomepageStyle] = useState(() => {
+    return localStorage.getItem('homepageStyle') || 'default';
+  });
+
+  // Cache debugger visibility state
+  const [showCacheDebugger, setShowCacheDebugger] = useState(() => {
+    return localStorage.getItem('showCacheDebugger') === 'true' || 
+           new URLSearchParams(window.location.search).has('debug-cache');
+  });
+
+  useEffect(() => {
+    // Listen for homepage style changes from ThemeBuilder
+    const handleHomepageStyleChange = (event) => {
+      const newStyle = event.detail.style;
+      console.log('🏠 Homepage style changed to:', newStyle);
+      setHomepageStyle(newStyle);
+    };
+
+    // Listen for cache debugger toggle
+    const handleToggleCacheDebugger = () => {
+      setShowCacheDebugger(prev => {
+        const newValue = !prev;
+        localStorage.setItem('showCacheDebugger', newValue.toString());
+        return newValue;
+      });
+    };
+
+    const handleHideCacheDebugger = () => {
+      setShowCacheDebugger(false);
+      localStorage.setItem('showCacheDebugger', 'false');
+    };
+
+    // Keyboard shortcut to toggle cache debugger (Ctrl+Shift+D)
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.shiftKey && event.key === 'D') {
+        event.preventDefault();
+        handleToggleCacheDebugger();
+      }
+    };
+
+    window.addEventListener('homepageStyleChanged', handleHomepageStyleChange);
+    window.addEventListener('toggleCacheDebugger', handleToggleCacheDebugger);
+    window.addEventListener('hideCacheDebugger', handleHideCacheDebugger);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('homepageStyleChanged', handleHomepageStyleChange);
+      window.removeEventListener('toggleCacheDebugger', handleToggleCacheDebugger);
+      window.removeEventListener('hideCacheDebugger', handleHideCacheDebugger);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Dynamic Homepage Component Selection
+  const getCurrentHomepage = () => {
+    return <Home />;
+  };
+
   return (
     <AuthProvider>
       <ThemeProvider>
         <CartProvider>
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <ScrollToTop />
+            <RuntimePagesThemeLoader />
+            <UnifiedThemeLoader />
             <div className="App fade-in">
               <Header />
               <main className="main-content">
                 <Routes>
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={getCurrentHomepage()} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/category/:slug" element={<Category />} />
@@ -97,6 +213,7 @@ function App() {
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="/admin/tests" element={<TestDashboard />} />
+                  <Route path="/admin/themes" element={<ThemeControlPanel />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />
                   <Route path="/return-policy" element={<ReturnPolicy />} />
@@ -108,6 +225,15 @@ function App() {
               </main>
               <Footer />
             </div>
+            
+            {/* Floating Theme Button / Theme Manager */}
+            <MultiPageThemeManager />
+
+            {/* 🎨 Canvas Editor Local - Extension Alternative */}
+            <CanvasEditorLocal />
+            
+            {/* 🔧 Cache Debugger for styling consistency */}
+            <CacheDebugger isVisible={showCacheDebugger} />
             
             {/* OPTIMIZED: Theme-aware toast notifications */}
             <Toaster
@@ -144,7 +270,11 @@ function App() {
                 },
               }}
             />
+            
+
           </Router>
+          
+
         </CartProvider>
       </ThemeProvider>
     </AuthProvider>
