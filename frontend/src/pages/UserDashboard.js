@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { toast } from 'react-hot-toast';
 import { createApiUrl } from '../utils/config';
+import PageStyleEditor from '../components/PageStyleEditor';
 
 const UserDashboard = () => {
   const { user, logout } = useAuth();
@@ -122,12 +123,12 @@ const UserDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return '#ffc107';
-      case 'processing': return '#007bff';
-      case 'shipped': return '#17a2b8';
-      case 'delivered': return '#28a745';
-      case 'cancelled': return '#dc3545';
-      default: return '#6c757d';
+      case 'pending': return 'var(--user-dashboard-status-pending)';
+      case 'processing': return 'var(--user-dashboard-status-processing)';
+      case 'shipped': return 'var(--user-dashboard-status-shipped)';
+      case 'delivered': return 'var(--user-dashboard-status-delivered)';
+      case 'cancelled': return 'var(--user-dashboard-status-cancelled)';
+      default: return 'var(--user-dashboard-status-default)';
     }
   };
 
@@ -167,7 +168,7 @@ const UserDashboard = () => {
 
     try {
       setProcessing(true);
-      const response = await fetch(createApiUrl('api/user/orders/${selectedOrder.id}/return'), {
+      const response = await fetch(createApiUrl(`api/user/orders/${selectedOrder.id}/return`), {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({
@@ -200,7 +201,7 @@ const UserDashboard = () => {
 
     try {
       setProcessing(true);
-      const response = await fetch(createApiUrl('api/user/orders/${selectedOrder.id}/cancel'), {
+      const response = await fetch(createApiUrl(`api/user/orders/${selectedOrder.id}/cancel`), {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({
@@ -246,7 +247,7 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="user-dashboard fade-in">
+      <div className="user-dashboard-page user-dashboard fade-in">
         <div className="container">
           <div className="loading-spinner">
             <div className="spinner"></div>
@@ -258,7 +259,10 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="user-dashboard fade-in">
+    <div className="user-dashboard-page user-dashboard fade-in">
+      {/* Page Style Editor - Auto shows for admins only */}
+      <PageStyleEditor pageClass="user-dashboard" />
+      
       <div className="container">
         {/* User Navigation */}
         <div className="user-navigation">
@@ -370,7 +374,7 @@ const UserDashboard = () => {
                           <img 
                             src={item.product.image_url.startsWith('http') 
                               ? item.product.image_url 
-                              : `http://localhost:5005${item.product.image_url}`
+                              : createApiUrl(item.product.image_url.startsWith('/') ? item.product.image_url.slice(1) : item.product.image_url)
                             } 
                             alt={item.product?.name || 'Product'} 
                           />
@@ -417,10 +421,27 @@ const UserDashboard = () => {
           <div className="recent-orders">
             {dashboardData.recentOrders.length > 0 ? (
               dashboardData.recentOrders.map(order => (
-                <div key={order.id} className="order-item">
+                <div key={order.id} className="order-item" 
+                  onClick={() => navigate(`/orders?id=${order.id}`)}
+                  style={{cursor: 'pointer', transition: 'all 0.2s ease'}}
+                  onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
+                  onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}
+                >
                   <div className="order-info">
                     <h3>{order.order_number}</h3>
                     <p className="order-date">{new Date(order.created_at).toLocaleDateString()}</p>
+                    {order.items?.some(item => item.product?.product_type === 'software') && (
+                      <span style={{
+                        display: 'inline-block',
+                        marginTop: '4px',
+                        padding: '2px 8px',
+                        background: 'linear-gradient(135deg, #28a745, #20c997)',
+                        color: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}>💻 Download Ready</span>
+                    )}
                     {order.return_status && order.return_status !== 'none' && (
                       <p className="return-status">
                         <span className="return-badge">{getReturnStatusText(order.return_status)}</span>
@@ -428,7 +449,15 @@ const UserDashboard = () => {
                     )}
                   </div>
                   <div className="order-details">
-                    <p className="order-total">${order.total_amount ? order.total_amount.toFixed(2) : '0.00'}</p>
+                    <p className="order-total">
+                      ${order.total_amount ? 
+                        order.total_amount.toLocaleString('en-US', { 
+                          minimumFractionDigits: 2, 
+                          maximumFractionDigits: 2 
+                        }) : 
+                        '0.00'
+                      }
+                    </p>
                     <span 
                       className="order-status"
                       style={{ 
@@ -446,7 +475,7 @@ const UserDashboard = () => {
                     {canCancelOrder(order) && (
                       <button 
                         className="btn btn-sm btn-danger"
-                        onClick={() => handleCancelOrder(order)}
+                        onClick={(e) => { e.stopPropagation(); handleCancelOrder(order); }}
                         title="Cancel Order"
                       >
                         ❌ Cancel
@@ -455,7 +484,7 @@ const UserDashboard = () => {
                     {canReturnOrder(order) && (
                       <button 
                         className="btn btn-sm btn-warning"
-                        onClick={() => handleReturnRequest(order)}
+                        onClick={(e) => { e.stopPropagation(); handleReturnRequest(order); }}
                         title="Request Return"
                       >
                         🔄 Return
@@ -522,7 +551,7 @@ const UserDashboard = () => {
                       <div className="favorite-image">
                         {product.images && product.images.length > 0 ? (
                           <img 
-                            src={`http://localhost:5005${product.images[0]}`}
+                            src={createApiUrl(product.images[0].startsWith('/') ? product.images[0].slice(1) : product.images[0])}
                             alt={product.name}
                           />
                         ) : (
@@ -533,9 +562,9 @@ const UserDashboard = () => {
                         <h4>{product.name}</h4>
                         <p className="favorite-category">{product.category}</p>
                         <div className="favorite-price">
-                          <span className="current-price">₺{product.price}</span>
+                          <span className="current-price">${product.price}</span>
                           {product.original_price && product.original_price > product.price && (
-                            <span className="original-price">₺{product.original_price}</span>
+                            <span className="original-price">${product.original_price}</span>
                           )}
                         </div>
                         <div className="favorite-actions">
@@ -560,7 +589,7 @@ const UserDashboard = () => {
                       <div className="favorite-image">
                         {blog.featured_image ? (
                           <img 
-                            src={`http://localhost:5005${blog.featured_image}`}
+                            src={createApiUrl(blog.featured_image.startsWith('/') ? blog.featured_image.slice(1) : blog.featured_image)}
                             alt={blog.title}
                           />
                         ) : (
@@ -598,6 +627,12 @@ const UserDashboard = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Desktop Licenses */}
+        <div className="dashboard-section">
+          <h2>🔐 Yazılım Lisansları</h2>
+          <UserLicensePanel />
         </div>
       </div>
 
@@ -737,7 +772,7 @@ const UserDashboard = () => {
         .user-dashboard {
           padding: 2rem 0;
           min-height: 80vh;
-          background: #f8f9fa;
+          background: var(--user-dashboard-background-main);
         }
 
         .user-navigation {
@@ -745,7 +780,7 @@ const UserDashboard = () => {
           gap: 1rem;
           margin-bottom: 2rem;
           padding: 1rem;
-          background: #ffffff;
+          background: var(--user-dashboard-card-background);
           border-radius: 10px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
@@ -756,7 +791,7 @@ const UserDashboard = () => {
           gap: 0.5rem;
           padding: 0.75rem 1rem;
           text-decoration: none;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-weight: 500;
           border-radius: 6px;
           transition: all 0.3s ease;
@@ -800,7 +835,7 @@ const UserDashboard = () => {
         }
 
         .dashboard-welcome p {
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           margin: 0;
         }
 
@@ -852,7 +887,7 @@ const UserDashboard = () => {
 
         .stat-content p {
           margin: 0;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.9rem;
         }
 
@@ -929,7 +964,7 @@ const UserDashboard = () => {
 
         .action-content p {
           margin: 0;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.9rem;
         }
 
@@ -963,7 +998,7 @@ const UserDashboard = () => {
           height: 60px;
           border-radius: 8px;
           overflow: hidden;
-          background: #f8f9fa;
+          background: var(--user-dashboard-background-main);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -977,7 +1012,7 @@ const UserDashboard = () => {
 
         .cart-item-preview .no-image {
           font-size: 1.5rem;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
         }
 
         .cart-item-preview .item-details h4 {
@@ -988,14 +1023,14 @@ const UserDashboard = () => {
 
         .cart-item-preview .item-details p {
           margin: 0;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.8rem;
         }
 
         .more-items {
           text-align: center;
           padding: 0.5rem;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-style: italic;
         }
 
@@ -1042,7 +1077,7 @@ const UserDashboard = () => {
         .order-date,
         .address-info p {
           margin: 0;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.9rem;
         }
 
@@ -1070,7 +1105,7 @@ const UserDashboard = () => {
         .empty-state {
           text-align: center;
           padding: 2rem;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
         }
 
         .empty-state p {
@@ -1220,7 +1255,7 @@ const UserDashboard = () => {
           border: none;
           font-size: 1.5rem;
           cursor: pointer;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           padding: 0;
           width: 30px;
           height: 30px;
@@ -1232,7 +1267,7 @@ const UserDashboard = () => {
         }
 
         .close-btn:hover {
-          background: #f8f9fa;
+          background: var(--user-dashboard-background-main);
           color: #495057;
         }
 
@@ -1283,7 +1318,7 @@ const UserDashboard = () => {
         }
 
         .btn-secondary {
-          background-color: #6c757d;
+          background-color: var(--user-dashboard-text-muted);
           color: white;
         }
 
@@ -1407,7 +1442,7 @@ const UserDashboard = () => {
         }
 
         .favorite-item {
-          background: #f8f9fa;
+          background: var(--user-dashboard-background-main);
           border: 1px solid #e9ecef;
           border-radius: 8px;
           overflow: hidden;
@@ -1429,7 +1464,7 @@ const UserDashboard = () => {
         .favorite-image {
           position: relative;
           overflow: hidden;
-          background: #f8f9fa;
+          background: var(--user-dashboard-background-main);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1450,7 +1485,7 @@ const UserDashboard = () => {
 
         .favorite-image .no-image {
           font-size: 3rem;
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1473,13 +1508,13 @@ const UserDashboard = () => {
         }
 
         .favorite-category {
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.9rem;
           margin-bottom: 0.5rem;
         }
 
         .favorite-author {
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           font-size: 0.9rem;
           margin-bottom: 1rem;
         }
@@ -1495,7 +1530,7 @@ const UserDashboard = () => {
         }
 
         .favorite-price .original-price {
-          color: #6c757d;
+          color: var(--user-dashboard-text-muted);
           text-decoration: line-through;
           margin-left: 0.5rem;
           font-size: 0.9rem;
@@ -1523,4 +1558,103 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard; 
+export default UserDashboard;
+
+
+function UserLicensePanel() {
+  const [licenses, setLicenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getAuthHeaders = () => ({
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json'
+  });
+
+  useEffect(() => {
+    fetchLicenses();
+  }, []);
+
+  const fetchLicenses = async () => {
+    try {
+      const res = await fetch(createApiUrl('api/desktop/license/my-licenses'), {
+        headers: getAuthHeaders()
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLicenses(data.licenses || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch licenses:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = async (licenseId) => {
+    if (!window.confirm('Makine bağlantısını sıfırlamak istediğinize emin misiniz? Bu işlem yıllık sınırlıdır.')) return;
+    try {
+      const res = await fetch(createApiUrl(`api/desktop/license/my-licenses/${licenseId}/reset-machine`), {
+        method: 'POST',
+        headers: getAuthHeaders()
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Makine sıfırlandı. Kalan hak: ${data.remaining_resets}`);
+        fetchLicenses();
+      } else {
+        toast.error(data.error || 'Sıfırlama başarısız');
+      }
+    } catch {
+      toast.error('Bağlantı hatası');
+    }
+  };
+
+  if (loading) return <p style={{ color: '#888', fontSize: '0.9rem' }}>Yükleniyor...</p>;
+
+  if (licenses.length === 0) {
+    return (
+      <div style={{ padding: '1rem', background: '#f9fafb', borderRadius: 8, textAlign: 'center', color: '#888' }}>
+        Henüz bir yazılım lisansınız yok.
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'grid', gap: 12 }}>
+      {licenses.map(lic => (
+        <div key={lic.id} style={{
+          padding: '1rem', background: '#fff', borderRadius: 8,
+          border: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <div>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>
+              {lic.product_key === 'pebdeq-code' ? '💻 P-Code' : lic.product_key === 'movie-maker' ? '🎬 Movie Maker' : lic.product_key}
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#888' }}>
+              Durum: <span style={{ color: lic.status === 'active' ? '#10b981' : '#ef4444', fontWeight: 600 }}>
+                {lic.status === 'active' ? '✓ Aktif' : lic.status === 'expired' ? '⏰ Süresi Dolmuş' : '⛔ İptal'}
+              </span>
+              {lic.machine_id && <> · Makine: <code style={{ fontSize: '0.7rem' }}>{lic.machine_id}</code></>}
+              {lic.expires_at && <> · Bitiş: {new Date(lic.expires_at).toLocaleDateString('tr-TR')}</>}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#aaa', marginTop: 2 }}>
+              Sıfırlama: {lic.reset_count}/{lic.max_resets_per_year} kullanıldı
+            </div>
+          </div>
+          {lic.machine_id && lic.reset_count < lic.max_resets_per_year && (
+            <button
+              onClick={() => handleReset(lic.id)}
+              style={{
+                padding: '6px 14px', borderRadius: 6,
+                border: '1px solid #f59e0b', background: '#fef3c7',
+                color: '#92400e', fontSize: '0.8rem', cursor: 'pointer', whiteSpace: 'nowrap'
+              }}
+            >
+              🔄 Makine Sıfırla
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}

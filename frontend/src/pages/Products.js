@@ -21,6 +21,20 @@ const Products = () => {
   const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [updateTrigger, forceUpdate] = useState({});
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(false);
+  
+  // Force update when theme colors change
+  useEffect(() => {
+    const handleThemeUpdate = () => {
+      console.log('🎨 Products - Theme color update event received');
+      forceUpdate({});
+    };
+    
+    window.addEventListener('themeColorUpdate', handleThemeUpdate);
+    return () => window.removeEventListener('themeColorUpdate', handleThemeUpdate);
+  }, []);
 
   // Debug mode state
   const [debugMode, setDebugMode] = useState(false);
@@ -73,7 +87,7 @@ const Products = () => {
         ...(search && { search })
       });
       
-      const response = await fetch(createApiUrl('api/products?${params}'));
+      const response = await fetch(createApiUrl(`api/products?${params}`));
       
       if (!response.ok) {
         throw new Error('Failed to fetch products');
@@ -102,6 +116,22 @@ const Products = () => {
     }
   };
 
+  // Fetch recommended products
+  const fetchRecommendedProducts = async () => {
+    try {
+      setRecommendedLoading(true);
+      const response = await fetch(createApiUrl('api/products?featured=true&per_page=8&sort=newest'));
+      if (response.ok) {
+        const data = await response.json();
+        setRecommendedProducts(data.products || []);
+      }
+    } catch (err) {
+      console.error('Error fetching recommended products:', err);
+    } finally {
+      setRecommendedLoading(false);
+    }
+  };
+
   // Effects
   useEffect(() => {
     fetchProducts();
@@ -110,6 +140,7 @@ const Products = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchRecommendedProducts();
   }, []);
 
   useEffect(() => {
@@ -244,12 +275,12 @@ const Products = () => {
   }
 
   return (
-    <div className="products-page products-page-container" style={{ backgroundColor: siteSettings?.products_page_background_color || 'var(--bg-primary)' }}>
+    <div className="products-page products-page-container" style={{ backgroundColor: 'var(--products-background-main)' }}>
       <div className="container">
         {/* Page Header */}
         <div className="page-header">
           <h1 className="page-title" style={{ 
-            color: siteSettings?.products_page_title_color || 'var(--text-primary)',
+            color: 'var(--products-title-color)',
             fontSize: `${siteSettings?.products_page_title_font_size || 32}px`,
             fontFamily: siteSettings?.products_page_title_font_family || 'inherit',
             fontWeight: siteSettings?.products_page_title_font_weight || 'bold',
@@ -258,7 +289,7 @@ const Products = () => {
             {category ? getCategoryName(category) : 'All Products'}
           </h1>
           <p className="page-description" style={{
-            color: siteSettings?.products_page_subtitle_color || '#666',
+            color: 'var(--products-text-secondary)',
             fontSize: `${siteSettings?.products_page_subtitle_font_size || 16}px`,
             fontFamily: siteSettings?.products_page_subtitle_font_family || 'inherit',
             fontWeight: siteSettings?.products_page_subtitle_font_weight || 'normal',
@@ -402,60 +433,119 @@ const Products = () => {
           </div>
         )}
 
-        {/* Products Grid */}
-        {!loading && !error && (
-          <>
+      </div>
+
+      {/* Main Products Section - Separate frame from search */}
+      {!loading && !error && (
+        <div className="main-products-section">
+
+          <div 
+            className="products-grid"
+            style={{
+              '--products-per-row': siteSettings?.products_page_per_row || 4,
+              '--products-per-row-tablet': 4,
+              '--products-per-row-mobile': 3,
+              '--products-per-row-small': 2,
+              '--dynamic-button-font-size': `${Math.max(10, 16 - ((siteSettings?.products_page_per_row || 4) - 3) * 1.5)}px`,
+              '--product-card-button-radius': `${siteSettings?.product_card_button_radius || 16}px`
+            }}
+          >
+            {products.length > 0 ? (
+              products.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  categories={categories}
+                  siteSettings={siteSettings}
+                  openPreview={openPreview}
+                />
+              ))
+            ) : (
+              <div className="no-products-container">
+                <p className="no-products-message">
+                  {search ? `No products found for "${search}"` : 
+                   category ? `No products found in category "${getCategoryName(category)}"` : 
+                   'No products available'}
+                </p>
+                {(search || category) && (
+                  <button onClick={clearFilters} className="clear-filters-btn">
+                    View All Products
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Pagination */}
+          <Pagination />
+        </div>
+      )}
+
+      {/* Recommended Products Section - Outside container for wider layout */}
+      {!loading && !error && recommendedProducts.length > 0 && siteSettings?.show_recommended_products !== false && (
+        <div className="recommended-products-section">
+          <div className="section-header">
+            <h2 className="section-title" style={{
+              color: 'var(--products-title-color)',
+              fontSize: `${(siteSettings?.products_page_title_font_size || 32) - 8}px`,
+              fontFamily: siteSettings?.products_page_title_font_family || 'inherit',
+              fontWeight: siteSettings?.products_page_title_font_weight || 'bold',
+              fontStyle: siteSettings?.products_page_title_font_style || 'normal'
+            }}>
+              Recommended Products
+            </h2>
+            <p className="section-subtitle" style={{
+              color: 'var(--products-text-secondary)',
+              fontSize: `${(siteSettings?.products_page_subtitle_font_size || 16) - 2}px`,
+              fontFamily: siteSettings?.products_page_subtitle_font_family || 'inherit',
+              fontWeight: siteSettings?.products_page_subtitle_font_weight || 'normal',
+              fontStyle: siteSettings?.products_page_subtitle_font_style || 'normal'
+            }}>
+              You might also like these products
+            </p>
+          </div>
+
+          {recommendedLoading ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Loading recommended products...</p>
+            </div>
+          ) : (
             <div 
-              className="products-grid"
+              className="recommended-products-grid"
               style={{
-                '--products-per-row': siteSettings?.products_page_per_row || 4,
-                '--products-per-row-tablet': Math.min(siteSettings?.products_page_per_row || 4, 3),
-                '--products-per-row-mobile': Math.min(siteSettings?.products_page_per_row || 4, 2),
-                '--products-per-row-small': 1
+                '--products-per-row': siteSettings?.recommended_products_per_row || 6,
+                '--products-per-row-tablet': Math.min(siteSettings?.recommended_products_per_row || 6, 4),
+                '--products-per-row-mobile': Math.min(siteSettings?.recommended_products_per_row || 6, 3),
+                '--products-per-row-small': Math.min(siteSettings?.recommended_products_per_row || 6, 2),
+                '--dynamic-button-font-size': `${Math.max(10, 16 - ((siteSettings?.recommended_products_per_row || 6) - 3) * 1.5)}px`,
+                '--product-card-button-radius': `${siteSettings?.product_card_button_radius || 16}px`
               }}
             >
-              {products.length > 0 ? (
-                products.map(product => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    categories={categories}
-                    siteSettings={siteSettings}
-                    openPreview={openPreview}
-                  />
-                ))
-              ) : (
-                <div className="no-products-container">
-                  <p className="no-products-message">
-                    {search ? `No products found for "${search}"` : 
-                     category ? `No products found in category "${getCategoryName(category)}"` : 
-                     'No products available'}
-                  </p>
-                  {(search || category) && (
-                    <button onClick={clearFilters} className="clear-filters-btn">
-                      View All Products
-                    </button>
-                  )}
-                </div>
-              )}
+              {recommendedProducts.slice(0, (siteSettings?.recommended_products_per_row || 6) * (siteSettings?.recommended_products_rows || 1)).map(product => (
+                <ProductCard 
+                  key={`recommended-${product.id}`}
+                  product={product} 
+                  categories={categories}
+                  siteSettings={siteSettings}
+                  openPreview={openPreview}
+                />
+              ))}
             </div>
+          )}
+        </div>
+      )}
 
-            {/* Pagination */}
-            <Pagination />
-          </>
-        )}
-
-        {/* Image Preview Modal */}
-        {previewModal.isOpen && (
-          <ImagePreviewModal
-            images={previewModal.images}
-            currentIndex={previewModal.currentIndex}
-            isOpen={previewModal.isOpen}
-            onClose={() => setPreviewModal({ isOpen: false, images: [], currentIndex: 0, altText: '' })}
-            altText={previewModal.altText}
-          />
-        )}
-      </div>
+      {/* Image Preview Modal */}
+      {previewModal.isOpen && (
+        <ImagePreviewModal
+          images={previewModal.images}
+          currentIndex={previewModal.currentIndex}
+          isOpen={previewModal.isOpen}
+          onClose={() => setPreviewModal({ isOpen: false, images: [], currentIndex: 0, altText: '' })}
+          altText={previewModal.altText}
+        />
+      )}
     </div>
   );
 };
